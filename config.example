@@ -1,0 +1,14 @@
+# mdp config file example
+
+# GnuPG absolute path (default: /usr/bin/gpg)
+set gpg_path "/usr/local/bin/gpg"
+
+# GnuPG key id (default: none, let gpg pick a key)
+set gpg_key_id "6453194A"
+
+# Editor used in edit mode (defaults to $EDITOR or /usr/bin/vi)
+set editor "/usr/bin/vim"
+
+# Timeout in show mode in seconds (default: 10)
+set timeout 10
+

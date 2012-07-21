@@ -1,0 +1,8 @@
+minimalist password safe
+
+Wrap PGP/GnuPG for encryption and deal with the other small factors of
+storing, creating and editing passwords.
+
+mdp tries to stay out of your way on the editing side, it will spawn
+your editor and let you organize your passwords any way you want.
+

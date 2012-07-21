@@ -1,0 +1,147 @@
+.\"
+.\" Copyright (c) 2012 Bertrand Janin <b@grun.gy>
+.\" 
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\" 
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.\"
+.Dd $Mdocdate: July 22 2012 $
+.Dt PWD 1
+.Os
+.Sh NAME
+.Nm mdp
+.Nd return reduced working directory name
+.Sh SYNOPSIS
+.Nm mdp
+.Sh DESCRIPTION
+The
+.Nm
+utility prints the absolute pathname of the current working directory to
+the standard output. It is similar to
+.Nm pwd
+but has a configuration file (~/.mdp/config) allowing the following features:
+
+     - aliases
+     - max length and filler characters
+     - newsgroup style
+     - mercurial and git branches
+
+The reasoning behind
+.Mm
+is that most shells read $PS1 differently and
+have a very rigid way to display the current working directory.
+.Nm
+allows you to have one way to handle the display of your working directory
+and use it across multiple shells. 
+
+The syntax of the configuration files is described below, lines starting
+with '#' are ignored.
+
+.Sh ALIASES
+Defines a replacement name for a long path, for example, if you had the
+following line in your config file:
+
+    alias *mdp /home/tamentis/projects/mdp
+
+Then if you are in "/home/tamentis/projects/mdp/doc/html/", mdp would
+return "*mdp/doc/html". If you have spaces in your directories, you can
+wrap your 'alias' parameters with double quotes:
+
+    alias winDocs "/mnt/Windows XP/My Documents/"
+
+.Sh MAX LENGTH
+Defines the maximum length to return, the default filler string is "...",
+the default length is 32, a value of 0 will disable the feature all
+together.
+.Bd -literal -offset indent
+set maxlength 20
+.Ed
+
+This setting would turn "~/projects/mdp/doc/html" into a shorter string:
+"...cts/mdp/doc/html". You can define the filler string with the 'filler'
+variable:
+.Bd -literal -offset indent
+set filler "-"
+.Ed
+
+Or if your font/terminal/shell supports UTF:
+.Bd -literal -offset indent
+set filler "…"
+.Ed
+
+If you want
+.Nm
+to keep complete path elements instead of cutting as much
+as possible, you can use this setting:
+.Bd -literal -offset indent
+set cleancut on
+.Ed
+
+.Sh NEWSGROUP STYLE
+This will shorten the path by only displaying the first letter of each path
+components, toggle it with:
+.Bd -literal -offset indent
+set newsgroup on
+.Ed
+
+This will turn the "/home/tamentis/projects/mdp/src/nowhere" path into
+"/h/t/p/s/nowhere". Note that the newsgroup style filter is applied before
+the path is trimmed with 'maxlength'.
+
+.Sh MERCURIAL
+You can see the currently selected branch as a prefix to your path
+whenever you are in a mercurial repository, enable this feature with
+the following option:
+.Bd -literal -offset indent
+set mercurial on
+.Ed
+
+The resulting path will be "my-branch:project/folder".
+
+.Sh GIT
+You can see the currently HEAD position as a prefix to your path when you
+are in a git repository, you can enable this feature with the following
+option:
+.Bd -literal -offset indent
+set git on
+.Ed
+
+The resulting path will be "my-branch:project/folder" if you are located on
+the HEAD of a branch, it will be "59cefd9...:project/folder" if you are
+anywhere else.
+
+
+.Sh SETUP
+This will depend on your shell, but the following will usually do:
+.Bd -literal -offset indent
+export PS1='\\h:`mdp`\\p '
+.Ed
+
+Note that the single quote matters since you want to keep the command
+within the variable as-is (unresolved).
+
+.Sh SEE ALSO
+.Xr gpg 1 ,
+.Xr sh 1
+.Sh BUGS
+None so far.
+.Sh AUTHORS
+mdp was written by Bertrand Janin <b@grun.gy> and is distributed under an ISC
+license (BSD compatible, OSI compatible).
+
+A bunch of utility functions are borrowed from OpenBSD and OpenSSH, both
+under ISC and BSD licenses, with copyrights from the following authors:
+
+    Copyright (c) 2004 Ted Unangst and Todd Miller
+    Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
+    Copyright (c) 2000 Markus Friedl.  All rights reserved.
+    Copyright (c) 2005,2006 Damien Miller.  All rights reserved.
+
