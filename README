@@ -1,0 +1,47 @@
+mdp - minimalist password safe
+==============================
+
+INTRO
+    mdp is acronym for "Mot De Passe", which means password in French.
+
+    Wrap PGP/GnuPG for encryption and deal with the other small factors of
+    storing, creating and editing passwords.
+
+    mdp tries to stay out of your way on the editing side, it will spawn your
+    editor and let you organize your passwords any way you want.
+
+    This script started as a simple shell script but a few features were
+    getting too complex to be handled in a shell script. Instead of playing
+    with more external programs, keeping PIDs and juggling with signals, I
+    rewrote the whole thing as a simple C program.
+
+INSTALL
+    make
+    sudo make install
+
+SETUP
+    The following options are available as configuration variables in your
+    ~/.mdp/config file:
+
+        set pgp_decode_command = "/usr/local/bin/gpg"
+
+    This parameter *HAS* to be an absolute path for security reasons.
+
+TODO
+    - git and/or mercurial integration with auto push/pull and conflict
+      resolution (lines stored separately?)
+    - gracefully degrade when the term size if too small instead of dying.
+
+
+AUTHORS/LICENSE
+    mdp was written by Bertrand Janin <b@grun.gy> and is distributed under an
+    ISC license (BSD compatible, OSI compatible).
+
+    A bunch of utility functions are borrowed from OpenBSD and OpenSSH, both
+    under ISC and BSD licenses, with copyrights from the following authors:
+
+	Copyright (c) 2004 Ted Unangst and Todd Miller
+	Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
+	Copyright (c) 2000 Markus Friedl.  All rights reserved.
+        Copyright (c) 2005,2006 Damien Miller.  All rights reserved.
+
