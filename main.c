@@ -37,18 +37,20 @@
 
 #define WHITESPACE	L" \t\r\n"
 #define QUOTE		L"\""
-#define MAX_RESULTS	10
+#define RESULTS_MAX_LEN	64
 
 
 wchar_t  cfg_gpg_path[MAXPATHLEN] = L"/usr/bin/gpg";
 wchar_t  cfg_gpg_key_id[MAXPATHLEN] = L"";
-wchar_t  cfg_editor[MAXPATHLEN] = L"/usr/bin/vi";
+wchar_t  cfg_editor[MAXPATHLEN] = L"";
 int	 cfg_timeout = 10;
 
 wchar_t	 home[MAXPATHLEN];
+wchar_t	 passwords_path[MAXPATHLEN];
 wchar_t	 editor[MAXPATHLEN];
 int	 window_width = 0;
 int	 window_height = 0;
+WINDOW	*screen;
 
 
 /* Utility functions from OpenBSD/SSH in separate files (ISC license) */
@@ -56,9 +58,11 @@ size_t		 wcslcpy(wchar_t *, const wchar_t *, size_t);
 wchar_t		*strdelim(wchar_t **);
 size_t		 strlcpy(char *, const char *, size_t);
 
+void		 shutdown_curses();
+
 
 enum action_mode {
-	MODE_SHOW,
+	MODE_PAGER,
 	MODE_RAW,
 	MODE_EDIT,
 	MODE_CREATE
@@ -110,6 +114,13 @@ set_variable(wchar_t *name, wchar_t *value, int linenum)
 		}
 		wcslcpy(cfg_editor, value, MAXPATHLEN);
 
+	/* set timeout <integer> */
+	} else if (wcscmp(name, L"timeout") == 0) {
+		if (value == NULL || *value == '\0')
+			fatal("config:%d: invalid value for timeout\n");
+
+		cfg_timeout = wcstoumax(value, NULL, 10);
+
 	/* ??? */
 	} else {
 		fatal("config: unknown variable for set on line %d.\n",
@@ -141,7 +152,7 @@ strip_trailing_whitespaces(wchar_t *s)
  * since most fatal errors will quit the program with an error message anyways.
  */
 int
-process_config_line(char *config_path, wchar_t *line, int linenum)
+process_config_line(wchar_t *config_path, wchar_t *line, int linenum)
 {
 	wchar_t *keyword, *name, *value;
 
@@ -161,7 +172,7 @@ process_config_line(char *config_path, wchar_t *line, int linenum)
 	/* set varname value */
 	if (wcscmp(keyword, L"set") == 0) {
 		if ((name = strdelim(&line)) == NULL) {
-			fatal("%s: set without variable name on line %d.\n",
+			fatal("%ls: set without variable name on line %d.\n",
 					config_path, linenum);
 			return -1;
 		}
@@ -170,7 +181,7 @@ process_config_line(char *config_path, wchar_t *line, int linenum)
 
 	/* Unknown operation... Code help us. */
 	} else {
-		fatal("%s: unknown command on line %d.\n", config_path,
+		fatal("%ls: unknown command on line %d.\n", config_path,
 				linenum);
 		return -1;
 	}
@@ -184,33 +195,36 @@ process_config_line(char *config_path, wchar_t *line, int linenum)
  * Exits program with error message if anything is wrong.
  */
 void
-check_config_directory(char *path)
+check_config_directory(wchar_t *path)
 {
 	struct stat sb;
+	char mbs_path[MAXPATHLEN];
 
-	if (stat(path, &sb) != 0) {
+	wcstombs(mbs_path, path, MAXPATHLEN);
+
+	if (stat(mbs_path, &sb) != 0) {
 		if (errno == ENOENT) {
-			if (mkdir(path, 0700) != 0) {
-				errx(1, "can't create %s: %s", path,
+			if (mkdir(mbs_path, 0700) != 0) {
+				errx(1, "can't create %ls: %s", path,
 						strerror(errno));
 			}
-			if (stat(path, &sb) != 0) {
-				errx(1, "can't stat newly created %s: %s",
+			if (stat(mbs_path, &sb) != 0) {
+				errx(1, "can't stat newly created %ls: %s",
 						path, strerror(errno));
 			}
 		} else {
-			errx(1, "can't access %s: %s", path, strerror(errno));
+			errx(1, "can't access %ls: %s", path, strerror(errno));
 		}
 	}
 
 	if (!S_ISDIR(sb.st_mode))
-		errx(1, "%s is not a directory", path);
+		errx(1, "%ls is not a directory", path);
 
 	if (sb.st_uid != 0 && sb.st_uid != getuid())
-		errx(1, "bad owner on %s", path);
+		errx(1, "bad owner on %ls", path);
 
 	if ((sb.st_mode & 022) != 0)
-		errx(1, "bad permissions on %s", path);
+		errx(1, "bad permissions on %ls", path);
 }
 
 
@@ -220,27 +234,30 @@ check_config_directory(char *path)
  * Exits program with error message if anything is wrong.
  */
 void
-check_config_file(char *path)
+check_config_file(wchar_t *path)
 {
 	struct stat sb;
+	char mbs_path[MAXPATHLEN];
 
-	if (stat(path, &sb) != 0) {
+	wcstombs(mbs_path, path, MAXPATHLEN);
+
+	if (stat(mbs_path, &sb) != 0) {
 		/* User hasn't created a config file, that's perfectly fine. */
 		if (errno == ENOENT) {
 			return;
 		} else {
-			errx(1, "can't access %s: %s", path, strerror(errno));
+			errx(1, "can't access %ls: %s", path, strerror(errno));
 		}
 	}
 
 	if (!S_ISREG(sb.st_mode))
-		errx(1, "%s is not a regular file", path);
+		errx(1, "%ls is not a regular file", path);
 
 	if (sb.st_uid != 0 && sb.st_uid != getuid())
-		errx(1, "bad owner on %s", path);
+		errx(1, "bad owner on %ls", path);
 
 	if ((sb.st_mode & 022) != 0)
-		errx(1, "bad permissions on %s", path);
+		errx(1, "bad permissions on %ls", path);
 }
 
 
@@ -257,18 +274,20 @@ check_config()
 	char line[128];
 	wchar_t wline[128];
 	int linenum = 1;
-	char path[MAXPATHLEN];
+	wchar_t path[MAXPATHLEN];
+	char mbs_path[MAXPATHLEN];
 
-	snprintf(path, MAXPATHLEN, "%ls/.mdp", home);
+	swprintf(passwords_path, MAXPATHLEN, L"%ls/.mdp/passwords", home);
+	check_config_file(passwords_path);
+
+	swprintf(path, MAXPATHLEN, L"%ls/.mdp", home);
 	check_config_directory(path);
 
-	snprintf(path, MAXPATHLEN, "%ls/.mdp/passwords", home);
+	swprintf(path, MAXPATHLEN, L"%ls/.mdp/config", home);
 	check_config_file(path);
 
-	snprintf(path, MAXPATHLEN, "%ls/.mdp/config", home);
-	check_config_file(path);
-
-	fp = fopen(path, "r");
+	wcstombs(mbs_path, path, MAXPATHLEN);
+	fp = fopen(mbs_path, "r");
 	if (fp == NULL)
 		return;
 
@@ -291,8 +310,10 @@ read_config()
 	wchar_t wline[128];
 	int linenum = 1;
 	char path[MAXPATHLEN];
+	wchar_t wcs_path[MAXPATHLEN];
 
 	snprintf(path, MAXPATHLEN, "%ls/.mdp/config", home);
+	mbstowcs(wcs_path, path, MAXPATHLEN);
 
 	fp = fopen(path, "r");
 	if (fp == NULL)
@@ -300,7 +321,7 @@ read_config()
 
 	while (fgets(line, sizeof(line), fp)) {
 		mbstowcs(wline, line, 128);
-		process_config_line(path, wline, linenum++);
+		process_config_line(wcs_path, wline, linenum++);
 	}
 
 	fclose(fp);
@@ -319,10 +340,9 @@ resize(int signal)
 /*
  * Starts curses, obtains term size, set colors.
  */
-WINDOW *
+void
 init_curses()
 {
-	WINDOW *screen;
 	struct winsize ws;
 
 	/* terminal size stuff */
@@ -338,8 +358,6 @@ init_curses()
 	// cbreak();
 	curs_set(0);
 	// nodelay(screen, TRUE);
-
-	return screen;
 }
 
 
@@ -358,76 +376,22 @@ shutdown_curses()
  *
  * Not quite implemented...
  */
-#if 0
-char *
-spawn_editor(struct hook *hook, char *in)
+void
+spawn_editor(char *path)
 {
-	char *argv[128];
-	char out[4096];
-	int pipe_in_fd[2];	// {read, write}
-	int pipe_out_fd[2];
-	int status;
-	size_t len;
-	int i;
+	char s[MAXPATHLEN];
 
-	/* Parse the cmd to argv for direct execution (no shell), this will
-	 * alter the hook's handler, make sure you are aware of this if one day
-	 * you decide to make this dispatcher survive one command. */
-	if (hook->use_shell != 1) {
-		for (i = 0; i < 128; i++) {
-			argv[i] = strsep(&hook->handler, "\t ");
-			if (argv[i] == NULL) break;
-		}
-	}
-
-	len = strlen(in);
-
-	pipe(pipe_in_fd);
-	pipe(pipe_out_fd);
-
-	switch (fork()) {
-	case -1:
-		errx(1, "spawn: %s", strerror(errno));
-		;;
-	case 0:
-		/* Child process pipe dance. */
-		if (dup2(pipe_in_fd[0], STDIN_FILENO) == -1)
-			errx(1, "dup2 (child stdin): %s", strerror(errno));
-		if (pipe_in_fd[0] != STDIN_FILENO)
-			close(pipe_in_fd[0]);
-		close(pipe_in_fd[1]);
-
-		if (dup2(pipe_out_fd[1], STDOUT_FILENO) == -1)
-			errx(1, "dup2 (child stdout): %s", strerror(errno));
-		if (pipe_out_fd[1] != STDOUT_FILENO)
-			close(pipe_out_fd[1]);
-		close(pipe_out_fd[0]);
-
-		if (hook->use_shell == 1) {
-			execl("/bin/sh", "/bin/sh", "-c", hook->handler,
-					(char*)NULL);
+	if (wcslen(cfg_editor) == 0) {
+		if (wcslen(editor) == 0) {
+			wcslcpy(cfg_editor, L"/usr/bin/vi", MAXPATHLEN);
 		} else {
-			execvp(argv[0], argv);
+			wcslcpy(cfg_editor, editor, MAXPATHLEN);
 		}
-		errx(1, "couldn't execute '%s': %s", hook->handler,
-				strerror(errno));
-	default:
-		/* Parent process. */
-		write(pipe_in_fd[1], in, len);
-		close(pipe_in_fd[0]);
-		close(pipe_in_fd[1]);
 	}
 
-	len = read(pipe_out_fd[0], out, sizeof out);
-	out[len] = '\0';
-	close(pipe_out_fd[0]);
-	close(pipe_out_fd[1]);
-
-	wait(&status);
-
-	return xstrdup(out);
+	snprintf(s, MAXPATHLEN, "%ls \"%s\"", cfg_editor, path);
+	system(s);
 }
-#endif
 
 
 /*
@@ -455,19 +419,56 @@ line_matches(wchar_t *line, char **keywords)
 
 
 void
-gpg_decode(char **keywords, int use_pager)
+show_results_in_pager(int len, wchar_t **results)
 {
-	// char argv[128][128] = { "-q", "--decrypt", "/tmp/passwords.gpg"};
-	char in[128] = "woot";
-	wchar_t *results[MAX_RESULTS];
-	/* in/out from the child's perspective */
-	int pout[2];	// {read, write}
-	int status;
-	size_t len = 0;
-	int i;
-	WINDOW *screen;
+	int top_offset, left_offset, i, offset;
+	char line[256];
 
-	len = strlen(in);
+	init_curses();
+
+	top_offset = (window_height - len) / 2;
+	left_offset = window_width;
+
+	if (len >= window_height || len >= RESULTS_MAX_LEN) {
+		shutdown_curses();
+		errx(1, "too many results, please refine your search");
+	}
+
+	/* Find the smallest left offset to fit everything. */
+	for (i = 0; i < len; i++) {
+		offset = (window_width - wcslen(results[i])) / 2;
+		if (left_offset > offset)
+			left_offset = offset;
+	}
+
+	/* Place the lines on screen. */
+	for (i = 0; i < len; i++) {
+		wcstombs(line, results[i], MAXPATHLEN);
+		wmove(screen, top_offset, left_offset);
+		wprintw(screen, line);
+		top_offset++;
+	}
+
+	refresh();
+
+	/* Wait for any keystroke or timeout. */
+	timeout(cfg_timeout * 1000);
+	getch();
+
+	shutdown_curses();
+}
+
+
+FILE *
+gpg_open()
+{
+	char mbs_gpg_path[MAXPATHLEN];
+	char mbs_passwords_path[MAXPATHLEN];
+	int pout[2];	// {read, write}
+	FILE *fp;
+
+	wcstombs(mbs_gpg_path, cfg_gpg_path, MAXPATHLEN);
+	wcstombs(mbs_passwords_path, passwords_path, MAXPATHLEN);
 
 	if (pipe(pout) != 0)
 		err(1, "gpg_decode pipe(pout)");
@@ -475,7 +476,7 @@ gpg_decode(char **keywords, int use_pager)
 	switch (fork()) {
 	case -1:
 		err(1, "gpg_decode fork");
-		;;
+		break;
 	case 0:
 		/* Child process pipe dance. */
 		if (close(pout[0]))
@@ -488,8 +489,8 @@ gpg_decode(char **keywords, int use_pager)
 			if (close(pout[1]))
 				err(1, "child close(pipe_out_fd[1])");
 
-		execlp("/usr/local/bin/gpg", "-q", "--decrypt",
-				"/tmp/passwords.gpg", NULL);
+		execlp(mbs_gpg_path, "-q", "--decrypt", mbs_passwords_path,
+				NULL);
 		err(1, "couldn't execute");
 		/* NOTREACHED */
 	default:
@@ -501,49 +502,155 @@ gpg_decode(char **keywords, int use_pager)
 	if (close(pout[1]) != 0)
 		err(1, "close(pout[1])");
 
-	int idx = 0;
+	fp = fdopen(pout[0], "r");
+
+	return fp;
+}
+
+
+void
+gpg_close(FILE *fp, int *status)
+{
+	if (fclose(fp) != 0)
+		err(1, "gpg_close fclose()");
+
+	if (wait(status) == -1)
+		err(1, "gpg_close wait()");
+}
+
+
+/*
+ * Check if the given path has the right sum and size.
+ *
+ * This is far from perfect, but for the purpose of detecting change, this is
+ * just fine. Returns 1 if it matches.
+ */
+int
+has_changed(char *tmp_path, uint32_t sum, uint32_t size)
+{
+	uint32_t new_size = 0, new_sum = 0;
+	FILE *fp = fopen(tmp_path, "r");
 	char line[256];
-	wchar_t wline[256];
-	FILE *fp = fdopen(pout[0], "r");
+	int i;
 
 	while (fgets(line, sizeof(line), fp)) {
+		new_size += strlen(line);
+
+		for (i = 0; i < strlen(line); i++) {
+			new_sum += line[i];
+		}
+	}
+
+	if (sum != new_sum || size != new_size)
+		return 1;
+
+	return 0;
+}
+
+
+/*
+ * Saves the file back though gnupg.
+ */
+void
+gpg_encrypt(char *tmp_path)
+{
+	char cmd[4096];
+	char new_tmp_path[MAXPATHLEN];
+	char mbs_passwords_path[MAXPATHLEN];
+	char mbs_passbak_path[MAXPATHLEN];
+
+	/* Encrypt the temp file and delete it. */
+	snprintf(cmd, 4096, "%ls -r %ls -e %s", cfg_gpg_path, cfg_gpg_key_id,
+			tmp_path);
+	system(cmd);
+	unlink(tmp_path);
+
+	/* Backup the previous password file. */
+	snprintf(mbs_passbak_path, MAXPATHLEN, "%s.bak", mbs_passwords_path);
+	link(mbs_passwords_path, mbs_passbak_path);
+
+	/* Move the newly encrypted file to its new location. */
+	snprintf(new_tmp_path, MAXPATHLEN, "%s.gpg", tmp_path);
+	wcstombs(mbs_passwords_path, passwords_path, MAXPATHLEN);
+	unlink(mbs_passwords_path);
+	link(new_tmp_path, mbs_passwords_path);
+	unlink(new_tmp_path);
+}
+
+
+void
+get_results(char **keywords, int mode)
+{
+	int status, idx = 0, i, tmp_fd = -1;
+	uint32_t sum = 0, size = 0;
+	wchar_t wline[256], *results[RESULTS_MAX_LEN];
+	char tmp_path[MAXPATHLEN], line[256];
+	FILE *fp;
+
+	fp = gpg_open();
+
+	if (mode == MODE_EDIT) {
+		snprintf(tmp_path, MAXPATHLEN, "%ls/.mdp/tmp_edit.XXXXXXXX",
+				home);
+		tmp_fd = mkstemp(tmp_path);
+		if (tmp_fd == -1)
+			err(1, "get_results mkstemp()");
+	}
+
+	while (fgets(line, sizeof(line), fp)) {
+		size += strlen(line);
+
+		for (i = 0; i < strlen(line); i++) {
+			sum += line[i];
+		}
+
+		if (mode == MODE_EDIT) {
+			write(tmp_fd, line, strlen(line));
+			continue;
+		}
+
 		mbstowcs(wline, line, 128);
 		strip_trailing_whitespaces(wline);
 		if (line_matches(wline, keywords)) {
-			if (use_pager) {
-				if (idx < MAX_RESULTS - 1)
-					results[idx] = wcsdup(wline);
-				idx++;
+			switch (mode) {
+				case MODE_PAGER:
+					if (idx < RESULTS_MAX_LEN - 1)
+						results[idx] = wcsdup(wline);
+					idx++;
+					break;
 
-			} else {
-				printf("%ls\n", wline);
+				case MODE_RAW:
+					printf("%ls\n", wline);
+					break;
+
+				default:
+					break;
 			}
 		}
 	}
 
-	if (fclose(fp) != 0)
-		err(1, "close(pout[0])");
+	gpg_close(fp, &status);
 
-	if (wait(&status) == -1)
-		err(1, "wait()");
+	switch (mode) {
+		case MODE_PAGER:
+			show_results_in_pager(idx, results);
+			break;
 
-	if (use_pager) {
-		screen = init_curses();
+		case MODE_EDIT:
+			if (close(tmp_fd) != 0)
+				err(1, "get_results close(tmp_fd)");
 
-		if (idx >= MAX_RESULTS || idx >= window_height)
-			errx(1, "too many results, please refine your search");
+			spawn_editor(tmp_path);
 
-		int left_offset = (window_width - wcslen(wline)) / 2;
-		int top_offset = (window_height - idx) / 2;
+			if (has_changed(tmp_path, sum, size)) {
+				gpg_encrypt(tmp_path);
+			} else {
+				fprintf(stderr, "No changes, exiting...\n");
+			}
+			break;
 
-		wcstombs(line, wline, 256);
-
-		wmove(screen, top_offset, left_offset);
-		wprintw(screen, line);
-		refresh();
-		sleep(5);
-
-		shutdown_curses();
+		default:
+			break;
 	}
 }
 
@@ -551,7 +658,7 @@ gpg_decode(char **keywords, int use_pager)
 void
 usage()
 {
-	printf("usage: mdp [-ec] [keyword ...]\n");
+	printf("usage: mdp [-ecr] [keyword ...]\n");
 	exit(-1);
 }
 
@@ -560,7 +667,7 @@ int
 main(int ac, char **av)
 {
 	char *t;
-	int opt, mode = MODE_SHOW;
+	int opt, mode = MODE_PAGER;
 	extern int optind, optreset;
 
 	if (ac < 2)
@@ -570,9 +677,9 @@ main(int ac, char **av)
 
 	/* Populate $HOME */
 	t = getenv("HOME");
-	mbstowcs(home, t, MAXPATHLEN);
-	if (home == NULL || *home == '\0')
+	if (t == NULL || *t == '\0')
 		errx(0, "Unknown variable '$HOME'.");
+	mbstowcs(home, t, MAXPATHLEN);
 
 	/* Populate $EDITOR */
 	t = getenv("EDITOR");
@@ -586,15 +693,12 @@ main(int ac, char **av)
 		switch (opt) {
 		case 'e':
 			mode = MODE_EDIT;
-			printf("EDIT!\n");
 			break;
 		case 'c':
 			mode = MODE_CREATE;
-			printf("CREATE\n");
 			break;
 		case 'r':
 			mode = MODE_RAW;
-			printf("RAW\n");
 			break;
 		default:
 			usage();
@@ -604,14 +708,32 @@ main(int ac, char **av)
 	ac -= optind;
 	av += optind;
 
-	if (ac == 0)
-		usage();
-
 	/* Decide if we use the internal pager or just dump to screen. */
-	if (mode == MODE_RAW) {
-		gpg_decode(av, 0);
-	} else {
-		gpg_decode(av, 1);
+	switch (mode) {
+		case MODE_RAW:
+			if (ac == 0)
+				usage();
+
+			get_results(av, mode);
+			break;
+
+		case MODE_PAGER:
+			if (ac == 0)
+				usage();
+
+			get_results(av, mode);
+			break;
+
+		case MODE_EDIT:
+			if (ac != 0)
+				usage();
+
+			get_results(av, mode);
+			break;
+
+		default:
+			errx(1, "unknown mode");
+			break;
 	}
 
 	return 0;
