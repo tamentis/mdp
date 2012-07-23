@@ -269,7 +269,7 @@ config_check_variables()
 	wcstombs(mbs_path, cfg_gpg_path, MAXPATHLEN);
 
 	if (stat(mbs_path, &sb) != 0)
-		err(1, "wrong gpg path (or not installed) %s", mbs_path);
+		err(1, "config: wrong gpg path (or not installed) %s", mbs_path);
 }
 
 

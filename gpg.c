@@ -99,13 +99,17 @@ void
 gpg_encrypt(char *tmp_path)
 {
 	char cmd[4096];
+	char cmd_key[128] = "";
 	char new_tmp_path[MAXPATHLEN];
 	char mbs_passwords_path[MAXPATHLEN];
 	char mbs_passbak_path[MAXPATHLEN];
 
 	/* Encrypt the temp file and delete it. */
-	snprintf(cmd, 4096, "%ls -r %ls -e %s", cfg_gpg_path, cfg_gpg_key_id,
-			tmp_path);
+	if (wcslen(cfg_gpg_key_id) == 8)
+		snprintf(cmd_key, 128, "-r %ls", cfg_gpg_key_id);
+
+	snprintf(cmd, 4096, "%ls %s -e %s", cfg_gpg_path, cmd_key, tmp_path);
+	fprintf(stderr, "%s\n", cmd);
 	system(cmd);
 	unlink(tmp_path);
 
