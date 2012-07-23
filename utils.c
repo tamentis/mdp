@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include <wchar.h>
+#include <wctype.h>
 #include <stdarg.h>
 #include <stdlib.h>
 
@@ -53,3 +54,26 @@ fatal(const char *fmt,...)
 	exit(-1);
 }
 
+
+/*
+ * Same as wcsstr but case-insensitive.
+ */
+wchar_t *
+wcscasestr(const wchar_t *s, const wchar_t *find)
+{
+	wchar_t c, sc;
+	size_t len;
+
+	if ((c = *find++) != 0) {
+		c = (wchar_t)towlower((wchar_t)c);
+		len = wcslen(find);
+		do {
+			do {
+				if ((sc = *s++) == 0)
+					return (NULL);
+			} while ((wchar_t)towlower((wchar_t)sc) != c);
+		} while (wcsncasecmp(s, find, len) != 0);
+		s--;
+	}
+	return ((wchar_t *)s);
+}

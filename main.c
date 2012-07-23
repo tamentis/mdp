@@ -93,7 +93,7 @@ line_matches(wchar_t *line, char **keywords)
 
 	while (*raw_keyword != NULL) {
 		mbstowcs(keyword, *raw_keyword, 128);
-		if (wcsstr((const wchar_t *)line,
+		if (wcscasestr((const wchar_t *)line,
 					(const wchar_t *)keyword) == NULL) {
 			matches = 0;
 			break;
