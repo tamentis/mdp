@@ -32,6 +32,7 @@
 #include "gpg.h"
 
 
+wchar_t	 cfg_config_path[MAXPATHLEN] = L"";
 wchar_t	 cfg_gpg_path[MAXPATHLEN] = L"/usr/bin/gpg";
 wchar_t	 cfg_gpg_key_id[MAXPATHLEN] = L"";
 wchar_t	 cfg_editor[MAXPATHLEN] = L"";
@@ -54,7 +55,7 @@ enum action_mode {
 	MODE_PAGER,
 	MODE_RAW,
 	MODE_EDIT,
-	MODE_CREATE
+	MODE_GENERATE
 };
 
 
@@ -225,6 +226,7 @@ main(int ac, char **av)
 	char *t;
 	int opt, mode = MODE_PAGER;
 	extern int optind, optreset;
+	extern char *optarg;
 
 	if (ac < 2)
 		usage();
@@ -241,25 +243,29 @@ main(int ac, char **av)
 	t = getenv("EDITOR");
 	mbstowcs(editor, t, MAXPATHLEN);
 
-	config_check_paths();
-	config_read();
-	config_check_variables();
-
-	while ((opt = getopt(ac, av, "ecr")) != -1) {
+	while ((opt = getopt(ac, av, "egrc:")) != -1) {
 		switch (opt) {
 		case 'e':
 			mode = MODE_EDIT;
 			break;
-		case 'c':
-			mode = MODE_CREATE;
+		case 'g':
+			mode = MODE_GENERATE;
 			break;
 		case 'r':
 			mode = MODE_RAW;
+			break;
+		case 'c':
+			swprintf(cfg_config_path, MAXPATHLEN, L"%s", optarg);
 			break;
 		default:
 			usage();
 		}
 	}
+
+	config_set_defaults();
+	config_check_paths();
+	config_read();
+	config_check_variables();
 
 	ac -= optind;
 	av += optind;

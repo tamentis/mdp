@@ -21,3 +21,4 @@ void		 config_check_file(wchar_t *);
 void		 config_check_paths(void);
 void		 config_check_variables(void);
 void		 config_read(void);
+void		 config_set_defaults(void);

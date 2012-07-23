@@ -61,7 +61,6 @@ SETUP
 
 
 TODO
-    - replace -c by alternate config file
     - test suite
     - automatically kill the editor if it lingers...
     - put search terms in an input if "too many results"

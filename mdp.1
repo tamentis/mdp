@@ -22,6 +22,7 @@
 .Sh SYNOPSIS
 .Nm mdp
 .Bk -words
+.Op Fl c Ar config
 .Op Fl er
 .Op Ar keyword ...
 .Ek
@@ -47,6 +48,8 @@ customizable timeout (default 10 seconds).
 .Pp
 The options are as follows:
 .Bl -tag -width Ds
+.It Fl c Ar config
+Use an alternate configuration file.
 .It Fl e
 Edit your password file (decrypt and re-encrypt after the fact).
 .It Fl r

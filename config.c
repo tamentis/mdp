@@ -41,6 +41,7 @@
 #define RESULTS_MAX_LEN	64
 
 
+extern wchar_t   cfg_config_path[MAXPATHLEN];
 extern wchar_t	 cfg_gpg_path[MAXPATHLEN];
 extern wchar_t   cfg_gpg_key_id[MAXPATHLEN];
 extern wchar_t   cfg_editor[MAXPATHLEN];
@@ -109,7 +110,7 @@ set_variable(wchar_t *name, wchar_t *value, int linenum)
  * since most fatal errors will quit the program with an error message anyways.
  */
 int
-process_config_line(wchar_t *config_path, wchar_t *line, int linenum)
+process_config_line(wchar_t *line, int linenum)
 {
 	wchar_t *keyword, *name, *value;
 
@@ -130,7 +131,7 @@ process_config_line(wchar_t *config_path, wchar_t *line, int linenum)
 	if (wcscmp(keyword, L"set") == 0) {
 		if ((name = strdelim(&line)) == NULL) {
 			fatal("%ls: set without variable name on line %d.\n",
-					config_path, linenum);
+					cfg_config_path, linenum);
 			return -1;
 		}
 		value = strdelim(&line);
@@ -138,7 +139,7 @@ process_config_line(wchar_t *config_path, wchar_t *line, int linenum)
 
 	/* Unknown operation... Code help us. */
 	} else {
-		fatal("%ls: unknown command on line %d.\n", config_path,
+		fatal("%ls: unknown command on line %d.\n", cfg_config_path,
 				linenum);
 		return -1;
 	}
@@ -250,7 +251,7 @@ config_check_paths()
 
 	while (fgets(line, sizeof(line), fp)) {
 		mbstowcs(wline, line, 128);
-		process_config_line(path, wline, linenum++);
+		process_config_line(wline, linenum++);
 	}
 
 	fclose(fp);
@@ -273,6 +274,14 @@ config_check_variables()
 }
 
 
+void
+config_set_defaults()
+{
+	if (wcslen(cfg_config_path) == 0)
+		swprintf(cfg_config_path, MAXPATHLEN, L"%ls/.mdp/config", home);
+}
+
+
 /*
  * Open the file and feed each line one by one to process_config_line.
  */
@@ -284,10 +293,8 @@ config_read()
 	wchar_t wline[128];
 	int linenum = 1;
 	char path[MAXPATHLEN];
-	wchar_t wcs_path[MAXPATHLEN];
 
-	snprintf(path, MAXPATHLEN, "%ls/.mdp/config", home);
-	mbstowcs(wcs_path, path, MAXPATHLEN);
+	wcstombs(path, cfg_config_path, MAXPATHLEN);
 
 	fp = fopen(path, "r");
 	if (fp == NULL)
@@ -295,7 +302,7 @@ config_read()
 
 	while (fgets(line, sizeof(line), fp)) {
 		mbstowcs(wline, line, 128);
-		process_config_line(wcs_path, wline, linenum++);
+		process_config_line(wline, linenum++);
 	}
 
 	fclose(fp);
