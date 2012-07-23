@@ -2,18 +2,17 @@ mdp - minimalist password safe
 ==============================
 
 INTRO
-    mdp is acronym for "Mot De Passe", which means password in French.
+    mdp is an acronym for "Mot de Passe", which means "password" in French. It
+    wraps GnuPG for encryption and deals with all the small details of
+    generating, managing and fetching your passwords.
 
-    Wrap PGP/GnuPG for encryption and deal with the other small factors of
-    storing, creating and editing passwords.
+    mdp is similar to a dozen other programs. What differentiate it from others
+    is an overall goal for simplicity, not your average button-driven
+    simplicity but more like a Unix-y less is more style. For example, beyond
+    the use of GnuPG for encryption, mdp lets you use your own editor to manage
+    your passwords, categorize them and delete them. I wouldn't use anything
+    but my favorite editor to manage a list, would you?
 
-    mdp tries to stay out of your way on the editing side, it will spawn your
-    editor and let you organize your passwords any way you want.
-
-    This script started as a simple shell script but a few features were
-    getting too complex to be handled in a shell script. Instead of playing
-    with more external programs, keeping PIDs and juggling with signals, I
-    rewrote the whole thing as a simple C program.
 
 REQUIREMENTS
     You need GnuPG and a working key configured. Have a look at the following
@@ -21,17 +20,28 @@ REQUIREMENTS
 
         http://www.dewinter.com/gnupg_howto/english/GPGMiniHowto-3.html
 
+
 INSTALL
     make
     sudo make install
+
+
+USAGE
+    1. Create your GPG key if you don't already have one.
+    2. Setup your EDITOR variable if it's not already done.
+    3. Run "mdp -e" and add a line like such:
+
+           twitter   sponge@bob.com    yHVHPnqXyx6qUuki
+
+    4. Now when you need your Twitter password, you can just type:
+    
+           mdp twitter
+
 
 SETUP
     The following options are available as configuration variables in your
     ~/.mdp/config file. All paths have to be absolute, all are optional and
     have semi-sane defaults.
-
-    # Defines where to find GnuPG
-    set gpg_path = "/usr/local/bin/gpg"
 
     # GnuPG absolute path (default: /usr/bin/gpg)
     set gpg_path "/usr/local/bin/gpg"
