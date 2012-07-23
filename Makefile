@@ -1,4 +1,5 @@
 BINARY=mdp
+OBJECTS=main.o pager.o utils.o config.o wcslcpy.o strdelim.o strlcpy.o
 PREFIX?=/usr/local
 CC?=clang
 
@@ -8,19 +9,25 @@ CFLAGS+=-ggdb -O1
 
 all: ${BINARY}
 
-${BINARY}: main.o wcslcpy.o strdelim.o strlcpy.o
-	$(CC) -lncurses -o ${BINARY} main.o wcslcpy.o strdelim.o strlcpy.o
+${BINARY}: ${OBJECTS}
+	$(CC) -lncurses -o ${BINARY} ${OBJECTS}
 
 mdp_tests: main.c wcslcpy.o strdelim.o strlcpy.o test.c
 	$(CC) ${CFLAGS} -D TESTING -c main.c -o main.o
 	$(CC) ${CFLAGS} -c test.c -o test.o
-	$(CC) -ggdb -o run_tests main.o wcslcpy.o strdelim.o strlcpy.o test.o
+	$(CC) -ggdb -o run_tests ${OBJECTS} test.o
 
 tests: mdp_tests
 	./run_tests
 
 main.o: main.c
 	$(CC) ${CFLAGS} -c main.c -o main.o
+config.o: config.c
+	$(CC) ${CFLAGS} -c config.c -o config.o
+utils.o: utils.c
+	$(CC) ${CFLAGS} -c utils.c -o utils.o
+pager.o: pager.c
+	$(CC) ${CFLAGS} -c pager.c -o pager.o
 wcslcpy.o: wcslcpy.c
 	$(CC) ${CFLAGS} -c wcslcpy.c -o wcslcpy.o
 strdelim.o: strdelim.c
@@ -33,4 +40,4 @@ install: ${BINARY}
 	install -m 644 ${BINARY}.1 ${PREFIX}/man/man1
 
 clean:
-	rm -f ${BINARY} main.o wcslcpy.o strdelim.o strlcpy.o test.o run_tests *core
+	rm -f ${BINARY} ${OBJECTS} test.o run_tests *core

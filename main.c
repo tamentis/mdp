@@ -21,7 +21,6 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 
-#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -34,23 +33,22 @@
 #include <inttypes.h>
 #include <curses.h>
 
+#include "utils.h"
+#include "config.h"
+#include "pager.h"
 
-#define WHITESPACE	L" \t\r\n"
+
 #define QUOTE		L"\""
-#define RESULTS_MAX_LEN	64
 
 
-wchar_t  cfg_gpg_path[MAXPATHLEN] = L"/usr/bin/gpg";
-wchar_t  cfg_gpg_key_id[MAXPATHLEN] = L"";
-wchar_t  cfg_editor[MAXPATHLEN] = L"";
+wchar_t	 cfg_gpg_path[MAXPATHLEN] = L"/usr/bin/gpg";
+wchar_t	 cfg_gpg_key_id[MAXPATHLEN] = L"";
+wchar_t	 cfg_editor[MAXPATHLEN] = L"";
 int	 cfg_timeout = 10;
 
 wchar_t	 home[MAXPATHLEN];
 wchar_t	 passwords_path[MAXPATHLEN];
 wchar_t	 editor[MAXPATHLEN];
-int	 window_width = 0;
-int	 window_height = 0;
-WINDOW	*screen;
 
 
 /* Utility functions from OpenBSD/SSH in separate files (ISC license) */
@@ -67,308 +65,6 @@ enum action_mode {
 	MODE_EDIT,
 	MODE_CREATE
 };
-
-/*
- * Emergency exit. Panic, scream, run for your life.
- */
-void
-fatal(const char *fmt,...)
-{
-        va_list args;
-
-	va_start(args, fmt);
-	vfprintf(stderr, fmt, args);
-	va_end(args);
-	exit(-1);
-}
-
-
-/*
- * Sets the value of the given variable, also do some type check
- * just in case.
- */
-void
-set_variable(wchar_t *name, wchar_t *value, int linenum)
-{
-	/* set gpg_path <string> */
-	if (wcscmp(name, L"gpg_path") == 0) {
-		if (value == NULL || *value == '\0') {
-			*cfg_gpg_path = '\0';
-			return;
-		}
-		wcslcpy(cfg_gpg_path, value, MAXPATHLEN);
-
-	/* set gpg_key_id <string> */
-	} else if (wcscmp(name, L"gpg_key_id") == 0) {
-		if (value == NULL || *value == '\0') {
-			*cfg_gpg_key_id = '\0';
-			return;
-		}
-		wcslcpy(cfg_gpg_key_id, value, MAXPATHLEN);
-
-	/* set editor <string> */
-	} else if (wcscmp(name, L"editor") == 0) {
-		if (value == NULL || *value == '\0') {
-			*cfg_editor = '\0';
-			return;
-		}
-		wcslcpy(cfg_editor, value, MAXPATHLEN);
-
-	/* set timeout <integer> */
-	} else if (wcscmp(name, L"timeout") == 0) {
-		if (value == NULL || *value == '\0')
-			fatal("config:%d: invalid value for timeout\n");
-
-		cfg_timeout = wcstoumax(value, NULL, 10);
-
-	/* ??? */
-	} else {
-		fatal("config: unknown variable for set on line %d.\n",
-				linenum);
-	}
-}
-
-
-/*
- * Strip trailing whitespace.
- */
-void
-strip_trailing_whitespaces(wchar_t *s)
-{
-	int len;
-
-	for (len = wcslen(s) - 1; len > 0; len--) {
-		if (wcschr(WHITESPACE, s[len]) == NULL)
-			break;
-		s[len] = '\0';
-	}
-}
-
-
-/*
- * Parse a single line of the configuration file.
- *
- * Returns 0 on success or anything else if an error occurred, it will be rare
- * since most fatal errors will quit the program with an error message anyways.
- */
-int
-process_config_line(wchar_t *config_path, wchar_t *line, int linenum)
-{
-	wchar_t *keyword, *name, *value;
-
-	strip_trailing_whitespaces(line);
-
-	/* Get the keyword (each line is supposed to begin with a keyword). */
-	if ((keyword = strdelim(&line)) == NULL)
-		return 0;
-
-	/* Ignore leading whitespace. */
-	if (*keyword == '\0')
-		keyword = strdelim(&line);
-
-	if (keyword == NULL || !*keyword || *keyword == '\n' || *keyword == '#')
-		return 0;
-
-	/* set varname value */
-	if (wcscmp(keyword, L"set") == 0) {
-		if ((name = strdelim(&line)) == NULL) {
-			fatal("%ls: set without variable name on line %d.\n",
-					config_path, linenum);
-			return -1;
-		}
-		value = strdelim(&line);
-		set_variable(name, value, linenum);
-
-	/* Unknown operation... Code help us. */
-	} else {
-		fatal("%ls: unknown command on line %d.\n", config_path,
-				linenum);
-		return -1;
-	}
-
-	return 0;
-}
-
-/*
- * Creates and/or check the configuration directory.
- *
- * Exits program with error message if anything is wrong.
- */
-void
-check_config_directory(wchar_t *path)
-{
-	struct stat sb;
-	char mbs_path[MAXPATHLEN];
-
-	wcstombs(mbs_path, path, MAXPATHLEN);
-
-	if (stat(mbs_path, &sb) != 0) {
-		if (errno == ENOENT) {
-			if (mkdir(mbs_path, 0700) != 0) {
-				errx(1, "can't create %ls: %s", path,
-						strerror(errno));
-			}
-			if (stat(mbs_path, &sb) != 0) {
-				errx(1, "can't stat newly created %ls: %s",
-						path, strerror(errno));
-			}
-		} else {
-			errx(1, "can't access %ls: %s", path, strerror(errno));
-		}
-	}
-
-	if (!S_ISDIR(sb.st_mode))
-		errx(1, "%ls is not a directory", path);
-
-	if (sb.st_uid != 0 && sb.st_uid != getuid())
-		errx(1, "bad owner on %ls", path);
-
-	if ((sb.st_mode & 022) != 0)
-		errx(1, "bad permissions on %ls", path);
-}
-
-
-/*
- * Check the configuration file.
- *
- * Exits program with error message if anything is wrong.
- */
-void
-check_config_file(wchar_t *path)
-{
-	struct stat sb;
-	char mbs_path[MAXPATHLEN];
-
-	wcstombs(mbs_path, path, MAXPATHLEN);
-
-	if (stat(mbs_path, &sb) != 0) {
-		/* User hasn't created a config file, that's perfectly fine. */
-		if (errno == ENOENT) {
-			return;
-		} else {
-			errx(1, "can't access %ls: %s", path, strerror(errno));
-		}
-	}
-
-	if (!S_ISREG(sb.st_mode))
-		errx(1, "%ls is not a regular file", path);
-
-	if (sb.st_uid != 0 && sb.st_uid != getuid())
-		errx(1, "bad owner on %ls", path);
-
-	if ((sb.st_mode & 022) != 0)
-		errx(1, "bad permissions on %ls", path);
-}
-
-
-/*
- * Prepare and check the configuration paths.
- *
- * Create the ~/.mdp/ directory if it doesn't exist yet, then make sure it has
- * the right permissions, including all the relevant files within.
- */
-void
-check_config()
-{
-	FILE *fp;
-	char line[128];
-	wchar_t wline[128];
-	int linenum = 1;
-	wchar_t path[MAXPATHLEN];
-	char mbs_path[MAXPATHLEN];
-
-	swprintf(passwords_path, MAXPATHLEN, L"%ls/.mdp/passwords", home);
-	check_config_file(passwords_path);
-
-	swprintf(path, MAXPATHLEN, L"%ls/.mdp", home);
-	check_config_directory(path);
-
-	swprintf(path, MAXPATHLEN, L"%ls/.mdp/config", home);
-	check_config_file(path);
-
-	wcstombs(mbs_path, path, MAXPATHLEN);
-	fp = fopen(mbs_path, "r");
-	if (fp == NULL)
-		return;
-
-	while (fgets(line, sizeof(line), fp)) {
-		mbstowcs(wline, line, 128);
-		process_config_line(path, wline, linenum++);
-	}
-
-	fclose(fp);
-}
-
-/*
- * Open the file and feed each line one by one to process_config_line.
- */
-void
-read_config()
-{
-	FILE *fp;
-	char line[128];
-	wchar_t wline[128];
-	int linenum = 1;
-	char path[MAXPATHLEN];
-	wchar_t wcs_path[MAXPATHLEN];
-
-	snprintf(path, MAXPATHLEN, "%ls/.mdp/config", home);
-	mbstowcs(wcs_path, path, MAXPATHLEN);
-
-	fp = fopen(path, "r");
-	if (fp == NULL)
-		return;
-
-	while (fgets(line, sizeof(line), fp)) {
-		mbstowcs(wline, line, 128);
-		process_config_line(wcs_path, wline, linenum++);
-	}
-
-	fclose(fp);
-}
-
-/* resize - called when the terminal is resized ... */
-void
-resize(int signal)
-{
-	clear();
-	shutdown_curses();
-	errx(1, "terminal resize, exiting...");
-}
-
-
-/*
- * Starts curses, obtains term size, set colors.
- */
-void
-init_curses()
-{
-	struct winsize ws;
-
-	/* terminal size stuff */
-	signal(SIGWINCH, resize);
-	if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ws) != -1) {
-		window_width = ws.ws_col;
-		window_height = ws.ws_row;
-	}
-
-	/* curses screen init */
-	screen = initscr();
-	noecho();
-	// cbreak();
-	curs_set(0);
-	// nodelay(screen, TRUE);
-}
-
-
-/*
- * Shuts down curses.
- */
-void
-shutdown_curses()
-{
-	endwin();
-}
 
 
 /*
@@ -415,47 +111,6 @@ line_matches(wchar_t *line, char **keywords)
 	}
 
 	return matches;
-}
-
-
-void
-show_results_in_pager(int len, wchar_t **results)
-{
-	int top_offset, left_offset, i, offset;
-	char line[256];
-
-	init_curses();
-
-	top_offset = (window_height - len) / 2;
-	left_offset = window_width;
-
-	if (len >= window_height || len >= RESULTS_MAX_LEN) {
-		shutdown_curses();
-		errx(1, "too many results, please refine your search");
-	}
-
-	/* Find the smallest left offset to fit everything. */
-	for (i = 0; i < len; i++) {
-		offset = (window_width - wcslen(results[i])) / 2;
-		if (left_offset > offset)
-			left_offset = offset;
-	}
-
-	/* Place the lines on screen. */
-	for (i = 0; i < len; i++) {
-		wcstombs(line, results[i], MAXPATHLEN);
-		wmove(screen, top_offset, left_offset);
-		wprintw(screen, line);
-		top_offset++;
-	}
-
-	refresh();
-
-	/* Wait for any keystroke or timeout. */
-	timeout(cfg_timeout * 1000);
-	getch();
-
-	shutdown_curses();
 }
 
 
@@ -685,9 +340,8 @@ main(int ac, char **av)
 	t = getenv("EDITOR");
 	mbstowcs(editor, t, MAXPATHLEN);
 
-	check_config();
-
-	read_config();
+	config_check_paths();
+	config_read();
 
 	while ((opt = getopt(ac, av, "ecr")) != -1) {
 		switch (opt) {
