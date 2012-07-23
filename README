@@ -21,11 +21,24 @@ INSTALL
 
 SETUP
     The following options are available as configuration variables in your
-    ~/.mdp/config file:
+    ~/.mdp/config file. All paths have to be absolute, all are optional and
+    have semi-sane defaults.
 
-        set pgp_decode_command = "/usr/local/bin/gpg"
+    # Defines where to find GnuPG
+    set gpg_path = "/usr/local/bin/gpg"
 
-    This parameter *HAS* to be an absolute path for security reasons.
+    # GnuPG absolute path (default: /usr/bin/gpg)
+    set gpg_path "/usr/local/bin/gpg"
+
+    # GnuPG key id (default: none, let gpg pick a key)
+    set gpg_key_id "6453194A"
+
+    # Editor used in edit mode (defaults to $EDITOR or /usr/bin/vi)
+    set editor "/usr/local/bin/vim"
+
+    # Timeout in show mode in seconds (default: 10)
+    set timeout 2
+
 
 TODO
     - git and/or mercurial integration with auto push/pull and conflict
