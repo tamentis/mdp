@@ -21,12 +21,16 @@
 .Nd minimalist password safe
 .Sh SYNOPSIS
 .Nm mdp
+.Bk -words
+.Op Fl er
+.Op Ar keyword ...
+.Ek
 .Sh DESCRIPTION
 .Nm
 is an acronym for "Mot de Passe", meaning "password" in French. It wraps GnuPG
 for encryption and deals with all the small details of generating, managing and
 fetching your passwords.
-
+.Pp
 .Nm
 is similar to a dozen other programs. What differentiate it from others is an
 overall goal for simplicity, not your average button-driven simplicity but more
@@ -36,6 +40,10 @@ encryption,
 lets you use your own editor to manage your passwords, categorize them and
 delete them. I wouldn't use anything but my favorite editor to manage a list,
 would you?
+.Pp
+In order to avoid passwords to linger on your screen, the results from the
+queries are displayed through a custom pager that gets cleared after a
+customizable timeout (default 10 seconds).
 .Pp
 The options are as follows:
 .Bl -tag -width Ds

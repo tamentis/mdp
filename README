@@ -13,6 +13,10 @@ INTRO
     your passwords, categorize them and delete them. I wouldn't use anything
     but my favorite editor to manage a list, would you?
 
+    In order to avoid passwords to linger on your screen, the results from the
+    queries are displayed through a custom pager that gets cleared after a
+    customizable timeout (default 10 seconds).
+
 
 REQUIREMENTS
     You need GnuPG and a working key configured. Have a look at the following
