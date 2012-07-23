@@ -64,10 +64,19 @@ TODO
     - replace -c by alternate config file
     - test suite
     - automatically kill the editor if it lingers...
+    - put search terms in an input if "too many results"
+    - add a lock in ~/.mdp/lock
     - add password generator
     - git and/or mercurial integration with auto push/pull and conflict
       resolution (lines stored separately?)
     - gracefully degrade when the term size if too small instead of dying.
+
+
+RELEASE
+    1. Make sure you comment out the debug flags in Makefile.
+    2. Export all files.
+    3. Rename folder to mdp-X.Y
+    4. tar zcvf mdp-X.Y.tar.gz mdp-X.Y
 
 
 AUTHORS/LICENSE
