@@ -57,6 +57,10 @@ SETUP
 
 
 TODO
+    - replace -c by alternate config file
+    - test suite
+    - automatically kill the editor if it lingers...
+    - add password generator
     - git and/or mercurial integration with auto push/pull and conflict
       resolution (lines stored separately?)
     - gracefully degrade when the term size if too small instead of dying.
