@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <wchar.h>
 #include <err.h>
+#include <signal.h>
 #include <curses.h>
 
 #include "config.h"
