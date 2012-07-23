@@ -53,7 +53,6 @@ extern wchar_t	 home[MAXPATHLEN];
 /* Utility functions from OpenBSD/SSH in separate files (ISC license) */
 size_t		 wcslcpy(wchar_t *, const wchar_t *, size_t);
 wchar_t		*strdelim(wchar_t **);
-size_t		 strlcpy(char *, const char *, size_t);
 
 
 /*
@@ -90,7 +89,8 @@ set_variable(wchar_t *name, wchar_t *value, int linenum)
 	/* set timeout <integer> */
 	} else if (wcscmp(name, L"timeout") == 0) {
 		if (value == NULL || *value == '\0')
-			fatal("config:%d: invalid value for timeout\n");
+			fatal("config:%d: invalid value for timeout\n",
+					linenum);
 
 		cfg_timeout = wcstoumax(value, NULL, 10);
 
@@ -256,6 +256,23 @@ config_check_paths()
 	fclose(fp);
 }
 
+
+/*
+ * Validates all the variables.
+ */
+void
+config_check_variables()
+{
+	struct stat sb;
+	char mbs_path[MAXPATHLEN];
+
+	wcstombs(mbs_path, cfg_gpg_path, MAXPATHLEN);
+
+	if (stat(mbs_path, &sb) != 0)
+		err(1, "wrong gpg path (or not installed) %s", mbs_path);
+}
+
+
 /*
  * Open the file and feed each line one by one to process_config_line.
  */
@@ -283,4 +300,3 @@ config_read()
 
 	fclose(fp);
 }
-

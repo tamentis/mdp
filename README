@@ -15,6 +15,12 @@ INTRO
     with more external programs, keeping PIDs and juggling with signals, I
     rewrote the whole thing as a simple C program.
 
+REQUIREMENTS
+    You need GnuPG and a working key configured. Have a look at the following
+    URL if you have no idea what this means:
+
+        http://www.dewinter.com/gnupg_howto/english/GPGMiniHowto-3.html
+
 INSTALL
     make
     sudo make install

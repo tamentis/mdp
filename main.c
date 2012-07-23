@@ -243,6 +243,7 @@ main(int ac, char **av)
 
 	config_check_paths();
 	config_read();
+	config_check_variables();
 
 	while ((opt = getopt(ac, av, "ecr")) != -1) {
 		switch (opt) {
