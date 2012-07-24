@@ -30,6 +30,7 @@
 #include "config.h"
 #include "pager.h"
 #include "gpg.h"
+#include "lock.h"
 
 
 wchar_t	 cfg_config_path[MAXPATHLEN] = L"";
@@ -40,6 +41,7 @@ int	 cfg_timeout = 10;
 
 wchar_t	 home[MAXPATHLEN];
 wchar_t	 passwords_path[MAXPATHLEN];
+wchar_t	 lock_path[MAXPATHLEN];
 wchar_t	 editor[MAXPATHLEN];
 
 
@@ -290,7 +292,10 @@ main(int ac, char **av)
 			if (ac != 0)
 				usage();
 
+			lock_set();
 			get_results(av, mode);
+			lock_unset();
+
 			break;
 
 		default:

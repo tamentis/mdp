@@ -61,10 +61,9 @@ SETUP
 
 
 TODO
-    - test suite
+    - more tests
     - automatically kill the editor if it lingers...
     - put search terms in an input if "too many results"
-    - add a lock in ~/.mdp/lock
     - add password generator
     - git and/or mercurial integration with auto push/pull and conflict
       resolution (lines stored separately?)

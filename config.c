@@ -48,6 +48,7 @@ extern wchar_t   cfg_editor[MAXPATHLEN];
 extern int	 cfg_timeout;
 
 extern wchar_t	 passwords_path[MAXPATHLEN];
+extern wchar_t	 lock_path[MAXPATHLEN];
 extern wchar_t	 home[MAXPATHLEN];
 
 
@@ -235,11 +236,11 @@ config_check_paths()
 	wchar_t path[MAXPATHLEN];
 	char mbs_path[MAXPATHLEN];
 
-	swprintf(passwords_path, MAXPATHLEN, L"%ls/.mdp/passwords", home);
-	config_check_file(passwords_path);
-
 	swprintf(path, MAXPATHLEN, L"%ls/.mdp", home);
 	config_check_directory(path);
+
+	swprintf(passwords_path, MAXPATHLEN, L"%ls/.mdp/passwords", home);
+	config_check_file(passwords_path);
 
 	swprintf(path, MAXPATHLEN, L"%ls/.mdp/config", home);
 	config_check_file(path);
@@ -279,6 +280,8 @@ config_set_defaults()
 {
 	if (wcslen(cfg_config_path) == 0)
 		swprintf(cfg_config_path, MAXPATHLEN, L"%ls/.mdp/config", home);
+
+	swprintf(lock_path, MAXPATHLEN, L"%ls/.mdp/lock", home);
 }
 
 

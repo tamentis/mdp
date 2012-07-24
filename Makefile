@@ -1,5 +1,6 @@
 BINARY=mdp
-OBJECTS=main.o gpg.o pager.o utils.o config.o wcslcpy.o strdelim.o strlcpy.o
+OBJECTS=main.o gpg.o pager.o utils.o config.o wcslcpy.o strdelim.o strlcpy.o \
+	lock.o
 PREFIX?=/usr/local
 CC?=clang
 
@@ -16,6 +17,8 @@ main.o: main.c
 	$(CC) ${CFLAGS} -c main.c -o main.o
 config.o: config.c
 	$(CC) ${CFLAGS} -c config.c -o config.o
+lock.o: lock.c
+	$(CC) ${CFLAGS} -c lock.c -o lock.o
 gpg.o: gpg.c
 	$(CC) ${CFLAGS} -c gpg.c -o gpg.o
 utils.o: utils.c
