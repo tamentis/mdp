@@ -12,14 +12,6 @@ all: ${BINARY}
 ${BINARY}: ${OBJECTS}
 	$(CC) -lncurses -o ${BINARY} ${OBJECTS}
 
-mdp_tests: main.c wcslcpy.o strdelim.o strlcpy.o test.c
-	$(CC) ${CFLAGS} -D TESTING -c main.c -o main.o
-	$(CC) ${CFLAGS} -c test.c -o test.o
-	$(CC) -ggdb -o run_tests ${OBJECTS} test.o
-
-tests: mdp_tests
-	./run_tests
-
 main.o: main.c
 	$(CC) ${CFLAGS} -c main.c -o main.o
 config.o: config.c

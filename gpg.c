@@ -109,7 +109,6 @@ gpg_encrypt(char *tmp_path)
 		snprintf(cmd_key, 128, "-r %ls", cfg_gpg_key_id);
 
 	snprintf(cmd, 4096, "%ls %s -e %s", cfg_gpg_path, cmd_key, tmp_path);
-	fprintf(stderr, "%s\n", cmd);
 	system(cmd);
 	unlink(tmp_path);
 
