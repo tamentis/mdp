@@ -70,6 +70,8 @@ TODO
     - git and/or mercurial integration with auto push/pull and conflict
       resolution (lines stored separately?)
     - configurable lock, password file, etc..
+    - store/backup automatically to S3? or maybe storage works like wal logs in
+      pg and the user can define put and get commands?
 
 
 RELEASE
