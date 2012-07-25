@@ -61,13 +61,15 @@ SETUP
 
 
 TODO
+    - shred/zero/rand the temp file after usage.
     - more tests
     - automatically kill the editor if it lingers...
     - put search terms in an input if "too many results"
     - add password generator
+    - allow for external password generation
     - git and/or mercurial integration with auto push/pull and conflict
       resolution (lines stored separately?)
-    - gracefully degrade when the term size if too small instead of dying.
+    - configurable lock, password file, etc..
 
 
 RELEASE
