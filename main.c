@@ -23,15 +23,22 @@
 #include <wchar.h>
 #include <errno.h>
 #include <err.h>
+#include <stdarg.h>
 #include <locale.h>
 #include <inttypes.h>
 
+#include "xmalloc.h"
+#include "array.h"
+#include "mdp.h"
 #include "utils.h"
 #include "config.h"
+#include "results.h"
 #include "pager.h"
+#include "query.h"
 #include "gpg.h"
 #include "lock.h"
 #include "randpass.h"
+#include "keywords.h"
 
 
 wchar_t	 cfg_config_path[MAXPATHLEN] = L"";
@@ -46,6 +53,8 @@ wchar_t	 lock_path[MAXPATHLEN];
 wchar_t	 editor[MAXPATHLEN];
 int	 password_length = 16;
 
+extern struct wlist results;
+
 
 /* Utility functions from OpenBSD/SSH in separate files (ISC license) */
 size_t		 wcslcpy(wchar_t *, const wchar_t *, size_t);
@@ -53,14 +62,6 @@ wchar_t		*strdelim(wchar_t **);
 size_t		 strlcpy(char *, const char *, size_t);
 
 void		 shutdown_curses();
-
-
-enum action_mode {
-	MODE_PAGER,
-	MODE_RAW,
-	MODE_EDIT,
-	MODE_GENERATE
-};
 
 
 /*
@@ -83,30 +84,6 @@ spawn_editor(char *path)
 
 	snprintf(s, MAXPATHLEN, "%ls \"%s\"", cfg_editor, path);
 	system(s);
-}
-
-
-/*
- * Check if the line matches all the keywords.
- */
-int
-line_matches(wchar_t *line, char **keywords)
-{
-	int matches = 1;
-	char **raw_keyword = keywords;
-	wchar_t keyword[128];
-
-	while (*raw_keyword != NULL) {
-		mbstowcs(keyword, *raw_keyword, 128);
-		if (wcscasestr((const wchar_t *)line,
-					(const wchar_t *)keyword) == NULL) {
-			matches = 0;
-			break;
-		}
-		raw_keyword++;
-	}
-
-	return matches;
 }
 
 
@@ -139,12 +116,22 @@ has_changed(char *tmp_path, uint32_t sum, uint32_t size)
 }
 
 
-void
-get_results(char **keywords, int mode)
+/*
+ * Populate the results array.
+ *
+ * In RAW mode, it will simply print the results to stdout. In PAGER mode, it
+ * will start curses and create a pager with timeout.
+ *
+ * get_results returns a MODE in which mdp will toggle to on return. This is
+ * used for example if the PAGER couldn't complete due to too many results and
+ * QUERY mode needs to be enabled.
+ */
+int
+get_results(int mode)
 {
-	int status, idx = 0, i, tmp_fd = -1;
+	int status, i, tmp_fd = -1;
 	uint32_t sum = 0, size = 0;
-	wchar_t wline[256], *results[RESULTS_MAX_LEN];
+	wchar_t wline[256];
 	char tmp_path[MAXPATHLEN], line[256];
 	FILE *fp;
 
@@ -172,29 +159,15 @@ get_results(char **keywords, int mode)
 
 		mbstowcs(wline, line, 128);
 		strip_trailing_whitespaces(wline);
-		if (line_matches(wline, keywords)) {
-			switch (mode) {
-				case MODE_PAGER:
-					if (idx < RESULTS_MAX_LEN - 1)
-						results[idx] = wcsdup(wline);
-					idx++;
-					break;
 
-				case MODE_RAW:
-					printf("%ls\n", wline);
-					break;
-
-				default:
-					break;
-			}
-		}
+		ARRAY_ADD(&results, result_new(wline));
 	}
 
 	gpg_close(fp, &status);
 
+	/*
 	switch (mode) {
 		case MODE_PAGER:
-			show_results_in_pager(idx, results);
 			break;
 
 		case MODE_EDIT:
@@ -212,6 +185,23 @@ get_results(char **keywords, int mode)
 
 		default:
 			break;
+	}
+	*/
+
+	return MODE_EXIT;
+}
+
+
+void
+print_results()
+{
+	int i;
+	struct result *result;
+
+	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
+		result = ARRAY_ITEM(&results, i);
+		if (result->status == RESULT_SHOW)
+			printf("%ls\n", result->value);
 	}
 }
 
@@ -260,8 +250,11 @@ main(int ac, char **av)
 	t = getenv("EDITOR");
 	mbstowcs(editor, t, MAXPATHLEN);
 
-	while ((opt = getopt(ac, av, "eg:rc:")) != -1) {
+	while ((opt = getopt(ac, av, "eg:qrc:")) != -1) {
 		switch (opt) {
+		case 'q':
+			mode = MODE_QUERY;
+			break;
 		case 'e':
 			mode = MODE_EDIT;
 			break;
@@ -288,20 +281,36 @@ main(int ac, char **av)
 	ac -= optind;
 	av += optind;
 
+	load_keywords_from_argv(av);
+
 	/* Decide if we use the internal pager or just dump to screen. */
-	switch (mode) {
+	while (mode != MODE_EXIT) {
+		switch (mode) {
 		case MODE_RAW:
 			if (ac == 0)
 				usage();
 
-			get_results(av, mode);
+			get_results(mode);
+			filter_results();
+			print_results();
+
+			mode = MODE_EXIT;
 			break;
 
 		case MODE_PAGER:
 			if (ac == 0)
 				usage();
 
-			get_results(av, mode);
+			get_results(mode);
+			filter_results();
+			pager();
+
+			mode = MODE_EXIT;
+			break;
+
+		case MODE_QUERY:
+			// get_results(NULL, mode);
+			mode = query(av);
 			break;
 
 		case MODE_EDIT:
@@ -309,8 +318,11 @@ main(int ac, char **av)
 				usage();
 
 			lock_set();
-			get_results(av, mode);
+			get_results(mode);
+			filter_results();
 			lock_unset();
+
+			mode = MODE_EXIT;
 
 			break;
 
@@ -319,12 +331,14 @@ main(int ac, char **av)
 				usage();
 
 			print_four_passwords(password_length);
+			mode = MODE_EXIT;
 
 			break;
 
 		default:
 			errx(1, "unknown mode");
 			break;
+		}
 	}
 
 	return 0;

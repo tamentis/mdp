@@ -14,4 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int		 pager(void);
+
+ARRAY_DECL(kwlist, char *);
+
+void		 load_keywords_from_argv(char **);
+void		 load_keywords_from_char(char *);
+

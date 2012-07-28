@@ -38,7 +38,6 @@
 
 
 #define QUOTE		L"\""
-#define RESULTS_MAX_LEN	64
 
 
 extern wchar_t   cfg_config_path[MAXPATHLEN];

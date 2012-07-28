@@ -79,6 +79,7 @@ FAQ
 
 
 TODO
+    - array copyright
     - put search terms in an input if "too many results"
     - more tests
     - automatically kill the editor if it lingers...

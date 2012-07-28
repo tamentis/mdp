@@ -14,4 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int		 pager(void);
+#define STATUS_MESSAGE_LEN 80
+
+int		 query(char **);

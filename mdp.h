@@ -14,4 +14,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int		 pager(void);
+
+enum action_mode {
+	MODE_EXIT,
+	MODE_PAGER,
+	MODE_RAW,
+	MODE_EDIT,
+	MODE_GENERATE,
+	MODE_QUERY
+};
+

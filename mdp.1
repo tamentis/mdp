@@ -23,7 +23,7 @@
 .Nm mdp
 .Bk -words
 .Op Fl c Ar config
-.Op Fl er
+.Op Fl erq
 .Op Ar keyword ...
 .Ek
 .Sh DESCRIPTION
@@ -52,6 +52,12 @@ The options are as follows:
 Use an alternate configuration file.
 .It Fl e
 Edit your password file (decrypt and re-encrypt after the fact).
+.It Fl q
+Start
+.Nm
+in query mode instead of displaying results directly. This will avoid you
+from entering your GPG password multiple time. Query mode times out after
+a few seconds of inactivity.
 .It Fl r
 Displays the result without pager, plain terminal dump.
 .It Fl g Ar length
@@ -73,4 +79,10 @@ under ISC and BSD licenses, with copyrights from the following authors:
     Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
     Copyright (c) 2000 Markus Friedl.  All rights reserved.
     Copyright (c) 2005,2006 Damien Miller.  All rights reserved.
+
+The random password generator was mostly borrowed from apg (also BSD
+licensed), with the following copyright notice:
+
+    Copyright (c) 1999, 2000, 2001, 2002, 2003
+    Adel I. Mirzazhanov. All rights reserved
 

@@ -23,99 +23,115 @@
 #include <wchar.h>
 #include <err.h>
 #include <signal.h>
+#include <string.h>
 #include <curses.h>
 
+#include "array.h"
+#include "mdp.h"
+#include "query.h"
+#include "curses.h"
 #include "config.h"
+#include "results.h"
+#include "keywords.h"
 
 
-extern int	 cfg_timeout;
-
-int	 window_width = 0;
-int	 window_height = 0;
-WINDOW	*screen;
-
-
-/*
- * Shuts down curses.
- */
-void
-shutdown_curses()
-{
-	endwin();
-}
-
-
-/* resize - called when the terminal is resized ... */
-void
-resize(int signal)
-{
-	clear();
-	shutdown_curses();
-	errx(1, "terminal resize, exiting...");
-}
+extern int	 window_width;
+extern int	 window_height;
+extern WINDOW	*screen;
+extern char	 status_message[STATUS_MESSAGE_LEN];
+extern struct wlist results;
+extern struct wlist keywords;
 
 
 /*
- * Starts curses, obtains term size, set colors.
+ * Display all the results.
+ *
+ * This function assumes curses is initialized.
  */
 void
-init_curses()
+refresh_listing()
 {
-	struct winsize ws;
-
-	/* terminal size stuff */
-	signal(SIGWINCH, resize);
-	if (ioctl(STDIN_FILENO, TIOCGWINSZ, &ws) != -1) {
-		window_width = ws.ws_col;
-		window_height = ws.ws_row;
-	}
-
-	/* curses screen init */
-	screen = initscr();
-	noecho();
-	// cbreak();
-	curs_set(0);
-	// nodelay(screen, TRUE);
-}
-
-
-void
-show_results_in_pager(int len, wchar_t **results)
-{
-	int top_offset, left_offset, i, offset;
+	int top_offset, left_offset, i;
+	int len = results_visible_length();
+	struct result *result;
 	char line[256];
-
-	init_curses();
 
 	top_offset = (window_height - len) / 2;
 	left_offset = window_width;
 
 	if (len >= window_height || len >= RESULTS_MAX_LEN) {
-		shutdown_curses();
-		errx(1, "too many results, please refine your search");
+		wmove(screen, window_height / 2,
+				(window_width - strlen(status_message))/ 2);
+		wprintw(screen, "Too many results, please refine "
+				"your search.");
+		refresh();
+		return;
 	}
 
-	/* Find the smallest left offset to fit everything. */
-	for (i = 0; i < len; i++) {
-		offset = (window_width - wcslen(results[i])) / 2;
-		if (left_offset > offset)
-			left_offset = offset;
-	}
+	left_offset = (window_width - get_widest_result()) / 2;
 
 	/* Place the lines on screen. */
-	for (i = 0; i < len; i++) {
-		wcstombs(line, results[i], MAXPATHLEN);
+	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
+		result = ARRAY_ITEM(&results, i);
+
+		if (result->status != RESULT_SHOW)
+			continue;
+
+		wcstombs(line, result->value, MAXPATHLEN);
 		wmove(screen, top_offset, left_offset);
 		wprintw(screen, line);
 		top_offset++;
 	}
 
 	refresh();
+}
 
-	/* Wait for any keystroke or timeout. */
-	timeout(cfg_timeout * 1000);
-	getch();
+
+void
+keyword_prompt(void)
+{
+	char kw[50] = "";
+
+	curs_set(1);
+
+	wmove(screen, window_height - 1, 0);
+	wprintw(screen, "Keywords: ");
+
+	refresh();
+	echo();
+	getnstr(kw, 50);
+
+	load_keywords_from_char(kw);
+}
+
+
+/*
+ * Take a finite amount of results and show them full-screen.
+ *
+ * If the number of results is greater than the available lines on screen,
+ * display a prompt to refine the keywords.
+ */
+int
+pager()
+{
+	init_curses();
+
+	while (1) {
+		clear();
+		refresh_listing();
+
+		/* Wait for any keystroke, a slash or a timeout. */
+		if (getch() == '/') {
+			keyword_prompt();
+			filter_results();
+			continue;
+		}
+
+		break;
+	}
 
 	shutdown_curses();
+
+	return MODE_EXIT;
 }
 

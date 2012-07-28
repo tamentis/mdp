@@ -14,4 +14,58 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int		 pager(void);
+#include <sys/limits.h>
+
+#include <err.h>
+#include <errno.h>
+#include <wchar.h>
+#include <string.h>
+#include <stdarg.h>
+
+#include "xmalloc.h"
+#include "array.h"
+#include "keywords.h"
+
+
+struct kwlist keywords = ARRAY_INITIALIZER;
+
+
+void
+keywords_clear()
+{
+	int i;
+
+	for (i = 0; i < ARRAY_LENGTH(&keywords); i++)
+		xfree(ARRAY_ITEM(&keywords, i));
+
+	ARRAY_CLEAR(&keywords);
+}
+
+
+void
+load_keywords_from_argv(char **av)
+{
+	char **kw = av;
+
+	keywords_clear();
+
+	while (*kw != NULL) {
+		ARRAY_ADD(&keywords, strdup(*kw));
+		kw++;
+	}
+}
+
+
+void
+load_keywords_from_char(char *kw)
+{
+	char *p, *last;
+
+	keywords_clear();
+
+	for ((p = strtok_r(kw, " ", &last)); p;
+	    (p = strtok_r(NULL, " ", &last))) {
+		ARRAY_ADD(&keywords, strdup(p));
+	}
+}
+

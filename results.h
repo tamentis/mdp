@@ -14,4 +14,23 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int		 pager(void);
+
+struct result {
+	int status;
+	wchar_t *value;
+};
+
+enum result_status {
+	RESULT_SHOW,
+	RESULT_HIDDEN
+};
+
+ARRAY_DECL(wlist, struct result *);
+
+struct result	*result_new(wchar_t *);
+void		 result_kill(struct result *);
+wchar_t 	*get_result_value(int);
+int		 results_visible_length(void);
+int		 get_widest_result(void);
+void		 filter_results();
+

@@ -14,4 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int		 pager(void);
+void		 shutdown_curses(void);
+void		 resize(int);
+void		 init_curses(void);
