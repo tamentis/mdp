@@ -33,11 +33,15 @@ INSTALL
 USAGE
     1. Create your GPG key if you don't already have one.
     2. Setup your EDITOR variable if it's not already done.
-    3. Run "mdp -e" and add a line like such:
+    3. Pick a password from randomly generated ones (e.g. 16 chars):
+
+            mdp -g 16
+
+    4. Run "mdp -e" and add a line like such:
 
            twitter   sponge@bob.com    yHVHPnqXyx6qUuki
 
-    4. Now when you need your Twitter password, you can just type:
+    5. Now when you need your Twitter password, you can just type:
     
            mdp twitter
 
@@ -60,13 +64,24 @@ SETUP
     set timeout 2
 
 
+FAQ
+    Why not 'shred' the temporary file?
+	If you're afraid of getting your disk stolen, encrypt it. Shred only
+	gas limited use on most filesystems (due to journaling for example).
+
+    What if I don't trust 'root'?
+	You're screwed, you can't trust this machine with your valuable
+	information.
+
+    What if my server is virtualized?
+	Same answer as above, but I certainly hope you can trust your hosting
+	or IaaS provider.
+
+
 TODO
-    - shred/zero/rand the temp file after usage.
+    - put search terms in an input if "too many results"
     - more tests
     - automatically kill the editor if it lingers...
-    - put search terms in an input if "too many results"
-    - add password generator
-    - allow for external password generation
     - git and/or mercurial integration with auto push/pull and conflict
       resolution (lines stored separately?)
     - configurable lock, password file, etc..
@@ -92,4 +107,10 @@ AUTHORS/LICENSE
 	Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
 	Copyright (c) 2000 Markus Friedl.  All rights reserved.
         Copyright (c) 2005,2006 Damien Miller.  All rights reserved.
+
+    The random password generator was mostly borrowed from apg (also BSD
+    licensed), with the following copyright notice:
+
+        Copyright (c) 1999, 2000, 2001, 2002, 2003
+        Adel I. Mirzazhanov. All rights reserved
 

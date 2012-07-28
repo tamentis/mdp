@@ -31,6 +31,7 @@
 #include "pager.h"
 #include "gpg.h"
 #include "lock.h"
+#include "randpass.h"
 
 
 wchar_t	 cfg_config_path[MAXPATHLEN] = L"";
@@ -43,6 +44,7 @@ wchar_t	 home[MAXPATHLEN];
 wchar_t	 passwords_path[MAXPATHLEN];
 wchar_t	 lock_path[MAXPATHLEN];
 wchar_t	 editor[MAXPATHLEN];
+int	 password_length = 16;
 
 
 /* Utility functions from OpenBSD/SSH in separate files (ISC license) */
@@ -215,9 +217,22 @@ get_results(char **keywords, int mode)
 
 
 void
+print_four_passwords(int length)
+{
+	char password[MAX_PASSWORD_LENGTH];
+	int i;
+
+	for (i = 0; i < 4; i++) {
+		generate_password(password, length, "NCL");
+		printf("%s\n", password);
+	}
+}
+
+
+void
 usage()
 {
-	printf("usage: mdp [-ecr] [keyword ...]\n");
+	printf("usage: mdp [-ecr] [-g len] [keyword ...]\n");
 	exit(-1);
 }
 
@@ -245,13 +260,14 @@ main(int ac, char **av)
 	t = getenv("EDITOR");
 	mbstowcs(editor, t, MAXPATHLEN);
 
-	while ((opt = getopt(ac, av, "egrc:")) != -1) {
+	while ((opt = getopt(ac, av, "eg:rc:")) != -1) {
 		switch (opt) {
 		case 'e':
 			mode = MODE_EDIT;
 			break;
 		case 'g':
 			mode = MODE_GENERATE;
+			password_length = strtoumax(optarg, NULL, 10);
 			break;
 		case 'r':
 			mode = MODE_RAW;
@@ -295,6 +311,14 @@ main(int ac, char **av)
 			lock_set();
 			get_results(av, mode);
 			lock_unset();
+
+			break;
+
+		case MODE_GENERATE:
+			if (ac != 0)
+				usage();
+
+			print_four_passwords(password_length);
 
 			break;
 
