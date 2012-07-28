@@ -3,7 +3,7 @@
 # This is the sloppiest test suite in the history of software engineering. It
 # has bad coverage, it's barely functional, filled with time-driven tests. It's
 # mostly useful to test if the basics of the program are in place and working
-# when porting to other environment.
+# when porting to other environments.
 #
 
 # Simulates an editor writing four passwords.

@@ -43,7 +43,7 @@ keywords_clear()
 
 
 void
-load_keywords_from_argv(char **av)
+keywords_load_from_argv(char **av)
 {
 	char **kw = av;
 
@@ -57,7 +57,7 @@ load_keywords_from_argv(char **av)
 
 
 void
-load_keywords_from_char(char *kw)
+keywords_load_from_char(char *kw)
 {
 	char *p, *last;
 

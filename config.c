@@ -90,14 +90,14 @@ set_variable(wchar_t *name, wchar_t *value, int linenum)
 	/* set timeout <integer> */
 	} else if (wcscmp(name, L"timeout") == 0) {
 		if (value == NULL || *value == '\0')
-			fatal("config:%d: invalid value for timeout\n",
+			errx(1, "config:%d: invalid value for timeout\n",
 					linenum);
 
 		cfg_timeout = wcstoumax(value, NULL, 10);
 
 	/* ??? */
 	} else {
-		fatal("config: unknown variable for set on line %d.\n",
+		errx(1, "config: unknown variable for set on line %d.\n",
 				linenum);
 	}
 }
@@ -130,7 +130,7 @@ process_config_line(wchar_t *line, int linenum)
 	/* set varname value */
 	if (wcscmp(keyword, L"set") == 0) {
 		if ((name = strdelim(&line)) == NULL) {
-			fatal("%ls: set without variable name on line %d.\n",
+			errx(1, "%ls: set without variable name on line %d.\n",
 					cfg_config_path, linenum);
 			return -1;
 		}
@@ -139,7 +139,7 @@ process_config_line(wchar_t *line, int linenum)
 
 	/* Unknown operation... Code help us. */
 	} else {
-		fatal("%ls: unknown command on line %d.\n", cfg_config_path,
+		errx(1, "%ls: unknown command on line %d.\n", cfg_config_path,
 				linenum);
 		return -1;
 	}

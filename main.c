@@ -34,7 +34,6 @@
 #include "config.h"
 #include "results.h"
 #include "pager.h"
-#include "query.h"
 #include "gpg.h"
 #include "lock.h"
 #include "randpass.h"
@@ -281,11 +280,10 @@ main(int ac, char **av)
 	ac -= optind;
 	av += optind;
 
-	load_keywords_from_argv(av);
+	keywords_load_from_argv(av);
 
 	/* Decide if we use the internal pager or just dump to screen. */
-	while (mode != MODE_EXIT) {
-		switch (mode) {
+	switch (mode) {
 		case MODE_RAW:
 			if (ac == 0)
 				usage();
@@ -293,8 +291,6 @@ main(int ac, char **av)
 			get_results(mode);
 			filter_results();
 			print_results();
-
-			mode = MODE_EXIT;
 			break;
 
 		case MODE_PAGER:
@@ -304,13 +300,10 @@ main(int ac, char **av)
 			get_results(mode);
 			filter_results();
 			pager();
-
-			mode = MODE_EXIT;
 			break;
 
 		case MODE_QUERY:
-			// get_results(NULL, mode);
-			mode = query(av);
+			pager();
 			break;
 
 		case MODE_EDIT:
@@ -321,9 +314,6 @@ main(int ac, char **av)
 			get_results(mode);
 			filter_results();
 			lock_unset();
-
-			mode = MODE_EXIT;
-
 			break;
 
 		case MODE_GENERATE:
@@ -331,14 +321,11 @@ main(int ac, char **av)
 				usage();
 
 			print_four_passwords(password_length);
-			mode = MODE_EXIT;
-
 			break;
 
 		default:
 			errx(1, "unknown mode");
 			break;
-		}
 	}
 
 	return 0;

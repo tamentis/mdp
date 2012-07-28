@@ -28,7 +28,6 @@
 
 #include "array.h"
 #include "mdp.h"
-#include "query.h"
 #include "curses.h"
 #include "config.h"
 #include "results.h"
@@ -38,9 +37,7 @@
 extern int	 window_width;
 extern int	 window_height;
 extern WINDOW	*screen;
-extern char	 status_message[STATUS_MESSAGE_LEN];
 extern struct wlist results;
-extern struct wlist keywords;
 
 
 /*
@@ -55,19 +52,18 @@ refresh_listing()
 	int len = results_visible_length();
 	struct result *result;
 	char line[256];
-
-	top_offset = (window_height - len) / 2;
-	left_offset = window_width;
+	char refine_msg[] = "Too many results, please refine "
+			    "your search.";
 
 	if (len >= window_height || len >= RESULTS_MAX_LEN) {
 		wmove(screen, window_height / 2,
-				(window_width - strlen(status_message))/ 2);
-		wprintw(screen, "Too many results, please refine "
-				"your search.");
+				(window_width - strlen(refine_msg))/ 2);
+		wprintw(screen, refine_msg);
 		refresh();
 		return;
 	}
 
+	top_offset = (window_height - len) / 2;
 	left_offset = (window_width - get_widest_result()) / 2;
 
 	/* Place the lines on screen. */
@@ -101,7 +97,7 @@ keyword_prompt(void)
 	echo();
 	getnstr(kw, 50);
 
-	load_keywords_from_char(kw);
+	keywords_load_from_char(kw);
 }
 
 

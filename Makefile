@@ -1,6 +1,6 @@
 BINARY=mdp
 OBJECTS=main.o gpg.o pager.o utils.o config.o wcslcpy.o strdelim.o strlcpy.o \
-	lock.o randpass.o curses.o query.o xmalloc.o results.o keywords.o
+	lock.o randpass.o curses.o xmalloc.o results.o keywords.o
 PREFIX?=/usr/local
 CC?=clang
 

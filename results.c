@@ -29,6 +29,11 @@ struct wlist results = ARRAY_INITIALIZER;
 extern struct kwlist keywords;
 
 
+/*
+ * Instantiate a new result.
+ *
+ * These items won't be free'd, they will stay around until the program ends.
+ */
 struct result *
 result_new(wchar_t *value)
 {
@@ -42,22 +47,9 @@ result_new(wchar_t *value)
 }
 
 
-void
-result_kill(struct result *res)
-{
-	xfree(res->value);
-	xfree(res);
-}
-
-
-wchar_t *
-get_result_value(int idx)
-{
-	struct result *res = ARRAY_ITEM(&results, idx);
-	return res->value;
-}
-
-
+/*
+ * Count of results with visible status (RESULT_SHOW).
+ */
 int
 results_visible_length()
 {

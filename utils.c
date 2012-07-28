@@ -41,21 +41,6 @@ strip_trailing_whitespaces(wchar_t *s)
 
 
 /*
- * Emergency exit. Panic, scream, run for your life.
- */
-void
-fatal(const char *fmt,...)
-{
-        va_list args;
-
-	va_start(args, fmt);
-	vfprintf(stderr, fmt, args);
-	va_end(args);
-	exit(-1);
-}
-
-
-/*
  * Same as wcsstr but case-insensitive.
  */
 wchar_t *

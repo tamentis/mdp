@@ -66,16 +66,16 @@ SETUP
 
 FAQ
     Why not 'shred' the temporary file?
-	If you're afraid of getting your disk stolen, encrypt it. Shred only
-	gas limited use on most filesystems (due to journaling for example).
+        If you're afraid of getting your disk stolen, encrypt it. Shred only
+        gas limited use on most filesystems (due to journaling for example).
 
     What if I don't trust 'root'?
-	You're screwed, you can't trust this machine with your valuable
-	information.
+        You're screwed, you can't trust this machine with your valuable
+        information.
 
     What if my server is virtualized?
-	Same answer as above, but I certainly hope you can trust your hosting
-	or IaaS provider.
+        Same answer as above, but I certainly hope you can trust your hosting
+        or IaaS provider.
 
 
 TODO
@@ -104,9 +104,9 @@ AUTHORS/LICENSE
     A bunch of utility functions are borrowed from OpenBSD and OpenSSH, both
     under ISC and BSD licenses, with copyrights from the following authors:
 
-	Copyright (c) 2004 Ted Unangst and Todd Miller
-	Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
-	Copyright (c) 2000 Markus Friedl.  All rights reserved.
+        Copyright (c) 2004 Ted Unangst and Todd Miller
+        Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
+        Copyright (c) 2000 Markus Friedl.  All rights reserved.
         Copyright (c) 2005,2006 Damien Miller.  All rights reserved.
 
     The random password generator was mostly borrowed from apg (also BSD
@@ -114,4 +114,10 @@ AUTHORS/LICENSE
 
         Copyright (c) 1999, 2000, 2001, 2002, 2003
         Adel I. Mirzazhanov. All rights reserved
+
+    The array and xmalloc libraries are taken from tmux, with the following
+    copyright notices:
+
+        Copyright (c) 2004 Nicholas Marriott <nicm@users.sourceforge.net>
+        Copyright (c) 2006 Nicholas Marriott <nicm@users.sourceforge.net>
 

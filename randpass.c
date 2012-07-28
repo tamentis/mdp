@@ -136,7 +136,6 @@ generate_password(char *password_string, int length, char *mode)
 			}
 		}
 
-		j = 0;
 		/* Find an element with maximum weight */
 		for (j = 0; j <= 93; j++) {
 			if (random_weight[j] > max_weight) {
