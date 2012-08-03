@@ -22,7 +22,7 @@
 #define ARRAY_DECL(n, c)						\
 	struct n {							\
 		c	*list;						\
-		u_int	 num;						\
+		unsigned int	 num;						\
 		size_t	 space;						\
 	}
 
