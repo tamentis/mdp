@@ -6,12 +6,16 @@ CC?=clang
 
 CFLAGS+=-Wall --std=c99
 
-CFLAGS+=-ggdb -O1
+# Debug
+# CFLAGS+=-ggdb -O1
+
+# Linux
+# LDFLAGS+=-lbsd
 
 all: ${BINARY}
 
 ${BINARY}: ${OBJECTS}
-	$(CC) -lncurses -o ${BINARY} ${OBJECTS}
+	$(CC) -lncurses ${LDFLAGS} -o ${BINARY} ${OBJECTS}
 
 install: ${BINARY}
 	install -m 755 ${BINARY} ${PREFIX}/bin

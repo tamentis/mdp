@@ -25,7 +25,16 @@ REQUIREMENTS
         http://www.dewinter.com/gnupg_howto/english/GPGMiniHowto-3.html
 
 
-INSTALL
+LINUX
+    First install the following packages (adapt accordingly):
+
+        apt-get install libbsd0 libbsd-dev libncurses5-dev
+
+    Then you need to uncomment the Linux line in the Makefile and follow the
+    standard OSX/BSD instructions.
+
+
+BSD AND OSX INSTALL
     make
     sudo make install
 

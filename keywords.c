@@ -21,6 +21,7 @@
 #include <wchar.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdint.h>
 
 #include "xmalloc.h"
 #include "array.h"

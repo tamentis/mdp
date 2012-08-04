@@ -247,7 +247,8 @@ main(int ac, char **av)
 
 	/* Populate $EDITOR */
 	t = getenv("EDITOR");
-	mbstowcs(editor, t, MAXPATHLEN);
+	if (t != NULL)
+		mbstowcs(editor, t, MAXPATHLEN);
 
 	while ((opt = getopt(ac, av, "eg:qrc:")) != -1) {
 		switch (opt) {
