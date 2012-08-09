@@ -110,24 +110,33 @@ gpg_encrypt(char *tmp_path)
 	char mbs_passwords_path[MAXPATHLEN];
 	char mbs_passbak_path[MAXPATHLEN];
 
-	debug("gpg_encrypt");
-
 	/* Encrypt the temp file and delete it. */
 	if (wcslen(cfg_gpg_key_id) == 8)
 		snprintf(cmd_key, 128, "-r %ls", cfg_gpg_key_id);
 
 	snprintf(cmd, 4096, "%ls %s -e %s", cfg_gpg_path, cmd_key, tmp_path);
+
+	debug("gpg_encrypt system(%s)", cmd);
 	system(cmd);
-	unlink(tmp_path);
 
 	/* Backup the previous password file. */
+	wcstombs(mbs_passwords_path, passwords_path, MAXPATHLEN);
 	snprintf(mbs_passbak_path, MAXPATHLEN, "%s.bak", mbs_passwords_path);
-	link(mbs_passwords_path, mbs_passbak_path);
+	debug("gpg_encrypt backup: %s", mbs_passbak_path);
+	if (unlink(mbs_passbak_path) != 0) {
+		if (errno != ENOENT)
+			err(1, "gpg_encrypt unlink(passback_path)");
+	}
+	if (link(mbs_passwords_path, mbs_passbak_path) != 0)
+		err(1, "gpg_encrypt link(passwords_path, passback_path)");
 
 	/* Move the newly encrypted file to its new location. */
 	snprintf(new_tmp_path, MAXPATHLEN, "%s.gpg", tmp_path);
-	wcstombs(mbs_passwords_path, passwords_path, MAXPATHLEN);
-	unlink(mbs_passwords_path);
-	link(new_tmp_path, mbs_passwords_path);
-	unlink(new_tmp_path);
+
+	if (unlink(mbs_passwords_path) != 0)
+		err(1, "gpg_encrypt unlink(passwords_path)");
+	if (link(new_tmp_path, mbs_passwords_path) != 0)
+		err(1, "gpg_encrypt link(new_tmp_path, password_path)");
+	if (unlink(new_tmp_path) != 0)
+		err(1, "gpg_encrypt unlink(new_tmp_path)");
 }

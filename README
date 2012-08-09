@@ -88,7 +88,6 @@ FAQ
 
 
 TODO
-    - spawn editor from shell in order to utilize PATH resolution.
     - more tests
     - detect if gpg is not configured
     - automatically kill the editor if it lingers...

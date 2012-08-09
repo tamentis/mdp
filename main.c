@@ -177,6 +177,9 @@ get_results(int mode)
 		} else {
 			fprintf(stderr, "No changes, exiting...\n");
 		}
+
+		if (unlink(tmp_path) != 0)
+			err(1, "get_results unlink(tmp_path)");
 	}
 
 	return MODE_EXIT;
@@ -314,7 +317,6 @@ main(int ac, char **av)
 
 			lock_set();
 			get_results(mode);
-			filter_results();
 			lock_unset();
 			break;
 
