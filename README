@@ -88,6 +88,7 @@ FAQ
 
 
 TODO
+    - delete temp files with atexit
     - more tests
     - detect if gpg is not configured
     - automatically kill the editor if it lingers...

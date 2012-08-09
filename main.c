@@ -52,6 +52,7 @@ wchar_t	 passwords_path[MAXPATHLEN];
 wchar_t	 lock_path[MAXPATHLEN];
 wchar_t	 editor[MAXPATHLEN];
 int	 password_length = 16;
+char	 tmp_path[MAXPATHLEN] = "";
 
 extern struct wlist results;
 
@@ -117,6 +118,18 @@ has_changed(char *tmp_path, uint32_t sum, uint32_t size)
 }
 
 
+void
+atexit_cleanup(void)
+{
+	debug("atexit_cleanup");
+
+	if (tmp_path[0] != '\0' && unlink(tmp_path) != 0)
+		err(1, "WARNING: unable to remove '%s'", tmp_path);
+
+	lock_unset();
+}
+
+
 /*
  * Populate the results array.
  *
@@ -133,7 +146,7 @@ get_results(int mode)
 	int status, i, tmp_fd = -1;
 	uint32_t sum = 0, size = 0;
 	wchar_t wline[256];
-	char tmp_path[MAXPATHLEN], line[256];
+	char line[256];
 	FILE *fp;
 
 	fp = gpg_open();
@@ -145,6 +158,9 @@ get_results(int mode)
 		if (tmp_fd == -1)
 			err(1, "get_results mkstemp()");
 	}
+
+	if (atexit(atexit_cleanup) != 0)
+		err(1, "get_results atexit");
 
 	while (fgets(line, sizeof(line), fp)) {
 		size += strlen(line);
@@ -177,9 +193,6 @@ get_results(int mode)
 		} else {
 			fprintf(stderr, "No changes, exiting...\n");
 		}
-
-		if (unlink(tmp_path) != 0)
-			err(1, "get_results unlink(tmp_path)");
 	}
 
 	return MODE_EXIT;
@@ -317,7 +330,6 @@ main(int ac, char **av)
 
 			lock_set();
 			get_results(mode);
-			lock_unset();
 			break;
 
 		case MODE_GENERATE:
