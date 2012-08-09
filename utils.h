@@ -15,5 +15,5 @@
  */
 
 void		 strip_trailing_whitespaces(wchar_t *);
-void		 fatal(const char *fmt,...);
+int		 debug(const char *fmt,...);
 wchar_t		*wcscasestr(const wchar_t *, const wchar_t *);

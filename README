@@ -76,7 +76,7 @@ SETUP
 FAQ
     Why not 'shred' the temporary file?
         If you're afraid of getting your disk stolen, encrypt it. Shred only
-        gas limited use on most filesystems (due to journaling for example).
+        has limited use on most filesystems (due to journaling for example).
 
     What if I don't trust 'root'?
         You're screwed, you can't trust this machine with your valuable
@@ -88,9 +88,9 @@ FAQ
 
 
 TODO
-    - array copyright
-    - put search terms in an input if "too many results"
+    - spawn editor from shell in order to utilize PATH resolution.
     - more tests
+    - detect if gpg is not configured
     - automatically kill the editor if it lingers...
     - git and/or mercurial integration with auto push/pull and conflict
       resolution (lines stored separately?)

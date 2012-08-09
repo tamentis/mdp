@@ -45,6 +45,7 @@ wchar_t	 cfg_gpg_path[MAXPATHLEN] = L"/usr/bin/gpg";
 wchar_t	 cfg_gpg_key_id[MAXPATHLEN] = L"";
 wchar_t	 cfg_editor[MAXPATHLEN] = L"";
 int	 cfg_timeout = 10;
+int	 cfg_debug = 0;
 
 wchar_t	 home[MAXPATHLEN];
 wchar_t	 passwords_path[MAXPATHLEN];
@@ -65,8 +66,6 @@ void		 shutdown_curses();
 
 /*
  * Spawn the editor on a file.
- *
- * Not quite implemented...
  */
 void
 spawn_editor(char *path)
@@ -82,6 +81,9 @@ spawn_editor(char *path)
 	}
 
 	snprintf(s, MAXPATHLEN, "%ls \"%s\"", cfg_editor, path);
+
+	debug("spawn_editor: %s", s);
+
 	system(s);
 }
 
@@ -164,28 +166,18 @@ get_results(int mode)
 
 	gpg_close(fp, &status);
 
-	/*
-	switch (mode) {
-		case MODE_PAGER:
-			break;
+	if (mode == MODE_EDIT) {
+		if (close(tmp_fd) != 0)
+			err(1, "get_results close(tmp_fd)");
 
-		case MODE_EDIT:
-			if (close(tmp_fd) != 0)
-				err(1, "get_results close(tmp_fd)");
+		spawn_editor(tmp_path);
 
-			spawn_editor(tmp_path);
-
-			if (has_changed(tmp_path, sum, size)) {
-				gpg_encrypt(tmp_path);
-			} else {
-				fprintf(stderr, "No changes, exiting...\n");
-			}
-			break;
-
-		default:
-			break;
+		if (has_changed(tmp_path, sum, size)) {
+			gpg_encrypt(tmp_path);
+		} else {
+			fprintf(stderr, "No changes, exiting...\n");
+		}
 	}
-	*/
 
 	return MODE_EXIT;
 }
@@ -250,8 +242,11 @@ main(int ac, char **av)
 	if (t != NULL)
 		mbstowcs(editor, t, MAXPATHLEN);
 
-	while ((opt = getopt(ac, av, "eg:qrc:")) != -1) {
+	while ((opt = getopt(ac, av, "deg:qrc:")) != -1) {
 		switch (opt) {
+		case 'd':
+			cfg_debug = 1;
+			break;
 		case 'q':
 			mode = MODE_QUERY;
 			break;
@@ -273,6 +268,8 @@ main(int ac, char **av)
 		}
 	}
 
+	debug("read config");
+
 	config_set_defaults();
 	config_check_paths();
 	config_read();
@@ -286,6 +283,7 @@ main(int ac, char **av)
 	/* Decide if we use the internal pager or just dump to screen. */
 	switch (mode) {
 		case MODE_RAW:
+			debug("mode: MODE_RAW");
 			if (ac == 0)
 				usage();
 
@@ -295,6 +293,7 @@ main(int ac, char **av)
 			break;
 
 		case MODE_PAGER:
+			debug("mode: MODE_PAGER");
 			if (ac == 0)
 				usage();
 
@@ -304,10 +303,12 @@ main(int ac, char **av)
 			break;
 
 		case MODE_QUERY:
+			debug("mode: MODE_QUERY");
 			pager();
 			break;
 
 		case MODE_EDIT:
+			debug("mode: MODE_EDIT");
 			if (ac != 0)
 				usage();
 
@@ -318,6 +319,7 @@ main(int ac, char **av)
 			break;
 
 		case MODE_GENERATE:
+			debug("mode: MODE_GENERATE");
 			if (ac != 0)
 				usage();
 
@@ -328,6 +330,8 @@ main(int ac, char **av)
 			errx(1, "unknown mode");
 			break;
 	}
+
+	debug("normal shutdown");
 
 	return 0;
 }

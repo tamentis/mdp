@@ -14,14 +14,51 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <time.h>
 #include <stdio.h>
 #include <wchar.h>
 #include <wctype.h>
+#include <errno.h>
+#include <err.h>
 #include <stdarg.h>
 #include <stdlib.h>
 
 
 #define WHITESPACE	L" \t\r\n"
+
+
+extern int	 cfg_debug;
+
+
+/*
+ * Print to stderr if debug flag is on.
+ */
+int
+debug(const char *fmt, ...)
+{
+	va_list	ap;
+	time_t tvec;
+	struct tm *timeptr;
+	char pfmt[256], tbuf[20];
+	int i;
+
+	if (cfg_debug != 1)
+		return 0;
+
+	time(&tvec);
+	timeptr = localtime(&tvec);
+	i = strftime(tbuf, sizeof(tbuf), "%Y-%m-%d %H:%M:%S", timeptr);
+	if (i == 0)
+		errx(0, "strftime failed");
+
+	snprintf(pfmt, sizeof(pfmt), "[%s] [DEBUG] %s\n", tbuf, fmt);
+
+	va_start(ap, fmt);
+	i = vfprintf(stderr, pfmt, ap);
+	va_end(ap);
+
+	return i;
+}
 
 
 /*

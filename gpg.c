@@ -26,6 +26,8 @@
 #include <errno.h>
 #include <err.h>
 
+#include "utils.h"
+
 
 extern wchar_t	 cfg_gpg_path[MAXPATHLEN];
 extern wchar_t	 cfg_gpg_key_id[MAXPATHLEN];
@@ -42,6 +44,8 @@ gpg_open()
 
 	wcstombs(mbs_gpg_path, cfg_gpg_path, MAXPATHLEN);
 	wcstombs(mbs_passwords_path, passwords_path, MAXPATHLEN);
+
+	debug("gpg_open %s %s", mbs_gpg_path, mbs_passwords_path);
 
 	if (pipe(pout) != 0)
 		err(1, "gpg_decode pipe(pout)");
@@ -84,6 +88,8 @@ gpg_open()
 void
 gpg_close(FILE *fp, int *status)
 {
+	debug("gpg_close");
+
 	if (fclose(fp) != 0)
 		err(1, "gpg_close fclose()");
 
@@ -103,6 +109,8 @@ gpg_encrypt(char *tmp_path)
 	char new_tmp_path[MAXPATHLEN];
 	char mbs_passwords_path[MAXPATHLEN];
 	char mbs_passbak_path[MAXPATHLEN];
+
+	debug("gpg_encrypt");
 
 	/* Encrypt the temp file and delete it. */
 	if (wcslen(cfg_gpg_key_id) == 8)
