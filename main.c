@@ -86,7 +86,8 @@ spawn_editor(char *path)
 
 	debug("spawn_editor: %s", s);
 
-	system(s);
+	if (system(s) != 0)
+		err(1, "unable to spawn editor: %s", s);
 }
 
 
