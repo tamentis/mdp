@@ -23,6 +23,7 @@
 #include <wchar.h>
 #include <errno.h>
 #include <err.h>
+#include <signal.h>
 #include <stdarg.h>
 #include <locale.h>
 #include <inttypes.h>
@@ -119,7 +120,7 @@ has_changed(char *tmp_path, uint32_t sum, uint32_t size)
 
 
 void
-atexit_cleanup(void)
+cleanup(void)
 {
 	debug("atexit_cleanup");
 
@@ -127,6 +128,20 @@ atexit_cleanup(void)
 		err(1, "WARNING: unable to remove '%s'", tmp_path);
 
 	lock_unset();
+}
+
+
+void
+atexit_cleanup(void)
+{
+	cleanup();
+}
+
+
+void
+sig_cleanup(int dummy)
+{
+	cleanup();
 }
 
 
@@ -161,6 +176,9 @@ get_results(int mode)
 
 	if (atexit(atexit_cleanup) != 0)
 		err(1, "get_results atexit");
+
+	signal(SIGINT, sig_cleanup);
+	signal(SIGKILL, sig_cleanup);
 
 	while (fgets(line, sizeof(line), fp)) {
 		size += strlen(line);

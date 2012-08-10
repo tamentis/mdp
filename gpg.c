@@ -88,12 +88,19 @@ gpg_open()
 void
 gpg_close(FILE *fp, int *status)
 {
+	int x;
+
 	debug("gpg_close");
 
 	if (fclose(fp) != 0)
 		err(1, "gpg_close fclose()");
 
-	if (wait(status) == -1)
+	x = wait(status);
+
+	if (WIFSIGNALED(*status))
+		errx(1, "gpg_close gpg interrupted");
+
+	if (x == -1)
 		err(1, "gpg_close wait()");
 }
 
