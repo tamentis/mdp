@@ -129,6 +129,9 @@ cleanup(void)
 		err(1, "WARNING: unable to remove '%s'", tmp_path);
 
 	lock_unset();
+
+	/* Just in case we error'd out somewhere during the pager. */
+	shutdown_curses();
 }
 
 
@@ -200,6 +203,9 @@ get_results(int mode)
 	}
 
 	gpg_close(fp, &status);
+
+	if (ARRAY_LENGTH(&results) == 0)
+		errx(1, "no passwords");
 
 	if (mode == MODE_EDIT) {
 		if (close(tmp_fd) != 0)

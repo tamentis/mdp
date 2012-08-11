@@ -30,7 +30,7 @@
 
 int	 window_width = 0;
 int	 window_height = 0;
-WINDOW	*screen;
+WINDOW	*screen = NULL;
 
 extern int	 cfg_timeout;
 
@@ -41,7 +41,10 @@ extern int	 cfg_timeout;
 void
 shutdown_curses()
 {
-	endwin();
+	if (screen != NULL) {
+		clear();
+		endwin();
+	}
 }
 
 

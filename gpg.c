@@ -18,6 +18,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#include <signal.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -41,6 +42,7 @@ gpg_open()
 	char mbs_passwords_path[MAXPATHLEN];
 	int pout[2];	// {read, write}
 	FILE *fp;
+	pid_t pid;
 
 	wcstombs(mbs_gpg_path, cfg_gpg_path, MAXPATHLEN);
 	wcstombs(mbs_passwords_path, passwords_path, MAXPATHLEN);
@@ -50,7 +52,9 @@ gpg_open()
 	if (pipe(pout) != 0)
 		err(1, "gpg_decode pipe(pout)");
 
-	switch (fork()) {
+	pid = fork();
+
+	switch (pid) {
 	case -1:
 		err(1, "gpg_decode fork");
 		break;
@@ -66,6 +70,8 @@ gpg_open()
 			if (close(pout[1]))
 				err(1, "child close(pipe_out_fd[1])");
 
+		debug("gpg_open child pid: %d", getpid());
+
 		execlp(mbs_gpg_path, "-q", "--decrypt", mbs_passwords_path,
 				NULL);
 		err(1, "couldn't execute");
@@ -80,6 +86,8 @@ gpg_open()
 		err(1, "close(pout[1])");
 
 	fp = fdopen(pout[0], "r");
+
+	set_pid_timeout(pid);
 
 	return fp;
 }
@@ -102,6 +110,10 @@ gpg_close(FILE *fp, int *status)
 
 	if (x == -1)
 		err(1, "gpg_close wait()");
+
+	debug("exit status: %d", WEXITSTATUS(*status));
+
+	cancel_pid_timeout();
 }
 
 

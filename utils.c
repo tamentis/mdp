@@ -14,6 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <sys/types.h>
+
+#include <unistd.h>
 #include <time.h>
 #include <stdio.h>
 #include <wchar.h>
@@ -22,12 +25,14 @@
 #include <err.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <signal.h>
 
 
 #define WHITESPACE	L" \t\r\n"
 
 
 extern int	 cfg_debug;
+pid_t		 watcher_pid = 0;
 
 
 /*
@@ -99,3 +104,61 @@ wcscasestr(const wchar_t *s, const wchar_t *find)
 	}
 	return ((wchar_t *)s);
 }
+
+
+/*
+ * Stop the process watch timeout.
+ */
+void
+cancel_pid_timeout()
+{
+	if (watcher_pid == 0)
+		return;
+
+	debug("cancel_pid_timeout on %d", watcher_pid);
+
+	if (kill(watcher_pid, SIGINT) != 0) {
+		if (errno != ESRCH) {
+			err(1, "cancel_pid_timeout");
+		}
+	}
+
+	watcher_pid = 0;
+}
+
+
+/*
+ * Automatically kill a process after X seconds.
+ *
+ * Sets the global pid_t for the watcher process, you need to run
+ * cancel_pid_timeout once the child process is known to have completed.
+ */
+void
+set_pid_timeout(pid_t pid)
+{
+	watcher_pid = fork();
+
+	switch (watcher_pid) {
+	case -1:
+		err(1, "set_pid_timeout fork error");
+		break;
+	case 0:
+		/* Child process */
+		debug("set_pid_timeout child pid: %d", getpid());
+
+		sleep(5);
+		debug("set_pid_timeout kill: %d", pid);
+		if (kill(pid, SIGINT) != 0)
+			err(1, "set_pid_timeout child kill");
+		exit(0);
+
+		/* NOTREACHED */
+	default:
+		/* Parent process. Nopping. */
+		break;
+	}
+
+	debug("set_pid_timeout parent pid: %d (watcher pid=%d)", getpid(),
+			watcher_pid);
+}
+

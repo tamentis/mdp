@@ -63,7 +63,7 @@ SETUP
     # GnuPG absolute path (default: /usr/bin/gpg)
     set gpg_path "/usr/local/bin/gpg"
 
-    # GnuPG key id (default: none, let gpg pick a key)
+    # GnuPG key id (default: none, let gpg pick a key, prompts on edit)
     set gpg_key_id "6453194A"
 
     # Editor used in edit mode (defaults to $EDITOR or /usr/bin/vi)
@@ -88,6 +88,11 @@ FAQ
 
 
 TODO
+    - put a configurable timeout on gpg, in case it gets lost in a pipe or
+      waits on password for longer than X seconds. document it.
+    - '-a' will add a password, taking a number of strings in order of argv
+      and using a format defined in the config file, this avoids opening the
+      passwords on screen in the first place. document it.
     - more tests
     - detect if gpg is not configured
     - automatically kill the editor if it lingers...
