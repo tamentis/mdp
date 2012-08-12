@@ -12,9 +12,11 @@ MDP_VERSION="0.1"
 alias echo=/bin/echo
 
 
+# Sad default, you can try CC=clang ./configure too
 if [ -z "$CC" ]; then
 	export CC=gcc
 fi
+
 
 # generate_makefile() - Generate the main Makefile
 generate_makefile() {
@@ -33,7 +35,7 @@ generate_makefile() {
 		echo "EXTRA_OBJECTS=$X_OBJECTS"
 	fi
 
-	echo "CC?=gcc"
+	echo "CC?=$CC"
 	echo "PREFIX?=$PREFIX"
 	echo "MANDEST=$MANDEST"
 
@@ -112,8 +114,53 @@ case $OS in
 		exit
 esac
 
+
+# Default paths
 [ -z "$PREFIX" ]	&& PREFIX="/usr/local"
 [ -z "$MANDEST" ]	&& MANDEST="man"
+
+
+# Check for make
+echo -n "make... "
+cat <<EOF > fake_makefile
+all:
+	@echo found
+EOF
+if ! make -f fake_makefile 1>/dev/null 2>/dev/null; then
+	echo not found
+	exit 1
+fi
+echo found
+rm -f fake_makefile*
+
+
+# Check if we have a working cc
+echo -n "cc... "
+cat <<EOF > fake_cc.c
+#include <stdio.h>
+main() { printf("woot\n"); }
+EOF
+if ! ${CC} fake_cc.c -o /dev/null 1>/dev/null 2>/dev/null; then
+	echo not found
+	exit 1
+fi
+echo ${CC}
+rm -f fake_cc*
+
+
+# Check for curses
+echo -n "curses... "
+cat <<EOF > fake_curses.c
+#include <curses.h>
+main() { initscr(); }
+EOF
+if ! ${CC} -lcurses fake_curses.c -o /dev/null 1>/dev/null 2>/dev/null; then
+	echo not found
+	exit 1
+fi
+echo found
+rm -f fake_curses*
+
 
 generate_makefile > Makefile
 
