@@ -38,15 +38,16 @@ INSTALLATION
 USAGE
     1. Create your GPG key if you don't already have one.
     2. Setup your EDITOR variable if it's not already done.
-    3. Pick a password from randomly generated ones (e.g. 16 chars):
+    3. Create a .mdp/config file from the example (at least gpg_key_id).
+    4. Pick a password from randomly generated ones (e.g. 16 chars):
 
             mdp -g 16
 
-    4. Run "mdp -e" and add a line like such:
+    5. Run "mdp -e" and add a line like such:
 
            twitter   sponge@bob.com    yHVHPnqXyx6qUuki
 
-    5. Now when you need your Twitter password, you can just type:
+    6. Now when you need your Twitter password, you can just type:
     
            mdp twitter
 

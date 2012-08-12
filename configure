@@ -38,6 +38,7 @@ generate_makefile() {
 	echo "CC?=$CC"
 	echo "PREFIX?=$PREFIX"
 	echo "MANDEST=$MANDEST"
+	echo "CURSESLIB=$CURSESLIB"
 
 	cat Makefile.src
 }
@@ -105,6 +106,7 @@ case $OS in
 	Linux|Unix|POSIX)
 		X_CFLAGS="-D_GNU_SOURCE"
 		X_OBJECTS="arc4random.o strlcpy.o"
+		CURSESLIB="-lncurses"
 		MANDEST="share/man"
 		;;
 
@@ -126,6 +128,7 @@ esac
 
 
 # Default paths
+[ -z "$CURSESLIB" ]	&& CURSESLIB="-lcurses"
 [ -z "$PREFIX" ]	&& PREFIX="/usr/local"
 [ -z "$MANDEST" ]	&& MANDEST="man"
 
@@ -162,7 +165,7 @@ cat <<EOF > fake_curses.c
 #include <curses.h>
 main() { initscr(); }
 EOF
-if ! ${CC} -lncurses fake_curses.c -o /dev/null 1>/dev/null 2>/dev/null; then
+if ! ${CC} ${CURSESLIB} fake_curses.c -o /dev/null 1>/dev/null 2>/dev/null; then
 	stuff_not_found "No curses headers found (try to install ncurses-dev)"
 fi
 echo found
