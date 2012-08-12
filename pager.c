@@ -73,7 +73,7 @@ refresh_listing()
 		if (result->status != RESULT_SHOW)
 			continue;
 
-		wcstombs(line, result->value, MAXPATHLEN);
+		wcstombs(line, result->value, sizeof(line));
 		wmove(screen, top_offset, left_offset);
 		wprintw(screen, line);
 		top_offset++;

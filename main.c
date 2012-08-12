@@ -254,7 +254,7 @@ print_four_passwords(int length)
 void
 usage()
 {
-	printf("usage: mdp [-ecr] [-g len] [keyword ...]\n");
+	printf("usage: mdp [-ecrVh] [-g len] [keyword ...]\n");
 	exit(-1);
 }
 
@@ -283,10 +283,13 @@ main(int ac, char **av)
 	if (t != NULL)
 		mbstowcs(editor, t, MAXPATHLEN);
 
-	while ((opt = getopt(ac, av, "deg:qrc:")) != -1) {
+	while ((opt = getopt(ac, av, "hVdeg:qrc:")) != -1) {
 		switch (opt) {
 		case 'd':
 			cfg_debug = 1;
+			break;
+		case 'V':
+			mode = MODE_VERSION;
 			break;
 		case 'q':
 			mode = MODE_QUERY;
@@ -323,6 +326,10 @@ main(int ac, char **av)
 
 	/* Decide if we use the internal pager or just dump to screen. */
 	switch (mode) {
+		case MODE_VERSION:
+			printf("mdp-%s\n", MDP_VERSION);
+			break;
+
 		case MODE_RAW:
 			debug("mode: MODE_RAW");
 			if (ac == 0)

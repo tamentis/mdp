@@ -17,6 +17,7 @@
 
 enum action_mode {
 	MODE_EXIT,
+	MODE_VERSION,
 	MODE_PAGER,
 	MODE_RAW,
 	MODE_EDIT,
