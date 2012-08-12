@@ -60,6 +60,16 @@ usage() {
 }
 
 
+# stuff_not_found() - Exit 'cause we're missing something
+stuff_not_found() {
+	message="$1"
+	echo "not found"
+	echo
+	echo ERROR: $message
+	exit 2
+}
+
+
 # Command-line arguments
 while true; do
 	case "$1" in
@@ -127,8 +137,7 @@ all:
 	@echo found
 EOF
 if ! make -f fake_makefile 1>/dev/null 2>/dev/null; then
-	echo not found
-	exit 1
+	stuff_not_found "Make not found (try to install make or gmake)"
 fi
 echo found
 rm -f fake_makefile*
@@ -141,8 +150,7 @@ cat <<EOF > fake_cc.c
 main() { printf("woot\n"); }
 EOF
 if ! ${CC} fake_cc.c -o /dev/null 1>/dev/null 2>/dev/null; then
-	echo not found
-	exit 1
+	stuff_not_found "No C compiler found (try to install gcc or clang)"
 fi
 echo ${CC}
 rm -f fake_cc*
@@ -155,8 +163,7 @@ cat <<EOF > fake_curses.c
 main() { initscr(); }
 EOF
 if ! ${CC} -lcurses fake_curses.c -o /dev/null 1>/dev/null 2>/dev/null; then
-	echo not found
-	exit 1
+	stuff_not_found "No curses headers found (try to install ncurses-dev)"
 fi
 echo found
 rm -f fake_curses*
