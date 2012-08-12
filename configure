@@ -10,6 +10,8 @@ if [ -z "$CC" ]; then
 	export CC=gcc
 fi
 
+alias echo=/bin/echo
+
 
 # check_libbsd() - Check if libbsd is installed
 check_libbsd() {
@@ -94,6 +96,10 @@ generate_makefile() {
 		echo "CFLAGS+=-Wall -O2 $X_CFLAGS"
 	fi
 
+	if [ -n "$X_OBJECTS" ]; then
+		echo "EXTRA_OBJECTS=$X_OBJECTS"
+	fi
+
 	echo "CC?=gcc"
 
 	cat Makefile.src
@@ -151,8 +157,8 @@ case $OS in
 Linux|Unix|POSIX)
 	check_libbsd
 	X_CFLAGS="-DLIBBSD -D_GNU_SOURCE"
+	X_OBJECTS="arc4random.o strlcpy.o"
 	NEED_LIBBSD="Y"
-	NEED_LIBSSL="Y"
 	;;
 *BSD|Darwin)
 	;;

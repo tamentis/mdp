@@ -20,10 +20,6 @@
  *     Adel I. Mirzazhanov. All rights reserved
  */
 
-#ifdef LIBBSD
-#  include <bsd/stdlib.h>
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,6 +27,7 @@
 #include <pwd.h>
 #include <unistd.h>
 
+#include "arc4random.h"
 #include "randpass.h"
 
 
@@ -60,54 +57,6 @@ struct zzsym smbl[95] = {
 	{92 , S_SS}, {93 , S_SS}, {94 , S_SS}, {95 , S_SS}, {96 , S_SS},
 	{123, S_SS}, {124, S_SS}, {125, S_SS}, {126, S_SS}
 };
-
-
-#ifdef LIBBSD
-/*
- * Calculate a uniformly distributed random number less than upper_bound
- * avoiding "modulo bias".
- *
- * Uniformity is achieved by generating new random numbers until the one
- * returned is outside the range [0, 2**32 % upper_bound).  This
- * guarantees the selected random number will be inside
- * [2**32 % upper_bound, 2**32) which maps back to [0, upper_bound)
- * after reduction modulo upper_bound.
- */
-u_int32_t
-arc4random_uniform(u_int32_t upper_bound)
-{
-	u_int32_t r, min;
-
-	if (upper_bound < 2)
-		return 0;
-
-#if (ULONG_MAX > 0xffffffffUL)
-	min = 0x100000000UL % upper_bound;
-#else
-	/* Calculate (2**32 % upper_bound) avoiding 64-bit math */
-	if (upper_bound > 0x80000000)
-		min = 1 + ~upper_bound;		/* 2**32 - upper_bound */
-	else {
-		/* (2**32 - (x * 2)) % x == 2**32 % x when x <= 2**31 */
-		min = ((0xffffffff - (upper_bound * 2)) + 1) % upper_bound;
-	}
-#endif
-
-	/*
-	 * This could theoretically loop forever but each retry has
-	 * p > 0.5 (worst case, usually far better) of selecting a
-	 * number inside the range we need, so it should rarely need
-	 * to re-roll.
-	 */
-	for (;;) {
-		r = arc4random();
-		if (r >= min)
-			break;
-	}
-
-	return r % upper_bound;
-}
-#endif /* !LIBBSD */
 
 
 int

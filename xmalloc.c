@@ -14,11 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#if LIBBSD
-#  include <bsd/stdio.h>
-#  include <bsd/string.h>
-#endif
-
 #include <sys/param.h>
 
 #include <stdio.h>

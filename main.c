@@ -28,6 +28,7 @@
 #include <locale.h>
 #include <inttypes.h>
 
+#include "curses.h"
 #include "xmalloc.h"
 #include "array.h"
 #include "mdp.h"
@@ -39,8 +40,13 @@
 #include "lock.h"
 #include "randpass.h"
 #include "keywords.h"
+#include "wcslcpy.h"
 
 
+
+/*
+ * Global variables (extern'd in various files)
+ */
 wchar_t	 cfg_config_path[MAXPATHLEN] = L"";
 wchar_t	 cfg_gpg_path[MAXPATHLEN] = L"/usr/bin/gpg";
 wchar_t	 cfg_gpg_key_id[MAXPATHLEN] = L"";
@@ -56,14 +62,6 @@ int	 password_length = 16;
 char	 tmp_path[MAXPATHLEN] = "";
 
 extern struct wlist results;
-
-
-/* Utility functions from OpenBSD/SSH in separate files (ISC license) */
-size_t		 wcslcpy(wchar_t *, const wchar_t *, size_t);
-wchar_t		*strdelim(wchar_t **);
-size_t		 strlcpy(char *, const char *, size_t);
-
-void		 shutdown_curses();
 
 
 /*

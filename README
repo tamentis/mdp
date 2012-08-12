@@ -88,12 +88,14 @@ FAQ
 
 
 TODO
+    - arc4rand copyright
     - put a configurable timeout on gpg, in case it gets lost in a pipe or
       waits on password for longer than X seconds. document it.
     - '-a' will add a password, taking a number of strings in order of argv
       and using a format defined in the config file, this avoids opening the
       passwords on screen in the first place. document it.
     - more tests
+    - shouldn't need gpg to use -g
     - detect if gpg is not configured
     - automatically kill the editor if it lingers...
     - git and/or mercurial integration with auto push/pull and conflict
@@ -121,8 +123,9 @@ AUTHORS/LICENSE
         Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
         Copyright (c) 2000 Markus Friedl.  All rights reserved.
         Copyright (c) 2005,2006 Damien Miller.  All rights reserved.
+        Copyright (c) 1999,2000,2004 Damien Miller <djm@mindrot.org>
 
-    The random password generator was mostly borrowed from apg (also BSD
+    The random password generator was partly borrowed from apg (also BSD
     licensed), with the following copyright notice:
 
         Copyright (c) 1999, 2000, 2001, 2002, 2003
