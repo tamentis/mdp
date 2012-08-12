@@ -60,7 +60,7 @@ keywords_load_from_argv(char **av)
 void
 keywords_load_from_char(char *kw)
 {
-	char *p, *last;
+	char *p, *last = NULL;
 
 	keywords_clear();
 

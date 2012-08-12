@@ -136,7 +136,8 @@ gpg_encrypt(char *tmp_path)
 	snprintf(cmd, 4096, "%ls %s -e %s", cfg_gpg_path, cmd_key, tmp_path);
 
 	debug("gpg_encrypt system(%s)", cmd);
-	system(cmd);
+	if (system(cmd) != 0)
+		err(1, "gpg_encrypt system(%s)", cmd);
 
 	/* Backup the previous password file. */
 	wcstombs(mbs_passwords_path, passwords_path, MAXPATHLEN);

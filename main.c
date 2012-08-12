@@ -192,7 +192,9 @@ get_results(int mode)
 		}
 
 		if (mode == MODE_EDIT) {
-			write(tmp_fd, line, strlen(line));
+			if (write(tmp_fd, line, strlen(line)) == -1)
+				err(1, "get_results write");
+
 			continue;
 		}
 
@@ -264,7 +266,7 @@ main(int ac, char **av)
 {
 	char *t;
 	int opt, mode = MODE_PAGER;
-	extern int optind, optreset;
+	extern int optind;
 	extern char *optarg;
 
 	if (ac < 2)
