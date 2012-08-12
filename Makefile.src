@@ -9,7 +9,9 @@ ${BINARY}: ${OBJECTS}
 	$(CC) -lncurses ${LDFLAGS} -o ${BINARY} ${OBJECTS}
 
 install: ${BINARY}
+	install -d -m 755 ${PREFIX}/bin
 	install -m 755 ${BINARY} ${PREFIX}/bin
+	install -d -m 755 ${PREFIX}/${MANDEST}/man1
 	install -m 644 ${BINARY}.1 ${PREFIX}/${MANDEST}/man1
 
 mantest:
