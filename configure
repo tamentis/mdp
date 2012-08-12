@@ -35,6 +35,7 @@ generate_makefile() {
 
 	echo "CC?=gcc"
 	echo "PREFIX?=$PREFIX"
+	echo "MANDEST=$MANDEST"
 
 	cat Makefile.src
 }
@@ -92,9 +93,14 @@ case $OS in
 	Linux|Unix|POSIX)
 		X_CFLAGS="-D_GNU_SOURCE"
 		X_OBJECTS="arc4random.o strlcpy.o"
+		MANDEST="share/man"
 		;;
 
-	*BSD|Darwin)
+	*BSD)
+		;;
+
+	Darwin)
+		MANDEST="share/man"
 		;;
 
 	*)
@@ -107,6 +113,7 @@ case $OS in
 esac
 
 [ -z "$PREFIX" ]	&& PREFIX="/usr/local"
+[ -z "$MANDEST" ]	&& MANDEST="man"
 
 generate_makefile > Makefile
 
