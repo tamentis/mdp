@@ -182,7 +182,7 @@ get_results(int mode)
 	signal(SIGINT, sig_cleanup);
 	signal(SIGKILL, sig_cleanup);
 
-	while (fgets(line, sizeof(line), fp)) {
+	while (fp != NULL && fgets(line, sizeof(line), fp)) {
 		size += strlen(line);
 
 		for (i = 0; i < strlen(line); i++) {
@@ -202,10 +202,9 @@ get_results(int mode)
 		ARRAY_ADD(&results, result_new(wline));
 	}
 
-	gpg_close(fp, &status);
-
-	if (ARRAY_LENGTH(&results) == 0)
-		errx(1, "no passwords");
+	/* This happens when the password file does not exist yet. */
+	if (fp != NULL)
+		gpg_close(fp, &status);
 
 	if (mode == MODE_EDIT) {
 		if (close(tmp_fd) != 0)
@@ -218,6 +217,10 @@ get_results(int mode)
 		} else {
 			fprintf(stderr, "No changes, exiting...\n");
 		}
+	} else {
+		if (ARRAY_LENGTH(&results) == 0)
+			errx(1, "no passwords");
+
 	}
 
 	return MODE_EXIT;

@@ -14,7 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <sys/param.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 
 #include <unistd.h>
 #include <time.h>
@@ -160,5 +162,24 @@ set_pid_timeout(pid_t pid)
 
 	debug("set_pid_timeout parent pid: %d (watcher pid=%d)", getpid(),
 			watcher_pid);
+}
+
+
+/*
+ * Check if a file exists.
+ */
+int
+file_exists(char *filepath)
+{
+	struct stat sb;
+
+	if (stat(filepath, &sb) != 0) {
+		if (errno == ENOENT) {
+			return 0;
+		}
+		err(1, "file_exists()");
+	}
+
+	return 1;
 }
 

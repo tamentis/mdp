@@ -47,6 +47,11 @@ gpg_open()
 	wcstombs(mbs_gpg_path, cfg_gpg_path, MAXPATHLEN);
 	wcstombs(mbs_passwords_path, passwords_path, MAXPATHLEN);
 
+	if (!file_exists(mbs_passwords_path)) {
+		debug("gpg_open password file does not exist (yet)");
+		return NULL;
+	}
+
 	debug("gpg_open %s %s", mbs_gpg_path, mbs_passwords_path);
 
 	if (pipe(pout) != 0)
@@ -139,24 +144,36 @@ gpg_encrypt(char *tmp_path)
 	if (system(cmd) != 0)
 		err(1, "gpg_encrypt system(%s)", cmd);
 
-	/* Backup the previous password file. */
+	/* Generate the backup filename. */
 	wcstombs(mbs_passwords_path, passwords_path, MAXPATHLEN);
-	snprintf(mbs_passbak_path, MAXPATHLEN, "%s.bak", mbs_passwords_path);
-	debug("gpg_encrypt backup: %s", mbs_passbak_path);
-	if (unlink(mbs_passbak_path) != 0) {
-		if (errno != ENOENT)
-			err(1, "gpg_encrypt unlink(passback_path)");
+	snprintf(mbs_passbak_path, MAXPATHLEN, "%s.bak",
+			mbs_passwords_path);
+
+	/* Backup the previous password file. */
+	if (file_exists(mbs_passwords_path)) {
+		debug("gpg_encrypt backup: %s", mbs_passbak_path);
+
+		/* Delete the previous backup. */
+		if (unlink(mbs_passbak_path) != 0) {
+			if (errno != ENOENT)
+				err(1, "gpg_encrypt backup unlink");
+		}
+
+		/* Create a physical link. */
+		if (link(mbs_passwords_path, mbs_passbak_path) != 0)
+			err(1, "gpg_encrypt backup link");
+
+		/* Unlink the previous location, keeping only the backup. */
+		if (unlink(mbs_passwords_path) != 0)
+			err(1, "gpg_encrypt unlink(passwords_path)");
 	}
-	if (link(mbs_passwords_path, mbs_passbak_path) != 0)
-		err(1, "gpg_encrypt link(passwords_path, passback_path)");
 
 	/* Move the newly encrypted file to its new location. */
 	snprintf(new_tmp_path, MAXPATHLEN, "%s.gpg", tmp_path);
 
-	if (unlink(mbs_passwords_path) != 0)
-		err(1, "gpg_encrypt unlink(passwords_path)");
 	if (link(new_tmp_path, mbs_passwords_path) != 0)
 		err(1, "gpg_encrypt link(new_tmp_path, password_path)");
+
 	if (unlink(new_tmp_path) != 0)
 		err(1, "gpg_encrypt unlink(new_tmp_path)");
 }

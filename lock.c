@@ -15,8 +15,6 @@
  */
 
 #include <sys/param.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -25,6 +23,8 @@
 #include <errno.h>
 #include <err.h>
 
+#include "utils.h"
+
 
 extern wchar_t	 lock_path[MAXPATHLEN];
 
@@ -32,19 +32,11 @@ extern wchar_t	 lock_path[MAXPATHLEN];
 int
 lock_exists()
 {
-	struct stat sb;
 	char mbs_lock_path[MAXPATHLEN];
 
 	wcstombs(mbs_lock_path, lock_path, MAXPATHLEN);
 
-	if (stat(mbs_lock_path, &sb) != 0) {
-		if (errno == ENOENT) {
-			return 0;
-		}
-		err(1, "lock_exists()");
-	}
-
-	return 1;
+	return file_exists(mbs_lock_path);
 }
 
 
