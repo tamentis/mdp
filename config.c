@@ -14,7 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <sys/termios.h>
 #include <sys/ioctl.h>
 #include <sys/param.h>
 #include <sys/types.h>
