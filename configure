@@ -162,7 +162,7 @@ cat <<EOF > fake_curses.c
 #include <curses.h>
 main() { initscr(); }
 EOF
-if ! ${CC} -lcurses fake_curses.c -o /dev/null 1>/dev/null 2>/dev/null; then
+if ! ${CC} -lncurses fake_curses.c -o /dev/null 1>/dev/null 2>/dev/null; then
 	stuff_not_found "No curses headers found (try to install ncurses-dev)"
 fi
 echo found
