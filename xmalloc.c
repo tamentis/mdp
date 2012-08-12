@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include "xmalloc.h"
+#include "strlcpy.h"
 
 
 char *
