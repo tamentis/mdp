@@ -42,6 +42,7 @@
 extern wchar_t   cfg_config_path[MAXPATHLEN];
 extern wchar_t	 cfg_gpg_path[MAXPATHLEN];
 extern wchar_t   cfg_gpg_key_id[MAXPATHLEN];
+extern int	 cfg_gpg_timeout;
 extern wchar_t   cfg_editor[MAXPATHLEN];
 extern int	 cfg_timeout;
 
@@ -77,6 +78,14 @@ set_variable(wchar_t *name, wchar_t *value, int linenum)
 			return;
 		}
 		wcslcpy(cfg_gpg_key_id, value, MAXPATHLEN);
+
+	/* set gpg_timeout <integer> */
+	} else if (wcscmp(name, L"gpg_timeout") == 0) {
+		if (value == NULL || *value == '\0')
+			errx(1, "config:%d: invalid value for gpg_timeout\n",
+					linenum);
+
+		cfg_gpg_timeout = wcstoumax(value, NULL, 10);
 
 	/* set editor <string> */
 	} else if (wcscmp(name, L"editor") == 0) {

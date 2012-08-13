@@ -136,7 +136,7 @@ cancel_pid_timeout()
  * cancel_pid_timeout once the child process is known to have completed.
  */
 void
-set_pid_timeout(pid_t pid)
+set_pid_timeout(pid_t pid, int timeout)
 {
 	watcher_pid = fork();
 
@@ -148,8 +148,9 @@ set_pid_timeout(pid_t pid)
 		/* Child process */
 		debug("set_pid_timeout child pid: %d", getpid());
 
-		sleep(5);
+		sleep(timeout);
 		debug("set_pid_timeout kill: %d", pid);
+		fprintf(stderr, "gpg timed out, aborting\n");
 		if (kill(pid, SIGINT) != 0)
 			err(1, "set_pid_timeout child kill");
 		exit(0);

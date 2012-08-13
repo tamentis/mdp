@@ -18,5 +18,5 @@ void		 strip_trailing_whitespaces(wchar_t *);
 int		 debug(const char *fmt,...);
 wchar_t		*wcscasestr(const wchar_t *, const wchar_t *);
 void		 cancel_pid_timeout(void);
-void		 set_pid_timeout(pid_t);
+void		 set_pid_timeout(pid_t, int);
 int		 file_exists(char *);

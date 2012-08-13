@@ -67,6 +67,59 @@ Print version.
 .It Fl h
 Print usage.
 .El
+.Sh CONFIGURATION
+This is a summary of all the available configuration variables and options:
+.Bl -tag -width Ds
+.It Xo Ic set gpg_path Ar path
+.Xc
+GnuPG absolute path (default: /usr/bin/gpg)
+.Pp
+.It Ic set gpg_key_id Ar key_id
+GnuPG key id (default: none). If no key is selected, gpg will attempt to pick
+the key bound to the password file. When saving the file, you will be
+prompted to pick the encryption key. This can get quickly annoying, you're
+highly suggested to set this value.
+.Pp
+.It Ic set gpg_timeout Ar seconds
+Number of seconds to give GnuPG for password and pipe interaction. The
+default value is 10 seconds. This will kill GnuPG if you leave it on the
+password prompt or of anything blocks it while it communicates with the
+parent process.
+.Pp
+.It Ic set editor Ar path
+Path to your favorite editor. You typically don't need to set this variable
+since
+.Nm
+will use your default editor (as defined by $EDITOR). 
+.Pp
+.It Ic set timeout Ar seconds
+This variable define how long the pager will display your passwords. The
+default value is 10 seconds.
+.Nm
+will use your default editor (as defined by $EDITOR). 
+.Pp
+.Sh ENVIRONMENT
+.Bl -tag width EDITOR
+.It Ev EDITOR
+The content of this variable will be used as default editor if the
+configuration does not alter it.
+.El
+.Sh FILES
+.Bl -tag width "woot"
+.It Pa $HOME/.mdp/config
+Main configuration file for
+.Nm .
+You should seriously consider putting at least your gpg_key_id in there.
+.It Pa $HOME/.mdp/passwords
+Encrypted list of passwords.
+.It Pa $HOME/.mdp/passwords.bak
+This file is a copy of your password file, before the last edit. Only one
+copy is kept in case you with to revert your last change. You can override
+the main password file with this one to do that.
+.It Pa $HOME/.mdp/lock
+This file is created while you edit your password list to avoid two copies
+of mdp to run at the same time for the same user.
+.El
 .Sh SEE ALSO
 .Xr gpg 1 ,
 .Xr sh 1
@@ -75,24 +128,23 @@ None so far.
 .Sh AUTHORS
 mdp was written by Bertrand Janin <b@grun.gy> and is distributed under an ISC
 license (BSD compatible, OSI compatible).
-
+.Pp
 A bunch of utility functions are borrowed from OpenBSD and OpenSSH, both
 under ISC and BSD licenses, with copyrights from the following authors:
-
+.Pp
     Copyright (c) 2004 Ted Unangst and Todd Miller
     Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
     Copyright (c) 2000 Markus Friedl.  All rights reserved.
     Copyright (c) 2005,2006 Damien Miller.  All rights reserved.
-
+.Pp
 The random password generator was mostly borrowed from apg (also BSD
 licensed), with the following copyright notice:
-
+.Pp
     Copyright (c) 1999, 2000, 2001, 2002, 2003
     Adel I. Mirzazhanov. All rights reserved
-
+.Pp
 The array and xmalloc libraries are taken from tmux, with the following
 copyright notices:
-
+.Pp
     Copyright (c) 2004 Nicholas Marriott <nicm@users.sourceforge.net>
     Copyright (c) 2006 Nicholas Marriott <nicm@users.sourceforge.net>
-

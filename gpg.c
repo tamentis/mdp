@@ -32,6 +32,7 @@
 
 extern wchar_t	 cfg_gpg_path[MAXPATHLEN];
 extern wchar_t	 cfg_gpg_key_id[MAXPATHLEN];
+extern int	 cfg_gpg_timeout;
 extern wchar_t	 passwords_path[MAXPATHLEN];
 
 
@@ -92,7 +93,7 @@ gpg_open()
 
 	fp = fdopen(pout[0], "r");
 
-	set_pid_timeout(pid);
+	set_pid_timeout(pid, cfg_gpg_timeout);
 
 	return fp;
 }

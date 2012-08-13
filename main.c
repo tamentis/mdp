@@ -50,6 +50,7 @@
 wchar_t	 cfg_config_path[MAXPATHLEN] = L"";
 wchar_t	 cfg_gpg_path[MAXPATHLEN] = L"/usr/bin/gpg";
 wchar_t	 cfg_gpg_key_id[MAXPATHLEN] = L"";
+int	 cfg_gpg_timeout = 5;
 wchar_t	 cfg_editor[MAXPATHLEN] = L"";
 int	 cfg_timeout = 10;
 int	 cfg_debug = 0;

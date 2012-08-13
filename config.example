@@ -6,6 +6,10 @@ set gpg_path "/usr/local/bin/gpg"
 # GnuPG key id (default: none, let gpg pick a key)
 set gpg_key_id "6453194A"
 
+# GnuPG timeout (how soon to kill gpg if nothing happens, e.g. user forgot or
+# stuck in a pipe)
+set gpg_timeout 5
+
 # Editor used in edit mode (defaults to $EDITOR or /usr/bin/vi)
 set editor "/usr/bin/vim"
 

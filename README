@@ -85,15 +85,14 @@ FAQ
 
 
 TODO
-    - put a configurable timeout on gpg, in case it gets lost in a pipe or
-      waits on password for longer than X seconds. document it.
     - '-a' will add a password, taking a number of strings in order of argv
       and using a format defined in the config file, this avoids opening the
       passwords on screen in the first place. document it.
     - more tests
     - shouldn't need gpg to use -g
     - detect if gpg is not configured
-    - automatically kill the editor if it lingers...
+    - automatically kill the editor if it lingers. Better lose one passwords
+      than leak all of them.
     - git and/or mercurial integration with auto push/pull and conflict
       resolution (lines stored separately?)
     - configurable lock, password file, etc..
