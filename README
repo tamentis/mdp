@@ -55,7 +55,8 @@ USAGE
 SETUP
     The following options are available as configuration variables in your
     ~/.mdp/config file. All paths have to be absolute, all are optional and
-    have semi-sane defaults.
+    have semi-sane defaults. You can read the man page to get more
+    information and more options.
 
     # GnuPG absolute path (default: /usr/bin/gpg)
     set gpg_path "/usr/local/bin/gpg"
