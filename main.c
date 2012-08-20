@@ -321,7 +321,6 @@ main(int ac, char **av)
 	config_set_defaults();
 	config_check_paths();
 	config_read();
-	config_check_variables();
 
 	ac -= optind;
 	av += optind;
@@ -339,6 +338,7 @@ main(int ac, char **av)
 			if (ac == 0)
 				usage();
 
+			gpg_check();
 			get_results(mode);
 			filter_results();
 			print_results();
@@ -349,6 +349,7 @@ main(int ac, char **av)
 			if (ac == 0)
 				usage();
 
+			gpg_check();
 			get_results(mode);
 			filter_results();
 			pager();
@@ -363,6 +364,8 @@ main(int ac, char **av)
 			debug("mode: MODE_EDIT");
 			if (ac != 0)
 				usage();
+
+			gpg_check();
 
 			lock_set();
 			get_results(mode);

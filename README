@@ -86,13 +86,10 @@ FAQ
 
 
 TODO
-    - don't override password file if gpg encryption failed in any way.
     - '-a' will add a password, taking a number of strings in order of argv
       and using a format defined in the config file, this avoids opening the
       passwords on screen in the first place. document it.
     - more tests
-    - shouldn't need gpg to use -g
-    - detect if gpg is not configured
     - automatically kill the editor if it lingers. Better lose one passwords
       than leak all of them.
     - git and/or mercurial integration with auto push/pull and conflict

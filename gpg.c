@@ -16,6 +16,7 @@
 
 #include <sys/param.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 
 #include <signal.h>
@@ -36,6 +37,38 @@ extern int	 cfg_gpg_timeout;
 extern wchar_t	 passwords_path[MAXPATHLEN];
 
 
+/*
+ * Ensures gpg exists, runs and is configured.
+ */
+void
+gpg_check()
+{
+	struct stat sb;
+	char cmd[MAXPATHLEN];
+	char mbs_path[MAXPATHLEN];
+
+	wcstombs(mbs_path, cfg_gpg_path, MAXPATHLEN);
+
+	if (stat(mbs_path, &sb) != 0)
+		err(1, "gpg_check: wrong gpg path %s",
+				mbs_path);
+
+	snprintf(cmd, sizeof(cmd), "%ls --version > /dev/null", cfg_gpg_path);
+	if (system(cmd) != 0) {
+		errx(1, "gpg_check: unable to run gpg.");
+	}
+
+	snprintf(cmd, sizeof(cmd), "%ls --list-secret-keys | grep -q sec",
+			cfg_gpg_path);
+	if (system(cmd) != 0) {
+		errx(1, "gpg_check: no gpg key found, rtfm.");
+	}
+}
+
+
+/*
+ * Opens the gpg process and stream from its output.
+ */
 FILE *
 gpg_open()
 {
@@ -99,6 +132,9 @@ gpg_open()
 }
 
 
+/*
+ * Close the gpg output stream and the process.
+ */
 void
 gpg_close(FILE *fp, int *status)
 {
@@ -143,7 +179,7 @@ gpg_encrypt(char *tmp_path)
 
 	debug("gpg_encrypt system(%s)", cmd);
 	if (system(cmd) != 0)
-		err(1, "gpg_encrypt system(%s)", cmd);
+		errx(1, "gpg_encrypt system(%s) != 0", cmd);
 
 	/* Generate the backup filename. */
 	wcstombs(mbs_passwords_path, passwords_path, MAXPATHLEN);

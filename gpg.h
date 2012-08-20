@@ -17,3 +17,4 @@
 FILE 		*gpg_open(void);
 void		 gpg_close(FILE *, int *);
 void		 gpg_encrypt(char *);
+void		 gpg_check(void);

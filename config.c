@@ -266,22 +266,6 @@ config_check_paths()
 }
 
 
-/*
- * Validates all the variables.
- */
-void
-config_check_variables()
-{
-	struct stat sb;
-	char mbs_path[MAXPATHLEN];
-
-	wcstombs(mbs_path, cfg_gpg_path, MAXPATHLEN);
-
-	if (stat(mbs_path, &sb) != 0)
-		err(1, "config: wrong gpg path (or not installed) %s", mbs_path);
-}
-
-
 void
 config_set_defaults()
 {
