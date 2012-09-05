@@ -6,7 +6,7 @@ OBJECTS+=${EXTRA_OBJECTS}
 all: ${BINARY}
 
 ${BINARY}: ${OBJECTS}
-	${CC} ${CURSESLIB} ${LDFLAGS} -o ${BINARY} ${OBJECTS}
+	${CC} ${LDFLAGS} -o ${BINARY} ${OBJECTS} ${CURSESLIB} 
 
 install: ${BINARY}
 	install -d -m 755 ${PREFIX}/bin
