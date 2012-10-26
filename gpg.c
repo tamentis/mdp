@@ -210,6 +210,10 @@ gpg_encrypt(char *tmp_path)
 
 	if (link(new_tmp_path, mbs_passwords_path) != 0)
 		err(1, "gpg_encrypt link(new_tmp_path, password_path)");
+	else {
+		if(chmod(mbs_passwords_path, S_IRUSR | S_IWUSR) !=0)
+			err(1, "chmod error.");
+	}
 
 	if (unlink(new_tmp_path) != 0)
 		err(1, "gpg_encrypt unlink(new_tmp_path)");
