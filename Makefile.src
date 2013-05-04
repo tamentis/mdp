@@ -19,3 +19,6 @@ mantest:
 
 clean:
 	rm -f ${BINARY} ${OBJECTS} test.o run_tests *core
+
+test:
+	sh test.sh

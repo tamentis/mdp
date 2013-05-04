@@ -1,4 +1,9 @@
-0.1 Bertrand Janin <b@grun.gy>
+0.2 Bertrand Janin <b@janin.com> (2013-05-03)
+
+	* Fix Linux compilation (by Wu Jiang <wu@morediff.info>)
+	* Fix the file permission (by Wu Jiang <wu@morediff.info>)
+
+0.1 Bertrand Janin <b@janin.com>
 
 	* Initial C rewrite of my 10 years old shell script.
 

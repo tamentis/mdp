@@ -5,7 +5,7 @@
 #
 #
 
-MDP_VERSION="0.1"
+MDP_VERSION="0.2"
 
 
 # Some shells have shitty echos
