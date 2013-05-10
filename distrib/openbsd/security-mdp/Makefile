@@ -5,7 +5,7 @@ COMMENT=	minimalist password safe
 DISTNAME=	mdp-1.0
 CATEGORIES=	security
 
-MAINTAINER=	Bertrand Janin <b@grun.gy>
+MAINTAINER=	Bertrand Janin <b@janin.com>
 
 # BSD
 PERMIT_PACKAGE_CDROM=	Yes
