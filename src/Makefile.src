@@ -1,0 +1,11 @@
+OBJECTS=main.o gpg.o pager.o utils.o config.o wcslcpy.o strdelim.o \
+	lock.o randpass.o curses.o xmalloc.o results.o keywords.o
+OBJECTS+=${EXTRA_OBJECTS}
+
+all: ${PROG}
+
+${PROG}: ${OBJECTS}
+	${CC} ${LDFLAGS} -o ${PROG} ${OBJECTS} ${CURSESLIB} 
+
+clean:
+	rm -f ${PROG} ${OBJECTS} test.o *core
