@@ -88,6 +88,17 @@ while true; do
 			shift
 			;;
 
+		--prefix=*)
+			PREFIX="${1##--prefix=}"
+			shift
+			;;
+
+		# Skip all random long opts passed by packagers thinking this
+		# is autoconf-compatible.
+		--*)
+			shift
+			;;
+
 		*)
 			break
 			;;
