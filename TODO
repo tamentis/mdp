@@ -1,3 +1,5 @@
+Allow the user to define the character set used for randomization.
+
 '-a' will add a password, taking a number of strings in order of argv and using
 a format defined in the config file, this avoids opening the passwords on
 screen in the first place. document it.
