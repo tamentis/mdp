@@ -108,12 +108,20 @@ keyword_prompt(void)
  * display a prompt to refine the keywords.
  */
 int
-pager()
+pager(int start_with_prompt)
 {
 	init_curses();
 
 	while (1) {
 		clear();
+
+		if (start_with_prompt) {
+			start_with_prompt = 0;
+			keyword_prompt();
+			filter_results();
+			continue;
+		}
+
 		refresh_listing();
 
 		/* Wait for any keystroke, a slash or a timeout. */

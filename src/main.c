@@ -352,12 +352,14 @@ main(int ac, char **av)
 			gpg_check();
 			get_results(mode);
 			filter_results();
-			pager();
+			pager(0);
 			break;
 
 		case MODE_QUERY:
 			debug("mode: MODE_QUERY");
-			pager();
+			gpg_check();
+			get_results(mode);
+			pager(1);
 			break;
 
 		case MODE_EDIT:
