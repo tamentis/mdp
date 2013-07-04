@@ -1,6 +1,7 @@
 0.3 Bertrand Janin <b@janin.com> (....-..-..)
 
 	* Moved all source code to src/.
+	* Fix query-mode.
 
 0.2 Bertrand Janin <b@janin.com> (2013-05-03)
 
