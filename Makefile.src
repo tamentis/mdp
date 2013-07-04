@@ -1,24 +1,19 @@
-BINARY=mdp
-OBJECTS=main.o gpg.o pager.o utils.o config.o wcslcpy.o strdelim.o \
-	lock.o randpass.o curses.o xmalloc.o results.o keywords.o
-OBJECTS+=${EXTRA_OBJECTS}
+all: src/${PROG}
 
-all: ${BINARY}
+src/${PROG}:
+	cd src/ && make
 
-${BINARY}: ${OBJECTS}
-	${CC} ${LDFLAGS} -o ${BINARY} ${OBJECTS} ${CURSESLIB} 
-
-install: ${BINARY}
+install: src/${PROG}
 	install -d -m 755 ${PREFIX}/bin
-	install -m 755 ${BINARY} ${PREFIX}/bin
-	install -d -m 755 ${PREFIX}/${MANDEST}/man1
-	install -m 644 ${BINARY}.1 ${PREFIX}/${MANDEST}/man1
+	install -m 755 src/${PROG} ${PREFIX}/bin
+	install -d -m 755 ${PROG}/${MANDEST}/man1
+	install -m 644 ${PROG}.1 ${PREFIX}/${MANDEST}/man1
 
 mantest:
 	nroff -man mdp.1 | less -R
 
 clean:
-	rm -f ${BINARY} ${OBJECTS} test.o run_tests *core
+	cd src/ && make clean
 
 test:
 	sh test.sh

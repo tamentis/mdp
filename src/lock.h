@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@grun.gy>
+ * Copyright (c) 2012 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,14 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-
-enum action_mode {
-	MODE_EXIT,
-	MODE_VERSION,
-	MODE_PAGER,
-	MODE_RAW,
-	MODE_EDIT,
-	MODE_GENERATE,
-	MODE_QUERY
-};
-
+int		 lock_exists(void);
+void		 lock_set(void);
+void		 lock_unset(void);

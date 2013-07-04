@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@grun.gy>
+ * Copyright (c) 2012 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,22 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-
-struct result {
-	int status;
-	wchar_t *value;
-};
-
-enum result_status {
-	RESULT_SHOW,
-	RESULT_HIDDEN
-};
-
-ARRAY_DECL(wlist, struct result *);
-
-struct result	*result_new(wchar_t *);
-void		 result_kill(struct result *);
-int		 results_visible_length(void);
-int		 get_widest_result(void);
-void		 filter_results();
-
+void		 strip_trailing_whitespaces(wchar_t *);
+int		 debug(const char *fmt,...);
+wchar_t		*wcscasestr(const wchar_t *, const wchar_t *);
+void		 cancel_pid_timeout(void);
+void		 set_pid_timeout(pid_t, int);
+int		 file_exists(char *);
