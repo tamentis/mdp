@@ -6,7 +6,7 @@ src/${PROG}:
 install: src/${PROG}
 	install -d -m 755 ${PREFIX}/bin
 	install -m 755 src/${PROG} ${PREFIX}/bin
-	install -d -m 755 ${PROG}/${MANDEST}/man1
+	install -d -m 755 ${PREFIX}/${MANDEST}/man1
 	install -m 644 ${PROG}.1 ${PREFIX}/${MANDEST}/man1
 
 mantest:
