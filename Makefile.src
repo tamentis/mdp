@@ -10,10 +10,13 @@ install: src/${PROG}
 	install -m 644 ${PROG}.1 ${PREFIX}/${MANDEST}/man1
 
 mantest:
-	nroff -man mdp.1 | less -R
+	nroff -man ${PROG}.1 | less -R
 
 clean:
 	cd src/ && make clean
 
 test:
 	sh test.sh
+
+README: ${PROG}.1
+	nroff -c -man ${PROG}.1 | col -b > README

@@ -1,5 +1,5 @@
 .\"
-.\" Copyright (c) 2012 Bertrand Janin <b@janin.com>
+.\" Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
 .\" 
 .\" Permission to use, copy, modify, and distribute this software for any
 .\" purpose with or without fee is hereby granted, provided that the above
@@ -28,9 +28,9 @@
 .Ek
 .Sh DESCRIPTION
 .Nm
-is an acronym for "Mot de Passe", meaning "password" in French. It wraps GnuPG
-for encryption and deals with all the small details of generating, managing and
-fetching your passwords.
+is an acronym for "Mot de Passe" which means "password" in French. It wraps
+GnuPG for encryption and deals with all the small details of generating,
+managing and fetching your passwords.
 .Pp
 .Nm
 is similar to a dozen other programs. What differentiate it from others is an
@@ -67,6 +67,24 @@ Print version.
 .It Fl h
 Print usage.
 .El
+.Sh USAGE
+.Bl -tag -width Ds
+.It 1. Create your GPG key if you don't already have one.
+.It 2. Setup your EDITOR variable if it's not already done.
+.It 3. Create a .mdp/config file from the example (at least gpg_key_id).
+.It 4. Pick a password from randomly generated ones (e.g. 16 chars):
+.Bd -literal -offset indent
+mdp -g 16
+.Ed
+.It 5. Run "mdp -e" and add a line like such:
+.Bd -literal -offset indent
+twitter sponge@bob.com yHVHPnqXyx6qUuki
+.Ed
+.It 6. Now when you need your Twitter password, you can just type:
+.Bd -literal -offset indent
+mdp twitter
+.Ed
+.El
 .Sh CONFIGURATION
 This is a summary of all the available configuration variables and options:
 .Bl -tag -width Ds
@@ -97,6 +115,17 @@ This variable define how long the pager will display your passwords. The
 default value is 10 seconds.
 .Nm
 will use your default editor (as defined by $EDITOR). 
+.El
+.Sh FAQ
+.Bl -tag -width Ds
+.It Why not 'shred' the temporary file?
+If you're afraid of getting your disk stolen, encrypt it. Shred only
+has limited use on most filesystems (due to journaling for example).
+.It What if I don't trust 'root'?
+You're screwed, you can't trust this machine with your valuable information.
+.It What if my server is virtualized?
+Same answer as above, but I certainly hope you can trust your hosting
+or IaaS provider.
 .El
 .Sh ENVIRONMENT
 .Bl -tag

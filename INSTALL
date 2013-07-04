@@ -1,0 +1,26 @@
+mdp - installation notes
+========================
+
+REQUIREMENTS
+    You need GnuPG and a working key configured. Have a look at the following
+    URL if you have no idea what this means:
+
+        http://www.dewinter.com/gnupg_howto/english/GPGMiniHowto-3.html
+
+    On most Linux distribution, ncurses headers need to be installed too::
+
+        apt-get install libncurses5-dev
+
+
+INSTALLATION
+    ./configure
+    make
+    sudo make install
+
+
+RELEASE
+    1. Change the version in ``configure``.
+    2. Make sure you comment out the debug flags in Makefile.
+    3. Export all files.
+    4. Rename folder to mdp-X.Y
+    5. tar zcvf mdp-X.Y.tar.gz mdp-X.Y
