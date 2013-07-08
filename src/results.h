@@ -15,6 +15,9 @@
  */
 
 
+#define MAX_LINE_SIZE 1024
+
+
 struct result {
 	int status;
 	wchar_t *value;
