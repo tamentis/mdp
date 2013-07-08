@@ -1,6 +1,7 @@
 Warn the user when a line reaches the maximum.
 
-Allow the user to define the character set used for randomization.
+Configurable number of iterations when generating password, default number of
+chars and define the character set used in the randomization.
 
 '-a' will add a password, taking a number of strings in order of argv and using
 a format defined in the config file, this avoids opening the passwords on
