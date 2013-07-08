@@ -51,7 +51,7 @@ refresh_listing()
 	int top_offset, left_offset, i;
 	int len = results_visible_length();
 	struct result *result;
-	char line[256];
+	char line[MAX_LINE_SIZE];
 	char refine_msg[] = "Too many results, please refine "
 			    "your search.";
 

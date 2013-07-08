@@ -101,7 +101,7 @@ has_changed(char *tmp_path, uint32_t sum, uint32_t size)
 {
 	uint32_t new_size = 0, new_sum = 0;
 	FILE *fp = fopen(tmp_path, "r");
-	char line[256];
+	char line[MAX_LINE_SIZE];
 	int i;
 
 	while (fgets(line, sizeof(line), fp)) {
@@ -163,8 +163,8 @@ get_results(int mode)
 {
 	int status, i, tmp_fd = -1;
 	uint32_t sum = 0, size = 0;
-	wchar_t wline[256];
-	char line[256];
+	wchar_t wline[MAX_LINE_SIZE];
+	char line[MAX_LINE_SIZE];
 	FILE *fp;
 
 	fp = gpg_open();
@@ -197,7 +197,7 @@ get_results(int mode)
 			continue;
 		}
 
-		mbstowcs(wline, line, 128);
+		mbstowcs(wline, line, sizeof(line));
 		strip_trailing_whitespaces(wline);
 
 		ARRAY_ADD(&results, result_new(wline));

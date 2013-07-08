@@ -27,6 +27,8 @@
 #include "utils.h"
 
 
+#define MAX_LINE_SIZE 1024
+
 struct wlist results = ARRAY_INITIALIZER;
 extern struct kwlist keywords;
 

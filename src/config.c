@@ -258,7 +258,7 @@ config_check_paths()
 		return;
 
 	while (fgets(line, sizeof(line), fp)) {
-		mbstowcs(wline, line, 128);
+		mbstowcs(wline, line, sizeof(line));
 		process_config_line(wline, linenum++);
 	}
 
@@ -295,7 +295,7 @@ config_read()
 		return;
 
 	while (fgets(line, sizeof(line), fp)) {
-		mbstowcs(wline, line, 128);
+		mbstowcs(wline, line, sizeof(line));
 		process_config_line(wline, linenum++);
 	}
 

@@ -1,3 +1,5 @@
+Warn the user when a line reaches the maximum.
+
 Allow the user to define the character set used for randomization.
 
 '-a' will add a password, taking a number of strings in order of argv and using
