@@ -1,21 +1,30 @@
-Warn the user when a line reaches the maximum.
+TODO/Bugs
+=========
 
-Configurable number of iterations when generating password, default number of
-chars and define the character set used in the randomization.
+ - It looks like UTF characters in Linux systems are all fscked up. We might
+   need to compile mdp with wide-char ncurses over there.
 
-'-a' will add a password, taking a number of strings in order of argv and using
-a format defined in the config file, this avoids opening the passwords on
-screen in the first place. document it.
+ - Warn the user when a line reaches the maximum.
 
-more tests
+ - Configurable number of iterations when generating password.
+ 
+ - Configurable number of chars (-g without parameter).
+ 
+ - Configurable character set used in the randomization.
 
-automatically kill the editor if it lingers. Better lose one passwords than
-leak all of them.
+ - '-a' will add a password, taking a number of strings in order of argv and
+   using a format defined in the config file, this avoids opening the passwords
+   on screen in the first place. document it.
 
-git and/or mercurial integration with auto push/pull and conflict resolution
-(lines stored separately?)
+ - More/better tests.
 
-configurable lock, password file, etc..
+ - Automatically kill the editor if it lingers. Better lose one passwords than
+   leak all of them.
 
-store/backup automatically to S3? or maybe storage works like wal logs in pg
-and the user can define put and get commands?
+ - git and/or mercurial integration with auto push/pull and conflict resolution
+   (lines stored separately?)
+
+ - Configurable lock, password file, etc..
+
+ - Store/backup automatically to S3? or maybe storage works like wal logs in pg
+   and the user can define put and get commands?
