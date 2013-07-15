@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -44,6 +44,7 @@ extern wchar_t	 cfg_gpg_path[MAXPATHLEN];
 extern wchar_t   cfg_gpg_key_id[MAXPATHLEN];
 extern int	 cfg_gpg_timeout;
 extern wchar_t   cfg_editor[MAXPATHLEN];
+extern int	 cfg_password_count;
 extern int	 cfg_timeout;
 
 extern wchar_t	 passwords_path[MAXPATHLEN];
@@ -94,6 +95,14 @@ set_variable(wchar_t *name, wchar_t *value, int linenum)
 			return;
 		}
 		wcslcpy(cfg_editor, value, MAXPATHLEN);
+
+	/* set password_count <integer> */
+	} else if (wcscmp(name, L"password_count") == 0) {
+		if (value == NULL || *value == '\0')
+			errx(1, "config:%d: invalid value for "
+					"password_count\n", linenum);
+
+		cfg_password_count = wcstoumax(value, NULL, 10);
 
 	/* set timeout <integer> */
 	} else if (wcscmp(name, L"timeout") == 0) {

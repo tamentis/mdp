@@ -3,6 +3,7 @@
 	* Moved all source code to src/.
 	* Fix query-mode.
 	* Quadruple and unify the maximum allowable line size.
+	* Configurable count of iteration when generating passwords.
 
 0.2 Bertrand Janin <b@janin.com> (2013-05-03)
 

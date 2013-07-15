@@ -6,8 +6,6 @@ TODO/Bugs
 
  - Warn the user when a line reaches the maximum.
 
- - Configurable number of iterations when generating password.
- 
  - Configurable number of chars (-g without parameter).
  
  - Configurable character set used in the randomization.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -53,6 +53,7 @@ wchar_t	 cfg_gpg_key_id[MAXPATHLEN] = L"";
 int	 cfg_gpg_timeout = 5;
 wchar_t	 cfg_editor[MAXPATHLEN] = L"";
 int	 cfg_timeout = 10;
+int	 cfg_password_count = 4;
 int	 cfg_debug = 0;
 
 wchar_t	 home[MAXPATHLEN];
@@ -243,12 +244,12 @@ print_results()
 
 
 void
-print_four_passwords(int length)
+print_passwords(int length, int count)
 {
 	char password[MAX_PASSWORD_LENGTH];
 	int i;
 
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < count; i++) {
 		generate_password(password, length, "NCL");
 		printf("%s\n", password);
 	}
@@ -378,7 +379,7 @@ main(int ac, char **av)
 			if (ac != 0)
 				usage();
 
-			print_four_passwords(password_length);
+			print_passwords(password_length, cfg_password_count);
 			break;
 
 		default:
