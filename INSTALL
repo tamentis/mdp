@@ -7,9 +7,10 @@ REQUIREMENTS
 
         http://www.dewinter.com/gnupg_howto/english/GPGMiniHowto-3.html
 
-    On most Linux distribution, ncurses headers need to be installed too::
+    On most Linux distribution, ncurses headers and wide-char libraries
+    need to be installed too::
 
-        apt-get install libncurses5-dev
+        apt-get install libncursesw5-dev libncursesw5
 
 
 INSTALLATION

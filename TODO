@@ -1,9 +1,6 @@
 TODO/Bugs
 =========
 
- - It looks like UTF characters in Linux systems are all fscked up. We might
-   need to compile mdp with wide-char ncurses over there.
-
  - Warn the user when a line reaches the maximum.
 
  - Configurable number of chars (-g without parameter).

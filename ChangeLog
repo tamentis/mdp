@@ -4,6 +4,7 @@
 	* Fix query-mode.
 	* Quadruple and unify the maximum allowable line size.
 	* Configurable count of iteration when generating passwords.
+	* Fixed wide-char characters on Linux by compiling against ncursesw.
 
 0.2 Bertrand Janin <b@janin.com> (2013-05-03)
 

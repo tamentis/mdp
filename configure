@@ -120,7 +120,7 @@ case $OS in
 	Linux|Unix|POSIX)
 		X_CFLAGS="-D_GNU_SOURCE"
 		X_OBJECTS="arc4random.o strlcpy.o"
-		CURSESLIB="-lncurses"
+		CURSESLIB="-lncursesw"
 		MANDEST="share/man"
 		;;
 
@@ -180,7 +180,7 @@ cat <<EOF > fake_curses.c
 main() { initscr(); }
 EOF
 if ! ${CC} fake_curses.c -o /dev/null ${CURSESLIB} 1>/dev/null 2>/dev/null; then
-	stuff_not_found "No curses headers found (try to install ncurses-dev)"
+	stuff_not_found "Can't compile with curses (missing headers or library)"
 fi
 echo found
 rm -f fake_curses*
