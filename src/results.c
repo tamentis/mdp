@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -12,6 +12,9 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *
+ *
+ * This file contains all the tools to handle the result set.
  */
 
 #include <sys/types.h>
@@ -25,6 +28,9 @@
 #include "results.h"
 #include "keywords.h"
 #include "utils.h"
+
+
+#define KEYWORD_LENGTH 50
 
 
 struct wlist results = ARRAY_INITIALIZER;
@@ -75,11 +81,11 @@ int
 line_matches(const wchar_t *line)
 {
 	int i, matches = 1;
-	wchar_t kw[50];
+	wchar_t kw[KEYWORD_LENGTH];
 
 
 	for (i = 0; i < ARRAY_LENGTH(&keywords); i++) {
-		mbstowcs(kw, ARRAY_ITEM(&keywords, i), 50);
+		mbstowcs(kw, ARRAY_ITEM(&keywords, i), KEYWORD_LENGTH);
 
 		if (wcscasestr(line, (const wchar_t *)kw) == NULL) {
 			matches = 0;

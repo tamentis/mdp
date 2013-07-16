@@ -162,7 +162,7 @@ sig_cleanup(int dummy)
 int
 get_results(int mode)
 {
-	int status, i, tmp_fd = -1;
+	int status, i, tmp_fd = -1, line_count = 0;
 	uint32_t sum = 0, size = 0;
 	wchar_t wline[MAX_LINE_SIZE];
 	char line[MAX_LINE_SIZE];
@@ -185,6 +185,15 @@ get_results(int mode)
 	signal(SIGKILL, sig_cleanup);
 
 	while (fp != NULL && fgets(line, sizeof(line), fp)) {
+		line_count++;
+
+                /* One of the line may not have been read completely. */
+		if (strchr(line, '\n') == NULL) {
+			fprintf(stderr, "WARNING: Line %d is too long (max:%ld) "
+					"or does not end with a new line.",
+					line_count, sizeof(line));
+		}
+
 		size += strlen(line);
 
 		for (i = 0; i < strlen(line); i++) {
