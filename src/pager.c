@@ -33,6 +33,7 @@
 #include "array.h"
 #include "mdp.h"
 #include "curses.h"
+#include "pager.h"
 #include "config.h"
 #include "results.h"
 #include "keywords.h"
@@ -112,15 +113,15 @@ keyword_prompt(void)
  * display a prompt to refine the keywords.
  */
 int
-pager(int start_with_prompt)
+pager(enum pager_start_mode mode)
 {
 	init_curses();
 
-	while (1) {
+	for (;;) {
 		clear();
 
-		if (start_with_prompt) {
-			start_with_prompt = 0;
+		if (mode == START_WITH_PROMPT) {
+			mode = START_WITHOUT_PROMPT;
 			keyword_prompt();
 			filter_results();
 			continue;

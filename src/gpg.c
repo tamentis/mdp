@@ -139,24 +139,24 @@ gpg_open()
  * Close the gpg output stream and the process.
  */
 void
-gpg_close(FILE *fp, int *status)
+gpg_close(FILE *fp)
 {
-	int x;
+	int x, status;
 
 	debug("gpg_close");
 
 	if (fclose(fp) != 0)
 		err(1, "gpg_close fclose()");
 
-	x = wait(status);
+	x = wait(&status);
 
-	if (WIFSIGNALED(*status))
+	if (WIFSIGNALED(status))
 		errx(1, "gpg_close gpg interrupted");
 
 	if (x == -1)
 		err(1, "gpg_close wait()");
 
-	debug("exit status: %d", WEXITSTATUS(*status));
+	debug("exit status: %d", WEXITSTATUS(status));
 
 	cancel_pid_timeout();
 }

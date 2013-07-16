@@ -14,4 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-int		 pager(int);
+enum pager_start_mode {
+	START_WITH_PROMPT,
+	START_WITHOUT_PROMPT
+};
+
+int		 pager(enum pager_start_mode);

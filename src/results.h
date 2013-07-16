@@ -35,4 +35,4 @@ void		 result_kill(struct result *);
 int		 results_visible_length(void);
 int		 get_widest_result(void);
 void		 filter_results();
-
+int		 load_results();

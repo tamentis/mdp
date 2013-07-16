@@ -43,7 +43,6 @@
 #include "wcslcpy.h"
 
 
-
 /*
  * Global variables (extern'd in various files)
  */
@@ -64,6 +63,35 @@ int	 password_length = 16;
 char	 tmp_path[MAXPATHLEN] = "";
 
 extern struct wlist results;
+
+
+void
+cleanup(void)
+{
+	debug("atexit_cleanup");
+
+	if (tmp_path[0] != '\0' && unlink(tmp_path) != 0)
+		err(1, "WARNING: unable to remove '%s'", tmp_path);
+
+	lock_unset();
+
+	/* Just in case we error'd out somewhere during the pager. */
+	shutdown_curses();
+}
+
+
+void
+atexit_cleanup(void)
+{
+	cleanup();
+}
+
+
+void
+sig_cleanup(int dummy)
+{
+	cleanup();
+}
 
 
 /*
@@ -120,63 +148,20 @@ has_changed(char *tmp_path, uint32_t sum, uint32_t size)
 }
 
 
-void
-cleanup(void)
-{
-	debug("atexit_cleanup");
-
-	if (tmp_path[0] != '\0' && unlink(tmp_path) != 0)
-		err(1, "WARNING: unable to remove '%s'", tmp_path);
-
-	lock_unset();
-
-	/* Just in case we error'd out somewhere during the pager. */
-	shutdown_curses();
-}
-
-
-void
-atexit_cleanup(void)
-{
-	cleanup();
-}
-
-
-void
-sig_cleanup(int dummy)
-{
-	cleanup();
-}
-
-
 /*
- * Populate the results array.
+ * Edit the passwords.
  *
- * In RAW mode, it will simply print the results to stdout. In PAGER mode, it
- * will start curses and create a pager with timeout.
- *
- * get_results returns a MODE in which mdp will toggle to on return. This is
- * used for example if the PAGER couldn't complete due to too many results and
- * QUERY mode needs to be enabled.
+ * This function dumps all the plain-text passwords ("results") in a temporary
+ * file in your * ~/.mdp/ folder, fires your editor and save the output back
+ * to your password file.
  */
-int
-get_results(int mode)
+void
+edit_results()
 {
-	int status, i, tmp_fd = -1, line_count = 0;
+	int i, tmp_fd = -1;
+	struct result *result;
 	uint32_t sum = 0, size = 0;
-	wchar_t wline[MAX_LINE_SIZE];
 	char line[MAX_LINE_SIZE];
-	FILE *fp;
-
-	fp = gpg_open();
-
-	if (mode == MODE_EDIT) {
-		snprintf(tmp_path, MAXPATHLEN, "%ls/.mdp/tmp_edit.XXXXXXXX",
-				home);
-		tmp_fd = mkstemp(tmp_path);
-		if (tmp_fd == -1)
-			err(1, "get_results mkstemp()");
-	}
 
 	if (atexit(atexit_cleanup) != 0)
 		err(1, "get_results atexit");
@@ -184,57 +169,32 @@ get_results(int mode)
 	signal(SIGINT, sig_cleanup);
 	signal(SIGKILL, sig_cleanup);
 
-	while (fp != NULL && fgets(line, sizeof(line), fp)) {
-		line_count++;
-
-                /* One of the line may not have been read completely. */
-		if (strchr(line, '\n') == NULL) {
-			fprintf(stderr, "WARNING: Line %d is too long (max:%ld) "
-					"or does not end with a new line.",
-					line_count, sizeof(line));
-		}
-
-		size += strlen(line);
-
-		for (i = 0; i < strlen(line); i++) {
-			sum += line[i];
-		}
-
-		if (mode == MODE_EDIT) {
-			if (write(tmp_fd, line, strlen(line)) == -1)
-				err(1, "get_results write");
-
-			continue;
-		}
-
-		mbstowcs(wline, line, sizeof(line));
-		strip_trailing_whitespaces(wline);
-
-		ARRAY_ADD(&results, result_new(wline));
+	/* Create the temporary file for edit mode. */
+	snprintf(tmp_path, MAXPATHLEN, "%ls/.mdp/tmp_edit.XXXXXXXX", home);
+	tmp_fd = mkstemp(tmp_path);
+	if (tmp_fd == -1) {
+		err(1, "edit_results mkstemp()");
 	}
 
-	/* This happens when the password file does not exist yet. */
-	if (fp != NULL)
-		gpg_close(fp, &status);
+	/* Iterate over the results and dump them in this file. */
+	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
+		result = ARRAY_ITEM(&results, i);
+		wcstombs(line, result->value, sizeof(line));
+		if (write(tmp_fd, line, strlen(line)) == -1)
+			err(1, "edit_results write");
+	}
 
-	if (mode == MODE_EDIT) {
-		if (close(tmp_fd) != 0)
-			err(1, "get_results close(tmp_fd)");
+	if (close(tmp_fd) != 0) {
+		err(1, "edit_results close(tmp_fd)");
+	}
 
-		spawn_editor(tmp_path);
+	spawn_editor(tmp_path);
 
-		if (has_changed(tmp_path, sum, size)) {
-			gpg_encrypt(tmp_path);
-		} else {
-			fprintf(stderr, "No changes, exiting...\n");
-		}
+	if (has_changed(tmp_path, sum, size)) {
+		gpg_encrypt(tmp_path);
 	} else {
-		if (ARRAY_LENGTH(&results) == 0)
-			errx(1, "no passwords");
-
+		fprintf(stderr, "No changes, exiting...\n");
 	}
-
-	return MODE_EXIT;
 }
 
 
@@ -349,7 +309,7 @@ main(int ac, char **av)
 				usage();
 
 			gpg_check();
-			get_results(mode);
+			load_results();
 			filter_results();
 			print_results();
 			break;
@@ -360,7 +320,7 @@ main(int ac, char **av)
 				usage();
 
 			gpg_check();
-			get_results(mode);
+			load_results();
 			filter_results();
 			pager(0);
 			break;
@@ -368,7 +328,7 @@ main(int ac, char **av)
 		case MODE_QUERY:
 			debug("mode: MODE_QUERY");
 			gpg_check();
-			get_results(mode);
+			load_results(mode);
 			pager(1);
 			break;
 
@@ -378,9 +338,9 @@ main(int ac, char **av)
 				usage();
 
 			gpg_check();
-
 			lock_set();
-			get_results(mode);
+			load_results();
+			edit_results();
 			break;
 
 		case MODE_GENERATE:
