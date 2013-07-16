@@ -62,7 +62,7 @@ refresh_listing()
 	if (len >= window_height || len >= RESULTS_MAX_LEN) {
 		wmove(screen, window_height / 2,
 				(window_width - strlen(refine_msg))/ 2);
-		wprintw(screen, refine_msg);
+		waddstr(screen, refine_msg);
 		refresh();
 		return;
 	}
@@ -79,7 +79,7 @@ refresh_listing()
 
 		wcstombs(line, result->value, sizeof(line));
 		wmove(screen, top_offset, left_offset);
-		wprintw(screen, line);
+		waddstr(screen, line);
 		top_offset++;
 	}
 
@@ -95,7 +95,7 @@ keyword_prompt(void)
 	curs_set(1);
 
 	wmove(screen, window_height - 1, 0);
-	wprintw(screen, "Keywords: ");
+	waddstr(screen, "Keywords: ");
 
 	refresh();
 	echo();
