@@ -1,7 +1,7 @@
-MDP(1)			   OpenBSD Reference Manual			MDP(1)
+MDP(1)                     OpenBSD Reference Manual                     MDP(1)
 
 NAME
-     mdp  minimalist password safe
+     mdp - minimalist password safe
 
 SYNOPSIS
      mdp [-c config] [-erq] [keyword ...]
@@ -25,22 +25,22 @@ DESCRIPTION
      The options are as follows:
 
      -c config
-	     Use an alternate configuration file.
+             Use an alternate configuration file.
 
-     -e	     Edit your password file (decrypt and re-encrypt after the fact).
+     -e      Edit your password file (decrypt and re-encrypt after the fact).
 
-     -q	     Start mdp in query mode instead of displaying results directly.
-	     This will avoid you from entering your GPG password multiple
-	     time. Query mode times out after a few seconds of inactivity.
+     -q      Start mdp in query mode instead of displaying results directly.
+             This will avoid you from entering your GPG password multiple
+             time. Query mode times out after a few seconds of inactivity.
 
-     -r	     Displays the result without pager, plain terminal dump.
+     -r      Displays the result without pager, plain terminal dump.
 
      -g length
-	     Generates 4 passwords of the given length.
+             Generates 4 passwords of the given length.
 
-     -V	     Print version.
+     -V      Print version.
 
-     -h	     Print usage.
+     -h      Print usage.
 
 USAGE
      1. Create your GPG key if you don't already have one.
@@ -51,82 +51,85 @@ USAGE
 
      4. Pick a password from randomly generated ones (e.g. 16 chars):
 
-		   mdp -g 16
+                   mdp -g 16
 
      5. Run mdp -e and add a line like such:
 
-		   twitter sponge@bob.com yHVHPnqXyx6qUuki
+                   twitter sponge@bob.com yHVHPnqXyx6qUuki
 
      6. Now when you need your Twitter password, you can just type:
 
-		   mdp twitter
+                   mdp twitter
 
 CONFIGURATION
      This is a summary of all the available configuration variables and
      options:
 
      set gpg_path path
-	     GnuPG absolute path (default: /usr/bin/gpg)
+             GnuPG absolute path (default: /usr/bin/gpg)
 
      set gpg_key_id key_id
-	     GnuPG key id (default: none). If no key is selected, gpg will
-	     attempt to pick the key bound to the password file. When saving
-	     the file, you will be prompted to pick the encryption key. This
-	     can get quickly annoying, you're highly suggested to set this
-	     value.
+             GnuPG key id (default: none). If no key is selected, gpg will
+             attempt to pick the key bound to the password file. When saving
+             the file, you will be prompted to pick the encryption key. This
+             can get quickly annoying, you're highly suggested to set this
+             value.
 
      set gpg_timeout seconds
-	     Number of seconds to give GnuPG for password and pipe
-	     interaction. The default value is 10 seconds. This will kill
-	     GnuPG if you leave it on the password prompt or of anything
-	     blocks it while it communicates with the parent process.
+             Number of seconds to give GnuPG for password and pipe
+             interaction. The default value is 10 seconds. This will kill
+             GnuPG if you leave it on the password prompt or of anything
+             blocks it while it communicates with the parent process.
 
      set editor path
-	     Path to your favorite editor. You typically don't need to set
-	     this variable since mdp will use your default editor (as defined
-	     by $EDITOR).
+             Path to your favorite editor. You typically don't need to set
+             this variable since mdp will use your default editor (as defined
+             by $EDITOR).
+
+     set password_count count
+             Define how many password to show when using -g. Default: 4.
 
      set timeout seconds
-	     This variable define how long the pager will display your
-	     passwords. The default value is 10 seconds.  mdp will use your
-	     default editor (as defined by $EDITOR).
+             This variable define how long the pager will display your
+             passwords. The default value is 10 seconds.  mdp will use your
+             default editor (as defined by $EDITOR).
 
 FAQ
      Why not 'shred' the temporary file?
-	     If you're afraid of getting your disk stolen, encrypt it. Shred
-	     only has limited use on most filesystems (due to journaling for
-	     example).
+             If you're afraid of getting your disk stolen, encrypt it. Shred
+             only has limited use on most filesystems (due to journaling for
+             example).
 
      What if I don't trust 'root'?
-	     You're screwed, you can't trust this machine with your valuable
-	     information.
+             You're screwed, you can't trust this machine with your valuable
+             information.
 
      What if my server is virtualized?
-	     Same answer as above, but I certainly hope you can trust your
-	     hosting or IaaS provider.
+             Same answer as above, but I certainly hope you can trust your
+             hosting or IaaS provider.
 
 ENVIRONMENT
-     EDITOR	      The content of this variable will be used as default
-		      editor if the configuration does not alter it.
+     EDITOR           The content of this variable will be used as default
+                      editor if the configuration does not alter it.
 
 FILES
-     $HOME/.mdp/config		       Main configuration file for mdp.	 You
-				       should seriously consider putting at
-				       least your gpg_key_id in there.
+     $HOME/.mdp/config                 Main configuration file for mdp.  You
+                                       should seriously consider putting at
+                                       least your gpg_key_id in there.
 
-     $HOME/.mdp/passwords	       Encrypted list of passwords.
+     $HOME/.mdp/passwords              Encrypted list of passwords.
 
-     $HOME/.mdp/passwords.bak	       This file is a copy of your password
-				       file, before the last edit. Only one
-				       copy is kept in case you with to revert
-				       your last change. You can override the
-				       main password file with this one to do
-				       that.
+     $HOME/.mdp/passwords.bak          This file is a copy of your password
+                                       file, before the last edit. Only one
+                                       copy is kept in case you with to revert
+                                       your last change. You can override the
+                                       main password file with this one to do
+                                       that.
 
-     $HOME/.mdp/lock		       This file is created while you edit
-				       your password list to avoid two copies
-				       of mdp to run at the same time for the
-				       same user.
+     $HOME/.mdp/lock                   This file is created while you edit
+                                       your password list to avoid two copies
+                                       of mdp to run at the same time for the
+                                       same user.
 
 SEE ALSO
      gpg(1), sh(1)
@@ -141,21 +144,21 @@ AUTHORS
      A bunch of utility functions are borrowed from OpenBSD and OpenSSH, both
      under ISC and BSD licenses, with copyrights from the following authors:
 
-	 Copyright (c) 2004 Ted Unangst and Todd Miller
-	 Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
-	 Copyright (c) 2000 Markus Friedl.  All rights reserved.
-	 Copyright (c) 2005,2006 Damien Miller.	 All rights reserved.
+         Copyright (c) 2004 Ted Unangst and Todd Miller
+         Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
+         Copyright (c) 2000 Markus Friedl.  All rights reserved.
+         Copyright (c) 2005,2006 Damien Miller.  All rights reserved.
 
      The random password generator was mostly borrowed from apg (also BSD
      licensed), with the following copyright notice:
 
-	 Copyright (c) 1999, 2000, 2001, 2002, 2003
-	 Adel I. Mirzazhanov. All rights reserved
+         Copyright (c) 1999, 2000, 2001, 2002, 2003
+         Adel I. Mirzazhanov. All rights reserved
 
      The array and xmalloc libraries are taken from tmux, with the following
      copyright notices:
 
-	 Copyright (c) 2004 Nicholas Marriott <nicm@users.sourceforge.net>
-	 Copyright (c) 2006 Nicholas Marriott <nicm@users.sourceforge.net>
+         Copyright (c) 2004 Nicholas Marriott <nicm@users.sourceforge.net>
+         Copyright (c) 2006 Nicholas Marriott <nicm@users.sourceforge.net>
 
-OpenBSD ports			 July 22, 2012			 OpenBSD ports
+OpenBSD 5.3                      July 15, 2013                     OpenBSD 5.3

@@ -19,4 +19,7 @@ test:
 	sh test.sh
 
 README: ${PROG}.1
-	nroff -c -man ${PROG}.1 | col -b > README
+	# On Linux
+	# nroff -c -man ${PROG}.1 | col -b > README
+	# On OpenBSD 5.3+
+	mandoc -Tascii mdp.1 | sed 's/.//g' > README
