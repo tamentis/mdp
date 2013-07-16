@@ -1,5 +1,3 @@
-MDP(1)                     OpenBSD Reference Manual                     MDP(1)
-
 NAME
      mdp - minimalist password safe
 
@@ -161,4 +159,3 @@ AUTHORS
          Copyright (c) 2004 Nicholas Marriott <nicm@users.sourceforge.net>
          Copyright (c) 2006 Nicholas Marriott <nicm@users.sourceforge.net>
 
-OpenBSD 5.3                      July 15, 2013                     OpenBSD 5.3
