@@ -1,6 +1,8 @@
 TODO/Bugs
 =========
 
+ - Add -E to use regex instead of plain text match.
+
  - Configurable number of chars (-g without parameter).
  
  - Configurable character set used in the randomization.
