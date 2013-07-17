@@ -21,7 +21,15 @@ INSTALLATION
 
 RELEASE
     1. Change the version in ``configure``,
-    2. Tag the new branch:
+    2. Update the distrib/ files,
+    3. Tag the new branch:
     	
         git tag -a vX.Y -m 'Releasing vX.Y'
-	git push --tags
+        git push --tags
+
+    4. Download the file from github (release section),
+    5. Sign it:
+
+        gpg --armor --detach-sig mdp-X-Y.tar.gz
+
+    6. Distribute!
