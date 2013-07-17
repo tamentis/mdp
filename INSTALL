@@ -20,8 +20,8 @@ INSTALLATION
 
 
 RELEASE
-    1. Change the version in ``configure``.
-    2. Make sure you comment out the debug flags in Makefile.
-    3. Export all files.
-    4. Rename folder to mdp-X.Y
-    5. tar zcvf mdp-X.Y.tar.gz mdp-X.Y
+    1. Change the version in ``configure``,
+    2. Tag the new branch:
+    	
+        git tag -a vX.Y -m 'Releasing vX.Y'
+	git push --tags
