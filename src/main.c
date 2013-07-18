@@ -328,7 +328,7 @@ main(int ac, char **av)
 		case MODE_QUERY:
 			debug("mode: MODE_QUERY");
 			gpg_check();
-			load_results(mode);
+			load_results();
 			pager(START_WITH_PROMPT);
 			break;
 
