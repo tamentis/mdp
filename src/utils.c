@@ -76,7 +76,7 @@ strip_trailing_whitespaces(wchar_t *s)
 {
 	int len;
 
-	for (len = wcslen(s) - 1; len > 0; len--) {
+	for (len = wcslen(s) - 1; len >= 0; len--) {
 		if (wcschr(WHITESPACE, s[len]) == NULL)
 			break;
 		s[len] = '\0';

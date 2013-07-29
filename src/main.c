@@ -182,6 +182,8 @@ edit_results()
 		wcstombs(line, result->value, sizeof(line));
 		if (write(tmp_fd, line, strlen(line)) == -1)
 			err(1, "edit_results write");
+		if (write(tmp_fd, "\n", 1) == -1)
+			err(1, "edit_results write (new-line)");
 	}
 
 	if (close(tmp_fd) != 0) {

@@ -1,6 +1,7 @@
 0.4 Bertrand Janin <b@janin.com> (....-..-..)
 
 	* Fixed compilation on openSUSE (by pbleser @ github).
+	* Fix #4 (removal of EOLs on edit).
 
 0.3 Bertrand Janin <b@janin.com> (2013-07-17)
 
