@@ -19,6 +19,12 @@ INSTALLATION
     sudo make install
 
 
+UPGRADING
+    Make sure you keep backups of your password file between upgrades:
+
+        cp -p ~/.mdp/passwords ~/.mdp/passwords.preX.Y
+
+
 RELEASE
     1. Change the version in ``configure``,
     2. Tag the new branch:
