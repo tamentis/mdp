@@ -6,6 +6,9 @@
 # when porting to other environments.
 #
 
+MDP=src/mdp
+GPG=`which gpg`
+
 # Simulates an editor writing four passwords.
 if [ "$1" = "editor" ]; then
 cat > $2 << EOF
@@ -50,77 +53,93 @@ cat 2> /dev/null > test_gpg.batch <<EOF
 EOF
 
 # Create the key and grab its id
-gpg --batch --no-options --gen-key test_gpg.batch 2>/dev/null
-key_id=`gpg --list-keys 2>/dev/null | grep ^pub | sed 's/.*1024D.//;s/ .*//'`
+$GPG --batch --no-options --gen-key test_gpg.batch 2>/dev/null
+key_id=`$GPG --list-keys 2>/dev/null | grep ^pub | sed 's/.*1024D.//;s/ .*//'`
 
 # Create the config file with a fake editor
 use_config() {
 cat > test.config <<EOF
-set gpg_path "/usr/local/bin/gpg"
+set gpg_path "$GPG"
 set gpg_key_id "${key_id}"
 set editor "`pwd`/test.sh $1"
-set timeout 2
+set timeout 3
 EOF
 }
 
 
-# First run to create a few password.
-./mdp -c test.config -e 2>/dev/null
+# First run to create a few password. We test the return code of this since
+# failing to create the initial password would cause this to die.
+use_config editor
+if $MDP -c test.config -e 2>/dev/null; then
+	echo PASS
+else
+	echo FAIL
+fi
 
-echo ok
 
+# Filter on red and expect all the lines containing red in the output.
 echo -n "mdp -r red ... "
 use_config editor
-if ./mdp -c test.config -r red 2> /dev/null | diff - - << EOF
+$MDP -c test.config -r red 2> /dev/null > test.output
+if diff test.output - << EOF
 strawberry red
 raspberry red
 EOF
 then
-	echo SUCCESS
+	echo PASS
 else
 	echo FAIL
 fi
 
+
+# Filter on two keywords, berry and black.
 echo -n "mdp -r berry black ... "
 use_config editor
-if ./mdp -c test.config -r red 2> /dev/null | diff - - << EOF
+$MDP -c test.config -r berry black 2> /dev/null > test.output
+if diff test.output - << EOF
 blackberry black
 EOF
 then
-	echo SUCCESS
+	echo PASS
 else
 	echo FAIL
 fi
 
+
+# Filter on two keywords, test timeout setting (should pause for 3 seconds).
 echo -n "mdp berry black (timeout) ... "
 use_config editor
 start_ts=`date +%s`
-./mdp -c test.config red 2>/dev/null 1>/dev/null
+$MDP -c test.config red 2>/dev/null 1>/dev/null
 stop_ts=`date +%s`
 delta=$((stop_ts - start_ts))
-if [ $delta -ge 1 -o $delta -le 3 ]; then
-	echo SUCCESS
+if [ $delta -ge 2 ] || [ $delta -le 4 ]; then
+	echo PASS
 else
 	echo FAIL
 fi
 
+
+# Make sure the locks works properly (mdp returns non-0).
 echo -n "mdp -e lock test ... "
 use_config sloweditor
-./mdp -c test.config -e 2>/dev/null 1>/dev/null &
+$MDP -c test.config -e 2>/dev/null 1>/dev/null &
 sleep 0.1
 if ./mdp -c test.config -e 2>/dev/null 1>/dev/null; then
 	echo FAIL
 else
-	echo SUCCESS
+	echo PASS
 fi
 wait
 
+
+# Test the output of mdp if locked.
 echo -n "mdp -e lock test stderr ... "
 use_config sloweditor
-./mdp -c test.config -e 2>/dev/null 1>/dev/null &
-OUTPUT=`./mdp -c test.config -e 2>&1`
+$MDP -c test.config -e 2>/dev/null 1>/dev/null &
+OUTPUT=`$MDP -c test.config -e 2>&1`
 if [ "$OUTPUT" = "mdp: locked (fake_gpg_home/.mdp/lock)" ]; then
-	echo SUCCESS
+	echo PASS
 else
 	echo FAIL
 fi
@@ -128,4 +147,4 @@ wait
 
 
 # Cleanup.
-rm -rf test.config test_gpg.batch $GNUPGHOME
+rm -rf test.config test_gpg.batch test.output $GNUPGHOME
