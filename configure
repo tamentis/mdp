@@ -120,7 +120,6 @@ case $OS in
 	Linux|Unix|POSIX)
 		X_CFLAGS="-D_GNU_SOURCE"
 		X_OBJECTS="arc4random.o strlcpy.o"
-		CURSESLIB="-lncursesw"
 		MANDEST="share/man"
 		;;
 
@@ -142,7 +141,7 @@ esac
 
 
 # Default paths
-[ -z "$CURSESLIB" ]	&& CURSESLIB="-lcurses"
+[ -z "$CURSESLIB" ]	&& CURSESLIB="-lncursesw"
 [ -z "$PREFIX" ]	&& PREFIX="/usr/local"
 [ -z "$MANDEST" ]	&& MANDEST="man"
 
@@ -182,7 +181,7 @@ EOF
 if ! ${CC} fake_curses.c -o /dev/null ${CURSESLIB} 1>/dev/null 2>/dev/null; then
 	stuff_not_found "Can't compile with curses (missing headers or library)"
 fi
-echo found
+echo "found (${CURSESLIB})"
 rm -f fake_curses*
 
 

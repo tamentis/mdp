@@ -3,10 +3,6 @@ TODO/Bugs
 
  - Add an option to keep X backups of your password file.
 
- - Properly detect if the file hasn't changed.
-
- - Check for ncursesw first, if fail, check for curses (in configure script).
-
  - Add -E to use regex instead of plain text match.
 
  - Configurable number of chars (-g without parameter).
