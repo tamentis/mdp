@@ -33,28 +33,32 @@
 #include <inttypes.h>
 #include <curses.h>
 
+#include "mdp.h"
 #include "utils.h"
 
 
 #define QUOTE		L"\""
 
 
-extern wchar_t   cfg_config_path[MAXPATHLEN];
-extern wchar_t	 cfg_gpg_path[MAXPATHLEN];
-extern wchar_t   cfg_gpg_key_id[MAXPATHLEN];
-extern int	 cfg_gpg_timeout;
-extern wchar_t   cfg_editor[MAXPATHLEN];
-extern int	 cfg_password_count;
-extern int	 cfg_timeout;
+extern wchar_t  cfg_config_path[MAXPATHLEN];
+extern wchar_t	cfg_gpg_path[MAXPATHLEN];
+extern wchar_t  cfg_gpg_key_id[MAXPATHLEN];
+extern int	cfg_gpg_timeout;
+extern wchar_t  cfg_editor[MAXPATHLEN];
+extern int	cfg_password_count;
+extern int	cfg_backup;
+extern int	cfg_timeout;
 
-extern wchar_t	 passwords_path[MAXPATHLEN];
-extern wchar_t	 lock_path[MAXPATHLEN];
-extern wchar_t	 home[MAXPATHLEN];
+extern wchar_t	passwords_path[MAXPATHLEN];
+extern wchar_t	lock_path[MAXPATHLEN];
+extern wchar_t	home[MAXPATHLEN];
 
 
 /* Utility functions from OpenBSD/SSH in separate files (ISC license) */
 size_t		 wcslcpy(wchar_t *, const wchar_t *, size_t);
 wchar_t		*strdelim(wchar_t **);
+
+#define get_boolean(v) (v != NULL && *v == 'o') ? 1 : 0
 
 
 /*
@@ -111,6 +115,10 @@ set_variable(wchar_t *name, wchar_t *value, int linenum)
 					linenum);
 
 		cfg_timeout = wcstoumax(value, NULL, 10);
+
+	/* set backup <bool> */
+	} else if (wcscmp(name, L"backup") == 0) {
+		cfg_backup = get_boolean(value);
 
 	/* ??? */
 	} else {

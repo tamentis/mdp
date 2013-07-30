@@ -2,12 +2,25 @@
 #
 # This is the sloppiest test suite in the history of software engineering. It
 # has bad coverage, it's barely functional, filled with time-driven tests. It's
-# mostly useful to test if the basics of the program are in place and working
-# when porting to other environments.
+# mostly useful to test if the essential of the program are in place and
+# working when porting to other environments.
 #
 
 MDP=src/mdp
 GPG=`which gpg`
+
+
+# Return the md5 only.
+# $1 - filename
+get_md5() {
+	# Find ourself an md5 command.
+	if ! md5_command=`which md5 2>/dev/null`; then
+		md5_command=`which md5sum 2>/dev/null`
+	fi
+
+	$md5_command $1 | sed 's/.*[ \t]//g'
+}
+
 
 # Simulates an editor writing four passwords.
 if [ "$1" = "editor" ]; then
@@ -16,6 +29,17 @@ strawberry red
 raspberry red
 blackberry black
 grapefruit yellow
+EOF
+exit
+fi
+
+# Writes four other passwords.
+if [ "$1" = "alt_editor" ]; then
+cat > $2 << EOF
+tiger feline with stripes
+cat black
+dog white
+rat grey
 EOF
 exit
 fi
@@ -36,6 +60,7 @@ export HOME="$GNUPGHOME"
 rm -rf $GNUPGHOME
 mkdir -p $GNUPGHOME
 chmod 700 $GNUPGHOME
+passfile="$GNUPGHOME/.mdp/passwords"
 
 echo -n "setup... "
 
@@ -144,6 +169,45 @@ else
 	echo FAIL
 fi
 wait
+
+
+# Test the backup file.
+echo -n "test backup file ... "
+rm -f $passfile.bak
+use_config editor
+$MDP -c test.config -e 2>/dev/null 1>/dev/null
+before_md5=`get_md5 $passfile`
+if [ ! -f "$passfile.bak" ]; then
+	echo "FAIL (bak file not found)"
+else
+	use_config alt_editor
+	$MDP -c test.config -e 2>/dev/null 1>/dev/null
+	after_md5=`get_md5 $passfile`
+	bak_md5=`get_md5 $passfile.bak`
+	if [ "$after_md5" = "$before_md5" ]; then
+		echo "FAIL (unchanged)"
+	else
+		if [ "$before_md5" != "$bak_md5" ]; then
+			echo "FAIL (bak different)"
+		else
+			echo PASS
+		fi
+	fi
+fi
+
+
+# Test the lack backup file if disabled.
+echo -n "test lack of backup file ... "
+rm -f $passfile.bak
+use_config editor
+echo "set backup no" >> test.config
+$MDP -c test.config -e 2>/dev/null 1>/dev/null
+before_md5=`get_md5 $passfile`
+if [ -f "$passfile.bak" ]; then
+	echo FAIL
+else
+	echo PASS
+fi
 
 
 # Cleanup.

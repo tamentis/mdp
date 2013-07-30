@@ -24,4 +24,3 @@ enum action_mode {
 	MODE_GENERATE,
 	MODE_QUERY
 };
-

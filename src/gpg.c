@@ -37,6 +37,7 @@
 extern wchar_t	 cfg_gpg_path[MAXPATHLEN];
 extern wchar_t	 cfg_gpg_key_id[MAXPATHLEN];
 extern int	 cfg_gpg_timeout;
+extern int	 cfg_backup;
 extern wchar_t	 passwords_path[MAXPATHLEN];
 
 
@@ -190,7 +191,7 @@ gpg_encrypt(char *tmp_path)
 			mbs_passwords_path);
 
 	/* Backup the previous password file. */
-	if (file_exists(mbs_passwords_path)) {
+	if (cfg_backup && file_exists(mbs_passwords_path)) {
 		debug("gpg_encrypt backup: %s", mbs_passbak_path);
 
 		/* Delete the previous backup. */

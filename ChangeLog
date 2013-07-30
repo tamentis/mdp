@@ -2,6 +2,7 @@
 
 	* Fix detection of unchanged files.
 	* Fix creation of the initial password file.
+	* Added option to disable backup file generation.
 
 0.4 Bertrand Janin <b@janin.com> (2013-07-29)
 

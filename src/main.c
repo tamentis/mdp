@@ -43,25 +43,26 @@
 #include "wcslcpy.h"
 
 
-/*
- * Global variables (extern'd in various files)
- */
-wchar_t	 cfg_config_path[MAXPATHLEN] = L"";
-wchar_t	 cfg_gpg_path[MAXPATHLEN] = L"/usr/bin/gpg";
-wchar_t	 cfg_gpg_key_id[MAXPATHLEN] = L"";
-int	 cfg_gpg_timeout = 5;
-wchar_t	 cfg_editor[MAXPATHLEN] = L"";
-int	 cfg_timeout = 10;
-int	 cfg_password_count = 4;
-int	 cfg_debug = 0;
+/* Configuration variables with defaults (global, defined in config.c). */
+wchar_t		cfg_config_path[MAXPATHLEN] = L"";
+wchar_t		cfg_gpg_path[MAXPATHLEN] = L"/usr/bin/gpg";
+wchar_t		cfg_gpg_key_id[MAXPATHLEN] = L"";
+int		cfg_gpg_timeout = 5;
+wchar_t		cfg_editor[MAXPATHLEN] = L"";
+int		cfg_timeout = 10;
+int		cfg_password_count = 4;
+int		cfg_backup = 1;
+int		cfg_debug = 0;
 
-wchar_t	 home[MAXPATHLEN];
-wchar_t	 passwords_path[MAXPATHLEN];
-wchar_t	 lock_path[MAXPATHLEN];
-wchar_t	 editor[MAXPATHLEN];
-int	 password_length = 16;
-char	 tmp_path[MAXPATHLEN] = "";
+/* Other globals */
+wchar_t home[MAXPATHLEN];
+wchar_t passwords_path[MAXPATHLEN];
+wchar_t lock_path[MAXPATHLEN];
+wchar_t editor[MAXPATHLEN];
+int password_length = 16;
+char tmp_path[MAXPATHLEN] = "";
 
+/* Result set defined in results.c */
 extern struct wlist results;
 extern uint32_t result_sum;
 extern uint32_t result_size;
