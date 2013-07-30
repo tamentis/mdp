@@ -14,7 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-FILE 		*gpg_open(void);
+FILE 		*gpg_open();
 void		 gpg_close(FILE *);
 void		 gpg_encrypt(char *);
 void		 gpg_check(void);

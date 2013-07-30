@@ -1,3 +1,8 @@
+0.5 Bertrand Janin <b@janin.com> (....-..-..)
+
+	* Fix detection of unchanged files.
+	* Fix creation of the initial password file.
+
 0.4 Bertrand Janin <b@janin.com> (2013-07-29)
 
 	* Fixed compilation on openSUSE (by pbleser @ github).

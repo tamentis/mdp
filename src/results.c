@@ -43,6 +43,12 @@
 struct wlist results = ARRAY_INITIALIZER;
 extern struct kwlist keywords;
 
+/*
+ * This holds a sum and size of all the characters in the result set. This is
+ * used by the edit mode as a quick way to check of the file changed.
+ */
+uint32_t result_size = 0, result_sum = 0;
+
 
 /*
  * Instantiate a new result.
@@ -152,15 +158,15 @@ filter_results()
  * Populate the results array and return the number of lines.
  */
 int
-load_results()
+load_results_fp(FILE *fp)
 {
 	int i, line_count = 0;
-	uint32_t sum = 0, size = 0;
 	wchar_t wline[MAX_LINE_SIZE];
 	char line[MAX_LINE_SIZE];
-	FILE *fp;
 
-	fp = gpg_open();
+	/* Global variables used to check if the result set changed. */
+	result_sum = 0;
+	result_size = 0;
 
 	while (fp != NULL && fgets(line, sizeof(line), fp)) {
 		line_count++;
@@ -172,10 +178,10 @@ load_results()
 					line_count, sizeof(line));
 		}
 
-		size += strlen(line);
+		result_size += strlen(line);
 
 		for (i = 0; i < strlen(line); i++) {
-			sum += line[i];
+			result_sum += line[i];
 		}
 
 		mbstowcs(wline, line, sizeof(line));
@@ -184,12 +190,23 @@ load_results()
 		ARRAY_ADD(&results, result_new(wline));
 	}
 
+	return ARRAY_LENGTH(&results);
+}
+
+
+int
+load_results_gpg()
+{
+	int length;
+	FILE *fp;
+
+	fp = gpg_open();
+
+	length = load_results_fp(fp);
+
 	/* This happens when the password file does not exist yet. */
 	if (fp != NULL)
 		gpg_close(fp);
 
-	if (ARRAY_LENGTH(&results) == 0)
-		errx(1, "no passwords");
-
-	return line_count;
+	return length;
 }

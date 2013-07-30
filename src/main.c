@@ -63,6 +63,8 @@ int	 password_length = 16;
 char	 tmp_path[MAXPATHLEN] = "";
 
 extern struct wlist results;
+extern uint32_t result_sum;
+extern uint32_t result_size;
 
 
 void
@@ -126,22 +128,23 @@ spawn_editor(char *path)
  * just fine. Returns 1 if it matches.
  */
 int
-has_changed(char *tmp_path, uint32_t sum, uint32_t size)
+has_changed(char *tmp_path)
 {
-	uint32_t new_size = 0, new_sum = 0;
-	FILE *fp = fopen(tmp_path, "r");
-	char line[MAX_LINE_SIZE];
-	int i;
+	FILE *fp;
+	uint32_t previous_sum, previous_size;
 
-	while (fgets(line, sizeof(line), fp)) {
-		new_size += strlen(line);
+	/*
+	 * Keep track of the previous sum/size so we can check if anything
+	 * changed.
+	 */
+	previous_sum = result_sum;
+	previous_size = result_size;
 
-		for (i = 0; i < strlen(line); i++) {
-			new_sum += line[i];
-		}
-	}
+	fp = fopen(tmp_path, "r");
+	load_results_fp(fp);
+	fclose(fp);
 
-	if (sum != new_sum || size != new_size)
+	if (previous_sum != result_sum || previous_size != result_size)
 		return 1;
 
 	return 0;
@@ -160,7 +163,6 @@ edit_results()
 {
 	int i, tmp_fd = -1;
 	struct result *result;
-	uint32_t sum = 0, size = 0;
 	char line[MAX_LINE_SIZE];
 
 	if (atexit(atexit_cleanup) != 0)
@@ -192,7 +194,7 @@ edit_results()
 
 	spawn_editor(tmp_path);
 
-	if (has_changed(tmp_path, sum, size)) {
+	if (has_changed(tmp_path)) {
 		gpg_encrypt(tmp_path);
 	} else {
 		fprintf(stderr, "No changes, exiting...\n");
@@ -311,7 +313,8 @@ main(int ac, char **av)
 				usage();
 
 			gpg_check();
-			load_results();
+			if (load_results_gpg(NULL) == 0)
+				errx(100, "no passwords");
 			filter_results();
 			print_results();
 			break;
@@ -322,7 +325,8 @@ main(int ac, char **av)
 				usage();
 
 			gpg_check();
-			load_results();
+			if (load_results_gpg(NULL) == 0)
+				errx(100, "no passwords");
 			filter_results();
 			pager(START_WITHOUT_PROMPT);
 			break;
@@ -330,7 +334,8 @@ main(int ac, char **av)
 		case MODE_QUERY:
 			debug("mode: MODE_QUERY");
 			gpg_check();
-			load_results();
+			if (load_results_gpg(NULL) == 0)
+				errx(100, "no passwords");
 			pager(START_WITH_PROMPT);
 			break;
 
@@ -341,7 +346,7 @@ main(int ac, char **av)
 
 			gpg_check();
 			lock_set();
-			load_results();
+			load_results_gpg(NULL);
 			edit_results();
 			break;
 
