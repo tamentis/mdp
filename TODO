@@ -1,10 +1,9 @@
-TODO/Bugs
-=========
+BUGS
+ - Upon gpg timeout, the editor is still launched.
 
- - [BUG] Upon gpg timeout, the editor is still launched.
+ - Remove the lock upon gpg timeout.
 
- - [BUG] Remove the lock upon gpg timeout.
-
+NEEDED FEATURES
  - Create "profiles" for password styles allowing the configuration of:
    - number of chars (-g without parameter).
    - character set used in the randomization.
@@ -13,6 +12,7 @@ TODO/Bugs
    using a format defined in the config file, this avoids opening the passwords
    on screen in the first place. document it.
 
+OTHER IDEAS
  - More/better tests. Possibly separated in files.
 
  - Automatically kill the editor if it lingers. Better lose one passwords than
