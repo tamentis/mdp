@@ -26,15 +26,18 @@ UPGRADING
 
 
 RELEASE
-    1. Change the version in ``configure``,
-    2. Tag the new branch:
+    1. Make sure the test suite passes and until the test suite is complete:
+    2. Test every single flag documented in the man page.
+    3. Test every single option in the config file.
+    4. Change the version in ``configure``,
+    5. Tag the new branch:
 
         git tag -a vX.Y -m 'Releasing vX.Y'
         git push --tags
 
-    3. Download the file from github (release section),
-    4. Sign it:
+    6. Download the file from github (release section),
+    7. Sign it:
 
         gpg --armor --detach-sig mdp-X-Y.tar.gz
 
-    5. Distribute!
+    8. Distribute!
