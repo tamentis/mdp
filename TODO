@@ -1,7 +1,9 @@
 TODO/Bugs
 =========
 
- - Add -E to use regex instead of plain text match.
+ - [BUG] Upon gpg timeout, the editor is still launched.
+
+ - [BUG] Remove the lock upon gpg timeout.
 
  - Create "profiles" for password styles allowing the configuration of:
    - number of chars (-g without parameter).
@@ -11,15 +13,13 @@ TODO/Bugs
    using a format defined in the config file, this avoids opening the passwords
    on screen in the first place. document it.
 
- - More/better tests.
+ - More/better tests. Possibly separated in files.
 
  - Automatically kill the editor if it lingers. Better lose one passwords than
    leak all of them.
 
  - git and/or mercurial integration with auto push/pull and conflict resolution
    (lines stored separately?)
-
- - Configurable lock, password file, etc..
 
  - Store/backup automatically to S3? or maybe storage works like wal logs in pg
    and the user can define put and get commands?

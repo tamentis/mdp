@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <regex.h>
 
 #include "xmalloc.h"
 #include "array.h"
@@ -39,6 +40,7 @@
 
 #define KEYWORD_LENGTH 50
 
+extern int cfg_regex;
 
 struct wlist results = ARRAY_INITIALIZER;
 extern struct kwlist keywords;
@@ -91,11 +93,10 @@ results_visible_length()
  * Check if the line matches all the keywords.
  */
 int
-line_matches(const wchar_t *line)
+line_matches_plain(const wchar_t *line)
 {
 	int i, matches = 1;
 	wchar_t kw[KEYWORD_LENGTH];
-
 
 	for (i = 0; i < ARRAY_LENGTH(&keywords); i++) {
 		mbstowcs(kw, ARRAY_ITEM(&keywords, i), KEYWORD_LENGTH);
@@ -107,6 +108,52 @@ line_matches(const wchar_t *line)
 	}
 
 	return matches;
+}
+
+
+/*
+ * Check if the line matches all the regexes. This is not optimize as the
+ * regexes are compiled from scratch every time. It's okay, it makes the
+ * implementation simpler.
+ */
+int
+line_matches_regex(const wchar_t *line)
+{
+	int i, matches = 1;
+	int flags = 0;
+	char mbs_line[MAX_LINE_SIZE];
+	regex_t preg;
+
+	for (i = 0; i < ARRAY_LENGTH(&keywords); i++) {
+		wcstombs(mbs_line, line, sizeof(mbs_line));
+
+		if (regcomp(&preg, ARRAY_ITEM(&keywords, i), flags) != 0)
+			err(100, "line_matches_regex");
+
+		if (regexec(&preg, mbs_line, 0, NULL, 0) != 0) {
+			matches = 0;
+			regfree(&preg);
+			break;
+		}
+
+		regfree(&preg);
+	}
+
+	return matches;
+}
+
+
+/*
+ * Check if the line matches all the keywords.
+ */
+int
+line_matches(const wchar_t *line)
+{
+	if (cfg_regex) {
+		return line_matches_regex(line);
+	} else {
+		return line_matches_plain(line);
+	}
 }
 
 

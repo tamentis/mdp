@@ -53,6 +53,7 @@ int		cfg_timeout = 10;
 int		cfg_password_count = 4;
 int		cfg_backup = 1;
 int		cfg_debug = 0;
+int		cfg_regex = 0;
 
 /* Other globals */
 wchar_t home[MAXPATHLEN];
@@ -262,10 +263,13 @@ main(int ac, char **av)
 	if (t != NULL)
 		mbstowcs(editor, t, MAXPATHLEN);
 
-	while ((opt = getopt(ac, av, "hVdeg:qrc:")) != -1) {
+	while ((opt = getopt(ac, av, "hdEVqeg:rc:")) != -1) {
 		switch (opt) {
 		case 'd':
 			cfg_debug = 1;
+			break;
+		case 'E':
+			cfg_regex = 1;
 			break;
 		case 'V':
 			mode = MODE_VERSION;

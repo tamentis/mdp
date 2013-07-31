@@ -131,6 +131,36 @@ else
 fi
 
 
+# Filter on one regex.
+echo -n "test one regex (-E) ... "
+use_config editor
+$MDP -c test.config -r -E ^.....berry 2> /dev/null > test.output
+if diff test.output - << EOF
+strawberry red
+blackberry black
+EOF
+then
+	echo PASS
+else
+	echo FAIL
+fi
+
+
+# Filter on two regex.
+echo -n "test two regex (-E) ... "
+use_config editor
+$MDP -c test.config -r -E berry 'red$' 2> /dev/null > test.output
+if diff test.output - << EOF
+strawberry red
+raspberry red
+EOF
+then
+	echo PASS
+else
+	echo FAIL
+fi
+
+
 # Filter on two keywords, test timeout setting (should pause for 3 seconds).
 echo -n "mdp berry black (timeout) ... "
 use_config editor

@@ -191,18 +191,20 @@ gpg_encrypt(char *tmp_path)
 			mbs_passwords_path);
 
 	/* Backup the previous password file. */
-	if (cfg_backup && file_exists(mbs_passwords_path)) {
-		debug("gpg_encrypt backup: %s", mbs_passbak_path);
+	if (file_exists(mbs_passwords_path)) {
+		if (cfg_backup) {
+			debug("gpg_encrypt backup: %s", mbs_passbak_path);
 
-		/* Delete the previous backup. */
-		if (unlink(mbs_passbak_path) != 0) {
-			if (errno != ENOENT)
-				err(1, "gpg_encrypt backup unlink");
+			/* Delete the previous backup. */
+			if (unlink(mbs_passbak_path) != 0) {
+				if (errno != ENOENT)
+					err(1, "gpg_encrypt backup unlink");
+			}
+
+			/* Create a physical link. */
+			if (link(mbs_passwords_path, mbs_passbak_path) != 0)
+				err(1, "gpg_encrypt backup link");
 		}
-
-		/* Create a physical link. */
-		if (link(mbs_passwords_path, mbs_passbak_path) != 0)
-			err(1, "gpg_encrypt backup link");
 
 		/* Unlink the previous location, keeping only the backup. */
 		if (unlink(mbs_passwords_path) != 0)
