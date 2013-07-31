@@ -72,8 +72,6 @@ extern uint32_t result_size;
 void
 cleanup(void)
 {
-	debug("atexit_cleanup");
-
 	if (tmp_path[0] != '\0' && unlink(tmp_path) != 0)
 		err(1, "WARNING: unable to remove '%s'", tmp_path);
 
@@ -87,6 +85,7 @@ cleanup(void)
 void
 atexit_cleanup(void)
 {
+	debug("atexit_cleanup (PID: %d)", getpid());
 	cleanup();
 }
 
@@ -94,6 +93,7 @@ atexit_cleanup(void)
 void
 sig_cleanup(int dummy)
 {
+	debug("sig_cleanup (PID: %d)", getpid());
 	cleanup();
 }
 
@@ -166,12 +166,6 @@ edit_results()
 	int i, tmp_fd = -1;
 	struct result *result;
 	char line[MAX_LINE_SIZE];
-
-	if (atexit(atexit_cleanup) != 0)
-		err(1, "get_results atexit");
-
-	signal(SIGINT, sig_cleanup);
-	signal(SIGKILL, sig_cleanup);
 
 	/* Create the temporary file for edit mode. */
 	snprintf(tmp_path, MAXPATHLEN, "%ls/.mdp/tmp_edit.XXXXXXXX", home);
@@ -351,6 +345,18 @@ main(int ac, char **av)
 
 			gpg_check();
 			lock_set();
+
+			/*
+			 * Since we set the lock, configure atexit and signals
+			 * right away in case something fail before a normal
+			 * exit.
+			 */
+			if (atexit(atexit_cleanup) != 0)
+				err(1, "get_results atexit");
+
+			signal(SIGINT, sig_cleanup);
+			signal(SIGKILL, sig_cleanup);
+
 			load_results_gpg(NULL);
 			edit_results();
 			break;

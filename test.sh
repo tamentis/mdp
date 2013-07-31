@@ -61,6 +61,7 @@ rm -rf $GNUPGHOME
 mkdir -p $GNUPGHOME
 chmod 700 $GNUPGHOME
 passfile="$GNUPGHOME/.mdp/passwords"
+lockfile="$GNUPGHOME/.mdp/lock"
 
 echo -n "setup... "
 
@@ -180,7 +181,7 @@ echo -n "mdp -e lock test ... "
 use_config sloweditor
 $MDP -c test.config -e 2>/dev/null 1>/dev/null &
 sleep 0.1
-if ./mdp -c test.config -e 2>/dev/null 1>/dev/null; then
+if $MDP -c test.config -e 2>/dev/null 1>/dev/null; then
 	echo FAIL
 else
 	echo PASS
@@ -192,6 +193,7 @@ wait
 echo -n "mdp -e lock test stderr ... "
 use_config sloweditor
 $MDP -c test.config -e 2>/dev/null 1>/dev/null &
+sleep 0.1
 OUTPUT=`$MDP -c test.config -e 2>&1`
 if [ "$OUTPUT" = "mdp: locked (fake_gpg_home/.mdp/lock)" ]; then
 	echo PASS

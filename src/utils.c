@@ -48,9 +48,12 @@ debug(const char *fmt, ...)
 	struct tm *timeptr;
 	char pfmt[256], tbuf[20];
 	int i;
+	pid_t pid;
 
 	if (cfg_debug != 1)
 		return 0;
+
+	pid = getpid();
 
 	time(&tvec);
 	timeptr = localtime(&tvec);
@@ -58,7 +61,7 @@ debug(const char *fmt, ...)
 	if (i == 0)
 		errx(0, "strftime failed");
 
-	snprintf(pfmt, sizeof(pfmt), "[%s] [DEBUG] %s\n", tbuf, fmt);
+	snprintf(pfmt, sizeof(pfmt), "[%s] [pid:%5d] %s\n", tbuf, pid, fmt);
 
 	va_start(ap, fmt);
 	i = vfprintf(stderr, pfmt, ap);
@@ -142,26 +145,33 @@ set_pid_timeout(pid_t pid, int timeout)
 
 	switch (watcher_pid) {
 	case -1:
-		err(1, "set_pid_timeout fork error");
+		err(1, "set_pid_timeout fork()");
 		break;
-	case 0:
-		/* Child process */
-		debug("set_pid_timeout child pid: %d", getpid());
 
+	case 0: /* Child process */
+		/* Reset signals since the parent uses them to cleanup. */
+		signal(SIGINT, SIG_DFL);
+		signal(SIGKILL, SIG_DFL);
+
+		debug("set_pid_timeout sleep(%d)", timeout);
 		sleep(timeout);
+
 		debug("set_pid_timeout kill: %d", pid);
-		fprintf(stderr, "gpg timed out, aborting\n");
+		fprintf(stderr, "gpg timed out after %d seconds, aborting\n",
+				timeout);
 		if (kill(pid, SIGINT) != 0)
 			err(1, "set_pid_timeout child kill");
-		exit(0);
+		/* Avoid atexit() to run on the child. */
+		_Exit(0);
 
 		/* NOTREACHED */
+
 	default:
-		/* Parent process. Nopping. */
+		/* Parent process. NOP'ing. */
 		break;
 	}
 
-	debug("set_pid_timeout parent pid: %d (watcher pid=%d)", getpid(),
+	debug("set_pid_timeout parent pid=%d, watcher pid=%d", getpid(),
 			watcher_pid);
 }
 
@@ -178,7 +188,7 @@ file_exists(char *filepath)
 		if (errno == ENOENT) {
 			return 0;
 		}
-		err(1, "file_exists()");
+		err(1, "file_exists stat()");
 	}
 
 	return 1;

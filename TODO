@@ -1,7 +1,5 @@
 BUGS
- - Upon gpg timeout, the editor is still launched.
-
- - Remove the lock upon gpg timeout.
+ - If you enter your key wrong multiple time, the editor is still launched.
 
 NEEDED FEATURES
  - Create "profiles" for password styles allowing the configuration of:
