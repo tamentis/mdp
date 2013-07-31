@@ -2,7 +2,7 @@ NAME
      mdp - minimalist password safe
 
 SYNOPSIS
-     mdp [-c config] [-erq] [keyword ...]
+     mdp [-c config] [-g length] [-erqVh] [keyword ...]
 
 DESCRIPTION
      mdp is an acronym for "Mot de Passe" which means "password" in French. It
@@ -26,6 +26,8 @@ DESCRIPTION
              Use an alternate configuration file.
 
      -e      Edit your password file (decrypt and re-encrypt after the fact).
+
+     -E      Use regexes instead of plain text matches (e.g. ^.mail).
 
      -q      Start mdp in query mode instead of displaying results directly.
              This will avoid you from entering your GPG password multiple
@@ -86,6 +88,10 @@ CONFIGURATION
 
      set password_count count
              Define how many password to show when using -g. Default: 4.
+
+     set backup no
+             Define whether we keep a backup every time we edit the password
+             file. Default: yes.
 
      set timeout seconds
              This variable define how long the pager will display your

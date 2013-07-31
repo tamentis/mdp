@@ -23,7 +23,8 @@
 .Nm mdp
 .Bk -words
 .Op Fl c Ar config
-.Op Fl erq
+.Op Fl g Ar length
+.Op Fl erqVh
 .Op Ar keyword ...
 .Ek
 .Sh DESCRIPTION
@@ -52,6 +53,8 @@ The options are as follows:
 Use an alternate configuration file.
 .It Fl e
 Edit your password file (decrypt and re-encrypt after the fact).
+.It Fl E
+Use regexes instead of plain text matches (e.g. ^.mail).
 .It Fl q
 Start
 .Nm
@@ -112,6 +115,9 @@ will use your default editor (as defined by $EDITOR).
 .Pp
 .It Ic set password_count Ar count
 Define how many password to show when using -g. Default: 4.
+.Pp
+.It Ic set backup Ar no
+Define whether we keep a backup every time we edit the password file. Default: yes.
 .Pp
 .It Ic set timeout Ar seconds
 This variable define how long the pager will display your passwords. The

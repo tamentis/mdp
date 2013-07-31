@@ -1,8 +1,10 @@
 0.5 Bertrand Janin <b@janin.com> (....-..-..)
 
+	* Added support for regex match using -E.
+	* Added option to disable backup file generation.
 	* Fix detection of unchanged files.
 	* Fix creation of the initial password file.
-	* Added option to disable backup file generation.
+	* Properly cleanup the lock if gpg times out.
 
 0.4 Bertrand Janin <b@janin.com> (2013-07-29)
 
