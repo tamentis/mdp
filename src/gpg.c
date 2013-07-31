@@ -41,6 +41,10 @@ extern int	 cfg_backup;
 extern wchar_t	 passwords_path[MAXPATHLEN];
 
 
+#define GPG_KEY_MAX_LENGTH 128
+#define GPG_CMD_LENGTH (MAXPATHLEN * 2 + GPG_KEY_MAX_LENGTH + 16)
+
+
 /*
  * Ensures gpg exists, runs and is configured.
  */
@@ -169,17 +173,18 @@ gpg_close(FILE *fp)
 void
 gpg_encrypt(char *tmp_path)
 {
-	char cmd[4096];
-	char cmd_key[128] = "";
+	char cmd[GPG_CMD_LENGTH];
+	char cmd_key[GPG_KEY_MAX_LENGTH] = "";
 	char new_tmp_path[MAXPATHLEN];
 	char mbs_passwords_path[MAXPATHLEN];
 	char mbs_passbak_path[MAXPATHLEN];
 
 	/* Encrypt the temp file and delete it. */
 	if (wcslen(cfg_gpg_key_id) == 8)
-		snprintf(cmd_key, 128, "-r %ls", cfg_gpg_key_id);
+		snprintf(cmd_key, sizeof(cmd_key), "-r %ls", cfg_gpg_key_id);
 
-	snprintf(cmd, 4096, "%ls %s -e %s", cfg_gpg_path, cmd_key, tmp_path);
+	snprintf(cmd, sizeof(cmd), "%ls %s -e %s", cfg_gpg_path, cmd_key,
+			tmp_path);
 
 	debug("gpg_encrypt system(%s)", cmd);
 	if (system(cmd) != 0)
@@ -190,8 +195,8 @@ gpg_encrypt(char *tmp_path)
 	snprintf(mbs_passbak_path, MAXPATHLEN, "%s.bak",
 			mbs_passwords_path);
 
-	/* Backup the previous password file. */
 	if (file_exists(mbs_passwords_path)) {
+		/* Backup the previous password file. */
 		if (cfg_backup) {
 			debug("gpg_encrypt backup: %s", mbs_passbak_path);
 
@@ -217,8 +222,8 @@ gpg_encrypt(char *tmp_path)
 	if (link(new_tmp_path, mbs_passwords_path) != 0)
 		err(1, "gpg_encrypt link(new_tmp_path, password_path)");
 	else {
-		if(chmod(mbs_passwords_path, S_IRUSR | S_IWUSR) !=0)
-			err(1, "chmod error.");
+		if (chmod(mbs_passwords_path, S_IRUSR | S_IWUSR) !=0)
+			err(1, "gpg_encrypt chmod");
 	}
 
 	if (unlink(new_tmp_path) != 0)
