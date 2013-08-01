@@ -76,6 +76,8 @@ gpg_check()
 
 /*
  * Opens the gpg process and stream from its output.
+ *
+ * Returns NULL if the password file was not found.
  */
 FILE *
 gpg_open()
@@ -124,7 +126,7 @@ gpg_open()
 		err(1, "couldn't execute");
 		/* NOTREACHED */
 	default:
-		/* Parent process. Nopping. */
+		/* Parent process. NOP'ing. */
 		break;
 	}
 
@@ -134,6 +136,10 @@ gpg_open()
 
 	fp = fdopen(pout[0], "r");
 
+	/*
+	 * Since we spawned a new process, we keep track of it and shut it down
+	 * by force if it takes too long.
+	 */
 	set_pid_timeout(pid, cfg_gpg_timeout);
 
 	return fp;
@@ -142,11 +148,14 @@ gpg_open()
 
 /*
  * Close the gpg output stream and the process.
+ *
+ * Returns the exit code from GnuPG.
  */
-void
+int
 gpg_close(FILE *fp)
 {
 	int x, status;
+	int retcode;
 
 	debug("gpg_close");
 
@@ -161,9 +170,12 @@ gpg_close(FILE *fp)
 	if (x == -1)
 		err(1, "gpg_close wait()");
 
-	debug("exit status: %d", WEXITSTATUS(status));
+	retcode = WEXITSTATUS(status);
+	debug("gpg_close return code: %d", retcode);
 
 	cancel_pid_timeout();
+
+	return retcode;
 }
 
 

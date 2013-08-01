@@ -21,6 +21,11 @@ get_md5() {
 	$md5_command $1 | sed 's/.*[ \t]//g'
 }
 
+# Return number of lines and bytes separated by a space.
+get_lines_and_bytes() {
+	wc -cl test.output | awk '{print $1, $2}'
+}
+
 
 # Simulates an editor writing four passwords.
 if [ "$1" = "editor" ]; then
@@ -100,6 +105,29 @@ if $MDP -c test.config -e 2>/dev/null; then
 	echo PASS
 else
 	echo FAIL
+fi
+
+
+# Test generating passwords with a default count (4)
+echo -n "mdp -g 16 (default count)... "
+use_config editor
+$MDP -c test.config -g 16 2> /dev/null > test.output
+if [ "`get_lines_and_bytes`" != "4 68" ]; then
+	echo FAIL
+else
+	echo PASS
+fi
+
+
+# Test generating 16 * 64 byte passwords
+echo -n "mdp -g 64 (count=16)... "
+use_config editor
+echo "set password_count 16" >> test.config
+$MDP -c test.config -g 64 2> /dev/null > test.output
+if [ "`get_lines_and_bytes`" != "16 1040" ]; then
+	echo "FAIL ($count)"
+else
+	echo PASS
 fi
 
 

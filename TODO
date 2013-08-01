@@ -1,7 +1,5 @@
 BUGS
- - If you enter your key wrong multiple time, the editor is still launched.
-
- - No tests for -g.
+ - Nothing reported yet.
 
 NEEDED FEATURES
  - Create "profiles" for password styles allowing the configuration of:
@@ -26,3 +24,8 @@ OTHER IDEAS
 
  - Don't use a buffer to read lines in the password file, assume
    lines can have any length.
+
+ - Define a comment character? That would allow to skip headers and disable older
+   passwords (only used when filtering).
+
+ - Other types of encryption (aes-256 via openssl?)

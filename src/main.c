@@ -289,7 +289,7 @@ main(int ac, char **av)
 		}
 	}
 
-	debug("read config");
+	debug("read config (%ls)", cfg_config_path);
 
 	config_set_defaults();
 	config_check_paths();

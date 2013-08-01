@@ -241,6 +241,12 @@ load_results_fp(FILE *fp)
 }
 
 
+/*
+ * Load the results from the main GnuPG encrypted password file and return the
+ * number of results.
+ *
+ * Returns -1 if GnuPG did not return successfully.
+ */
 int
 load_results_gpg()
 {
@@ -249,11 +255,15 @@ load_results_gpg()
 
 	fp = gpg_open();
 
+	/* Password file does not exist yet. */
+	if (fp == NULL)
+		return 0;
+
 	length = load_results_fp(fp);
 
-	/* This happens when the password file does not exist yet. */
-	if (fp != NULL)
-		gpg_close(fp);
+	/* GnuPG exited with an non-zero return code. */
+	if (gpg_close(fp) != 0)
+		errx(100, "GnuPG returned with an error");
 
 	return length;
 }

@@ -15,6 +15,6 @@
  */
 
 FILE 		*gpg_open();
-void		 gpg_close(FILE *);
+int		 gpg_close(FILE *);
 void		 gpg_encrypt(char *);
 void		 gpg_check(void);
