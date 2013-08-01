@@ -11,8 +11,6 @@ NEEDED FEATURES
    on screen in the first place. document it.
 
 OTHER IDEAS
- - More/better tests. Possibly separated in files.
-
  - Automatically kill the editor if it lingers. Better lose one passwords than
    leak all of them.
 

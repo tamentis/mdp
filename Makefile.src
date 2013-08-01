@@ -16,7 +16,7 @@ clean:
 	cd src/ && make clean
 
 test:
-	sh test.sh
+	cd tests/ && sh run_tests.sh
 
 README: ${PROG}.1
 	# On Linux
