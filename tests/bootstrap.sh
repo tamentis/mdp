@@ -56,13 +56,18 @@ run_test() {
 # Return the md5 only.
 # $1 - filename
 get_md5() {
-	# Find ourself an md5 command.
-	if ! md5_command=`which md5 2>/dev/null`; then
-		md5_command=`which md5sum 2>/dev/null`
+	# BSD md5?
+	if md5_command=`which md5 2>/dev/null`; then
+		md5 $1 | sed 's/.*[ \t]//g'
+	# or GNU md5sum?
+	elif md5_command=`which md5sum 2>/dev/null`; then
+		md5sum $1 | sed 's/ .*//g'
+	else
+		echo "no md5 available"
+		exit 100
 	fi
-
-	$md5_command $1 | sed 's/.*[ \t]//g'
 }
+
 
 # Return number of lines and bytes separated by a space.
 get_lines_and_bytes() {
