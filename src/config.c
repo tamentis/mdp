@@ -35,6 +35,8 @@
 
 #include "mdp.h"
 #include "utils.h"
+#include "wcslcpy.h"
+#include "strdelim.h"
 
 
 #define QUOTE		L"\""
@@ -53,10 +55,6 @@ extern wchar_t	passwords_path[MAXPATHLEN];
 extern wchar_t	lock_path[MAXPATHLEN];
 extern wchar_t	home[MAXPATHLEN];
 
-
-/* Utility functions from OpenBSD/SSH in separate files (ISC license) */
-size_t		 wcslcpy(wchar_t *, const wchar_t *, size_t);
-wchar_t		*strdelim(wchar_t **);
 
 #define get_boolean(v) (v != NULL && *v == 'o') ? 1 : 0
 
@@ -253,12 +251,7 @@ config_check_file(wchar_t *path)
 void
 config_check_paths()
 {
-	FILE *fp;
-	char line[128];
-	wchar_t wline[128];
-	int linenum = 1;
 	wchar_t path[MAXPATHLEN];
-	char mbs_path[MAXPATHLEN];
 
 	swprintf(path, MAXPATHLEN, L"%ls/.mdp", home);
 	config_check_directory(path);
@@ -268,18 +261,6 @@ config_check_paths()
 
 	swprintf(path, MAXPATHLEN, L"%ls/.mdp/config", home);
 	config_check_file(path);
-
-	wcstombs(mbs_path, path, MAXPATHLEN);
-	fp = fopen(mbs_path, "r");
-	if (fp == NULL)
-		return;
-
-	while (fgets(line, sizeof(line), fp)) {
-		mbstowcs(wline, line, sizeof(line));
-		process_config_line(wline, linenum++);
-	}
-
-	fclose(fp);
 }
 
 
