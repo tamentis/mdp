@@ -152,8 +152,9 @@ cat 2> /dev/null > test_gpg.batch <<EOF
 	%commit
 EOF
 
-# Create the key and grab its id
-$GPG --batch --no-options --gen-key test_gpg.batch 2>/dev/null
+# Create the key and grab its id. Do not use --quick-random at home, it makes
+# really shitty keys ;)
+$GPG --batch --no-options --quick-random --gen-key test_gpg.batch 2>/dev/null
 key_id=`$GPG --list-keys 2>/dev/null | grep ^pub | sed 's/.*1024D.//;s/ .*//'`
 
 # Create the config file with a fake editor
