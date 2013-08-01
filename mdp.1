@@ -151,9 +151,9 @@ You should seriously consider putting at least your gpg_key_id in there.
 .It Pa $HOME/.mdp/passwords
 Encrypted list of passwords.
 .It Pa $HOME/.mdp/passwords.bak
-This file is a copy of your password file, before the last edit. Only one
-copy is kept in case you with to revert your last change. You can override
-the main password file with this one to do that.
+This file is a copy of your password file, before the last edit. You can revert
+to the last file by simply replacing your password file. Generation of this file
+can be disabled (see "set backup").
 .It Pa $HOME/.mdp/lock
 This file is created while you edit your password list to avoid two copies
 of mdp to run at the same time for the same user.
