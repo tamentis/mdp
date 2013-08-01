@@ -5,6 +5,7 @@
 	* Fix detection of unchanged files.
 	* Fix creation of the initial password file.
 	* Properly cleanup the lock if gpg times out.
+	* Fix opening the editor if GnuPG failed (e.g. bad passphrase).
 
 0.4 Bertrand Janin <b@janin.com> (2013-07-29)
 
