@@ -27,3 +27,7 @@ OTHER IDEAS
    passwords (only used when filtering).
 
  - Other types of encryption (aes-256 via openssl?)
+
+ - If gpg times out while you're typing your password, it appears clear on
+   screen, can we capture the keystrokes in a sub-process? Can we spawn a dummy
+   prompt without echo after killing gpg?
