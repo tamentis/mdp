@@ -1,6 +1,6 @@
 0.6 Bertrand Janin <b@janin.com> (..........)
 
-	* ?
+	* Increase default GPG timeout to 20s (suggested by Franck Labadille)
 
 0.5 Bertrand Janin <b@janin.com> (2013-08-01)
 
