@@ -1,5 +1,6 @@
 BUGS
- - Nothing reported yet.
+ - If a line is too long for the pager, the next line seems to start right
+   after.
 
 NEEDED FEATURES
  - Create "profiles" for password styles allowing the configuration of:
