@@ -173,6 +173,37 @@ echo ${CC}
 rm -f fake_cc*
 
 
+# Check if we have strlcpy
+echo -n "strlcpy... "
+cat <<EOF > fake_strlcpy.c
+main() { char buf[32]; strlcpy(buf, "woot", sizeof(buf)); }
+EOF
+if ! ${CC} fake_strlcpy.c -o /dev/null 1>/dev/null 2>/dev/null; then
+	echo "not found (we'll use ours)"
+	X_OBJECTS="$X_OBJECTS strlcpy.o"
+	CFLAGS="$CFLAGS -DHAS_NO_STRLCPY"
+else
+	echo yes
+fi
+rm -f fake_strlcpy*
+
+
+# Check if we have wcslcpy
+echo -n "wcslcpy... "
+cat <<EOF > fake_wcslcpy.c
+#include <wchar.h>
+main() { wchar_t buf[32]; wcslcpy(buf, L"woot", sizeof(buf)); }
+EOF
+if ! ${CC} fake_wcslcpy.c -o /dev/null 1>/dev/null 2>/dev/null; then
+	echo "not found (we'll use ours)"
+	X_OBJECTS="$X_OBJECTS wcslcpy.o"
+	CFLAGS="$CFLAGS -DHAS_NO_WCSLCPY"
+else
+	echo yes
+fi
+rm -f fake_wcslcpy*
+
+
 # Check for curses
 echo -n "curses... "
 cat <<EOF > fake_curses.c

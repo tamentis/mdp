@@ -14,4 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef HAS_NO_WCSLCPY
 size_t		 wcslcpy(wchar_t *, const wchar_t *, size_t);
+#endif

@@ -14,4 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef HAS_NO_STRLCPY
 size_t	 strlcpy(char *, const char *, size_t);
+#endif
