@@ -128,6 +128,7 @@ case $OS in
 
 	Darwin)
 		MANDEST="share/man"
+		CURSESLIB="-lncurses"
 		;;
 
 	*)
