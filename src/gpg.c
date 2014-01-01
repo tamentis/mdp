@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <wchar.h>
 #include <errno.h>
@@ -33,15 +34,18 @@
 
 #include "utils.h"
 #include "gpg.h"
+#include "xmalloc.h"
 
 
-extern wchar_t	 cfg_gpg_path[MAXPATHLEN];
-extern wchar_t	 cfg_gpg_key_id[MAXPATHLEN];
+extern char	*cfg_gpg_path;
+extern char	*cfg_gpg_key_id;
 extern int	 cfg_gpg_timeout;
 extern int	 cfg_backup;
-extern wchar_t	 passwords_path[MAXPATHLEN];
+extern char	*passwords_path;
 
 
+#define BACKUP_SUFFIX ".bak"
+#define GPG_SUFFIX ".gpg"
 #define GPG_KEY_MAX_LENGTH 128
 #define GPG_CMD_LENGTH (MAXPATHLEN * 2 + GPG_KEY_MAX_LENGTH + 16)
 
@@ -52,25 +56,17 @@ extern wchar_t	 passwords_path[MAXPATHLEN];
 void
 gpg_check(void)
 {
-	struct stat sb;
-	char cmd[MAXPATHLEN];
-	char mbs_path[MAXPATHLEN];
+	char *cmd;
 
-	wcstombs(mbs_path, cfg_gpg_path, MAXPATHLEN);
-
-	if (stat(mbs_path, &sb) != 0)
-		err(1, "gpg_check: wrong gpg path %s",
-				mbs_path);
-
-	snprintf(cmd, sizeof(cmd), "%ls --version > /dev/null", cfg_gpg_path);
+	cmd = join(' ', cfg_gpg_path, "--version > /dev/null");
 	if (system(cmd) != 0) {
-		errx(1, "gpg_check: unable to run gpg.");
+		errx(1, "unable to run gpg (check gpg_path)");
 	}
+	xfree(cmd);
 
-	snprintf(cmd, sizeof(cmd), "%ls --list-secret-keys | grep -q sec",
-			cfg_gpg_path);
+	cmd = join(' ', cfg_gpg_path, "--list-secret-keys | grep -q sec");
 	if (system(cmd) != 0) {
-		errx(1, "gpg_check: no gpg key found, rtfm.");
+		errx(1, "no gpg key found");
 	}
 }
 
@@ -83,21 +79,16 @@ gpg_check(void)
 FILE *
 gpg_open()
 {
-	char mbs_gpg_path[MAXPATHLEN];
-	char mbs_passwords_path[MAXPATHLEN];
 	int pout[2];	// {read, write}
 	FILE *fp;
 	pid_t pid;
 
-	wcstombs(mbs_gpg_path, cfg_gpg_path, MAXPATHLEN);
-	wcstombs(mbs_passwords_path, passwords_path, MAXPATHLEN);
-
-	if (!file_exists(mbs_passwords_path)) {
+	if (!file_exists(passwords_path)) {
 		debug("gpg_open password file does not exist (yet)");
 		return NULL;
 	}
 
-	debug("gpg_open %s %s", mbs_gpg_path, mbs_passwords_path);
+	debug("gpg_open %s %s", cfg_gpg_path, passwords_path);
 
 	if (pipe(pout) != 0)
 		err(1, "gpg_decode pipe(pout)");
@@ -122,8 +113,7 @@ gpg_open()
 
 		debug("gpg_open child pid: %d", getpid());
 
-		execlp(mbs_gpg_path, "-q", "--decrypt", mbs_passwords_path,
-				NULL);
+		execlp(cfg_gpg_path, "-q", "--decrypt", passwords_path, NULL);
 		err(1, "couldn't execute");
 		/* NOTREACHED */
 	default:
@@ -181,22 +171,54 @@ gpg_close(FILE *fp)
 
 
 /*
- * Saves the file back though gnupg.
+ * Return the given path with the backup suffix.
+ */
+static char *
+duplicate_with_backup_suffix(const char *data_path)
+{
+	char *backup_path;
+	size_t len;
+
+	len = strlen(data_path) + sizeof(BACKUP_SUFFIX);
+	backup_path = xmalloc(len + 1);
+	snprintf(backup_path, len + 1, "%s" BACKUP_SUFFIX, data_path);
+
+	return backup_path;
+}
+
+
+/*
+ * Return the given path with the GPG suffix.
+ */
+static char *
+duplicate_with_gpg_suffix(const char *path)
+{
+	char *backup_path;
+	size_t len;
+
+	len = strlen(path) + sizeof(GPG_SUFFIX);
+	backup_path = xmalloc(len + 1);
+	snprintf(backup_path, len + 1, "%s" GPG_SUFFIX, path);
+
+	return backup_path;
+}
+
+
+/*
+ * Saves the file back though GnuPG by saving to a temp file.
  */
 void
 gpg_encrypt(char *tmp_path)
 {
 	char cmd[GPG_CMD_LENGTH];
 	char cmd_key[GPG_KEY_MAX_LENGTH] = "";
-	char new_tmp_path[MAXPATHLEN];
-	char mbs_passwords_path[MAXPATHLEN];
-	char mbs_passbak_path[MAXPATHLEN];
+	char *backup_path, *tmp_encrypted_path;
 
-	/* Encrypt the temp file and delete it. */
-	if (wcslen(cfg_gpg_key_id) == 8)
-		snprintf(cmd_key, sizeof(cmd_key), "-r %ls", cfg_gpg_key_id);
+	if (strlen(cfg_gpg_key_id) == 8) {
+		snprintf(cmd_key, sizeof(cmd_key), "-r %s", cfg_gpg_key_id);
+	}
 
-	snprintf(cmd, sizeof(cmd), "%ls %s -e %s", cfg_gpg_path, cmd_key,
+	snprintf(cmd, sizeof(cmd), "%s %s -e %s", cfg_gpg_path, cmd_key,
 			tmp_path);
 
 	debug("gpg_encrypt system(%s)", cmd);
@@ -204,41 +226,38 @@ gpg_encrypt(char *tmp_path)
 		errx(1, "gpg_encrypt system(%s) != 0", cmd);
 
 	/* Generate the backup filename. */
-	wcstombs(mbs_passwords_path, passwords_path, MAXPATHLEN);
-	snprintf(mbs_passbak_path, MAXPATHLEN, "%s.bak",
-			mbs_passwords_path);
+	backup_path = duplicate_with_backup_suffix(passwords_path);
 
-	if (file_exists(mbs_passwords_path)) {
+	if (file_exists(passwords_path)) {
 		/* Backup the previous password file. */
 		if (cfg_backup) {
-			debug("gpg_encrypt backup: %s", mbs_passbak_path);
+			debug("gpg_encrypt backup: %s", backup_path);
 
 			/* Delete the previous backup. */
-			if (unlink(mbs_passbak_path) != 0) {
+			if (unlink(backup_path) != 0) {
 				if (errno != ENOENT)
 					err(1, "gpg_encrypt backup unlink");
 			}
 
 			/* Create a physical link. */
-			if (link(mbs_passwords_path, mbs_passbak_path) != 0)
+			if (link(passwords_path, backup_path) != 0)
 				err(1, "gpg_encrypt backup link");
 		}
 
 		/* Unlink the previous location, keeping only the backup. */
-		if (unlink(mbs_passwords_path) != 0)
+		if (unlink(passwords_path) != 0)
 			err(1, "gpg_encrypt unlink(passwords_path)");
 	}
 
 	/* Move the newly encrypted file to its new location. */
-	snprintf(new_tmp_path, MAXPATHLEN, "%s.gpg", tmp_path);
-
-	if (link(new_tmp_path, mbs_passwords_path) != 0)
-		err(1, "gpg_encrypt link(new_tmp_path, password_path)");
+	tmp_encrypted_path = duplicate_with_gpg_suffix(tmp_path);
+	if (link(tmp_encrypted_path, passwords_path) != 0)
+		err(1, "gpg_encrypt link(tmp_encrypted_path, passwords_path)");
 	else {
-		if (chmod(mbs_passwords_path, S_IRUSR | S_IWUSR) !=0)
+		if (chmod(passwords_path, S_IRUSR | S_IWUSR) !=0)
 			err(1, "gpg_encrypt chmod");
 	}
 
-	if (unlink(new_tmp_path) != 0)
-		err(1, "gpg_encrypt unlink(new_tmp_path)");
+	if (unlink(tmp_encrypted_path) != 0)
+		err(1, "gpg_encrypt unlink(tmp_encrypted_path)");
 }

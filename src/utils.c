@@ -28,12 +28,14 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <strings.h>
 
 #include "utils.h"
 #include "xmalloc.h"
 
 
-#define WHITESPACE	L" \t\r\n"
+#define WCS_WHITESPACE	L" \t\r\n"
+#define WHITESPACE	 " \t\r\n"
 
 
 extern int	 cfg_debug;
@@ -75,15 +77,58 @@ debug(const char *fmt, ...)
 
 
 /*
+ * Join two strings with the given separator.
+ */
+char *
+join(char sep, char *base, char *suffix)
+{
+	size_t len;
+	char *s;
+
+	len = strlen(base) + strlen(suffix) + 1;
+	s = xmalloc(len + 1);
+	snprintf(s, len + 1, "%s%c%s", base, sep, suffix);
+
+	return s;
+}
+
+
+/*
+ * Create a new path with the two parts given as parameter.
+ */
+char *
+join_path(char *base, char *suffix)
+{
+	return join('/', base, suffix);
+}
+
+
+/*
  * Strip trailing whitespace.
  */
 void
-strip_trailing_whitespaces(wchar_t *s)
+wcs_strip_trailing_whitespaces(wchar_t *s)
 {
 	int len;
 
 	for (len = wcslen(s) - 1; len >= 0; len--) {
-		if (wcschr(WHITESPACE, s[len]) == NULL)
+		if (wcschr(WCS_WHITESPACE, s[len]) == NULL)
+			break;
+		s[len] = '\0';
+	}
+}
+
+
+/*
+ * Strip trailing whitespace.
+ */
+void
+strip_trailing_whitespaces(char *s)
+{
+	int len;
+
+	for (len = strlen(s) - 1; len >= 0; len--) {
+		if (strchr(WHITESPACE, s[len]) == NULL)
 			break;
 		s[len] = '\0';
 	}

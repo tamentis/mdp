@@ -22,7 +22,8 @@ struct result {
 	bool visible;
 	wchar_t *wcs_value;
 	char *mbs_value;
-	size_t len;
+	size_t wcs_len;
+	size_t mbs_len;
 };
 
 ARRAY_DECL(wlist, struct result *);

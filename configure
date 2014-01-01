@@ -32,7 +32,7 @@ generate_makefile() {
 	echo "CFLAGS+=-DMDP_VERSION=\\\"$MDP_VERSION\\\" $X_CFLAGS"
 
 	if [ "$DEBUG_MODE" = "Y" ]; then
-		echo "CFLAGS+=-ggdb -O1"
+		echo "CFLAGS+=-ggdb -O0"
 	else
 		echo "CFLAGS+=-Wall -O2"
 	fi

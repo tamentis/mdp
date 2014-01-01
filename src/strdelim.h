@@ -15,4 +15,4 @@
  */
 
 
-wchar_t		*strdelim(wchar_t **);
+char		*strdelim(char **);

@@ -69,7 +69,8 @@ result_new(wchar_t *value)
 	new->visible = true;
 	new->wcs_value = wcsdup(value);
 	new->mbs_value = wcs_duplicate_as_mbs(value);
-	new->len = wcslen(value);
+	new->wcs_len = wcslen(value);
+	new->mbs_len = strlen(new->mbs_value);
 
 	return new;
 }
@@ -176,8 +177,8 @@ get_max_length()
 		if (!result->visible)
 			continue;
 
-		if (result->len > maxlen)
-			maxlen = result->len;
+		if (result->wcs_len > maxlen)
+			maxlen = result->wcs_len;
 	}
 
 	return maxlen;
@@ -238,7 +239,7 @@ load_results_fp(FILE *fp)
 		}
 
 		mbstowcs(wline, line, sizeof(line));
-		strip_trailing_whitespaces(wline);
+		wcs_strip_trailing_whitespaces(wline);
 
 		ARRAY_ADD(&results, result_new(wline));
 	}

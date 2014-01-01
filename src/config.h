@@ -16,8 +16,8 @@
 
 #define RESULTS_MAX_LEN	64
 
-void		 config_check_directory(wchar_t *);
-void		 config_check_file(wchar_t *);
+void		 config_check_directory(char *);
+void		 config_check_file(char *);
 void		 config_check_paths(void);
 void		 config_check_variables(void);
 void		 config_read(void);

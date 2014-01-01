@@ -14,10 +14,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void		 strip_trailing_whitespaces(wchar_t *);
+void		 wcs_strip_trailing_whitespaces(wchar_t *);
+void		 strip_trailing_whitespaces(char *);
 int		 debug(const char *fmt,...);
 wchar_t		*wcscasestr(const wchar_t *, const wchar_t *);
 char		*wcs_duplicate_as_mbs(const wchar_t *);
 void		 cancel_pid_timeout(void);
 void		 set_pid_timeout(pid_t, int);
 int		 file_exists(char *);
+char		*join(char, char *, char *);
+char		*join_path(char *, char *);

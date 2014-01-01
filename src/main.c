@@ -42,28 +42,26 @@
 #include "lock.h"
 #include "randpass.h"
 #include "keywords.h"
-#include "wcslcpy.h"
 
 
 /* Configuration variables with defaults (global, defined in config.c). */
-wchar_t		cfg_config_path[MAXPATHLEN] = L"";
-wchar_t		cfg_gpg_path[MAXPATHLEN] = L"/usr/bin/gpg";
-wchar_t		cfg_gpg_key_id[MAXPATHLEN] = L"";
-int		cfg_gpg_timeout = 20;
-wchar_t		cfg_editor[MAXPATHLEN] = L"";
-int		cfg_timeout = 10;
-int		cfg_password_count = 4;
-int		cfg_backup = 1;
-int		cfg_debug = 0;
-int		cfg_regex = 0;
+char		*cfg_config_path = NULL;
+char		*cfg_gpg_path = NULL;
+char		*cfg_gpg_key_id = NULL;
+int		 cfg_gpg_timeout = 20;
+char		*cfg_editor;
+int		 cfg_timeout = 10;
+int		 cfg_password_count = 4;
+int		 cfg_backup = 1;
+int		 cfg_debug = 0;
+int		 cfg_regex = 0;
 
 /* Other globals */
-wchar_t home[MAXPATHLEN];
-wchar_t passwords_path[MAXPATHLEN];
-wchar_t lock_path[MAXPATHLEN];
-wchar_t editor[MAXPATHLEN];
-int password_length = 16;
-char tmp_path[MAXPATHLEN] = "";
+char		*home = NULL;
+char		*passwords_path = NULL;
+char		*lock_path = NULL;
+char		*tmp_path = NULL;
+int		 password_length = 16;
 
 /* Result set defined in results.c */
 extern struct wlist results;
@@ -78,7 +76,7 @@ extern char *optarg;
 static void
 cleanup(void)
 {
-	if (tmp_path[0] != '\0' && unlink(tmp_path) != 0) {
+	if (tmp_path != NULL && unlink(tmp_path) != 0) {
 		err(1, "WARNING: unable to remove '%s'", tmp_path);
 	}
 
@@ -116,15 +114,7 @@ spawn_editor(char *path)
 {
 	char s[MAXPATHLEN];
 
-	if (wcslen(cfg_editor) == 0) {
-		if (wcslen(editor) == 0) {
-			wcslcpy(cfg_editor, L"/usr/bin/vi", MAXPATHLEN);
-		} else {
-			wcslcpy(cfg_editor, editor, MAXPATHLEN);
-		}
-	}
-
-	snprintf(s, MAXPATHLEN, "%ls \"%s\"", cfg_editor, path);
+	snprintf(s, MAXPATHLEN, "%s \"%s\"", cfg_editor, path);
 
 	debug("spawn_editor: %s", s);
 
@@ -178,7 +168,7 @@ edit_results(void)
 	struct result *result;
 
 	/* Create the temporary file for edit mode. */
-	snprintf(tmp_path, MAXPATHLEN, "%ls/.mdp/tmp_edit.XXXXXXXX", home);
+	tmp_path = join_path(home, ".mdp/tmp_edit.XXXXXXXX");
 	tmp_fd = mkstemp(tmp_path);
 	if (tmp_fd == -1) {
 		err(1, "edit_results mkstemp()");
@@ -187,7 +177,7 @@ edit_results(void)
 	/* Iterate over the results and dump them in this file. */
 	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
-		if (write(tmp_fd, result->mbs_value, result->len) == -1)
+		if (write(tmp_fd, result->mbs_value, result->mbs_len) == -1)
 			err(1, "edit_results write");
 		if (write(tmp_fd, "\n", 1) == -1)
 			err(1, "edit_results write (new-line)");
@@ -246,10 +236,50 @@ usage(void)
 }
 
 
+/*
+ * Return a copy of the $HOME environment variable. Be generous in flaming the
+ * user if their environment is in poor condition.
+ */
+static char *
+get_home(void)
+{
+	char *s;
+
+	s = getenv("HOME");
+
+	if (s == NULL) {
+		errx(0, "unknown variable '$HOME'");
+	}
+
+	if (!file_exists(s)) {
+		errx(0, "your $HOME does not exist");
+	}
+
+	return strdup(s);
+}
+
+
+/*
+ * Return a copy of the $EDITOR environment variable or NULL if not found.
+ */
+static char *
+get_env_editor(void)
+{
+	char *s;
+
+	s = getenv("EDITOR");
+
+	if (s == NULL) {
+		return NULL;
+	}
+
+	return strdup(s);
+}
+
+
 int
 main(int ac, char **av)
 {
-	char *t;
 	int opt, mode = MODE_PAGER;
 
 	if (ac < 2)
@@ -257,16 +287,8 @@ main(int ac, char **av)
 
 	setlocale(LC_ALL, "");
 
-	/* Populate $HOME */
-	t = getenv("HOME");
-	if (t == NULL || *t == '\0')
-		errx(0, "Unknown variable '$HOME'.");
-	mbstowcs(home, t, MAXPATHLEN);
-
-	/* Populate $EDITOR */
-	t = getenv("EDITOR");
-	if (t != NULL)
-		mbstowcs(editor, t, MAXPATHLEN);
+	home = get_home();
+	cfg_editor = get_env_editor();
 
 	while ((opt = getopt(ac, av, "hdEVqeg:rc:")) != -1) {
 		switch (opt) {
@@ -293,18 +315,21 @@ main(int ac, char **av)
 			mode = MODE_RAW;
 			break;
 		case 'c':
-			swprintf(cfg_config_path, MAXPATHLEN, L"%s", optarg);
+			cfg_config_path = strdup(optarg);
 			break;
 		default:
 			usage();
 		}
 	}
 
+	if (cfg_config_path == NULL) {
+		cfg_config_path = join_path(home, ".mdp/config");
+	}
 	debug("read config (%ls)", cfg_config_path);
 
-	config_set_defaults();
 	config_check_paths();
 	config_read();
+	config_set_defaults();
 
 	ac -= optind;
 	av += optind;

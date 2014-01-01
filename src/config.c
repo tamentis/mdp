@@ -25,7 +25,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <wchar.h>
 #include <limits.h>
 #include <errno.h>
 #include <err.h>
@@ -36,28 +35,26 @@
 #include "mdp.h"
 #include "utils.h"
 #include "config.h"
-#include "wcslcpy.h"
 #include "strdelim.h"
+#include "xmalloc.h"
 
 
-#define QUOTE		L"\""
+extern char	*cfg_config_path;
+extern char	*cfg_gpg_path;
+extern char	*cfg_gpg_key_id;
+extern int	 cfg_gpg_timeout;
+extern char	*cfg_editor;
+extern int	 cfg_password_count;
+extern int	 cfg_backup;
+extern int	 cfg_timeout;
 
-
-extern wchar_t  cfg_config_path[MAXPATHLEN];
-extern wchar_t	cfg_gpg_path[MAXPATHLEN];
-extern wchar_t  cfg_gpg_key_id[MAXPATHLEN];
-extern int	cfg_gpg_timeout;
-extern wchar_t  cfg_editor[MAXPATHLEN];
-extern int	cfg_password_count;
-extern int	cfg_backup;
-extern int	cfg_timeout;
-
-extern wchar_t	passwords_path[MAXPATHLEN];
-extern wchar_t	lock_path[MAXPATHLEN];
-extern wchar_t	home[MAXPATHLEN];
+extern char	*passwords_path;
+extern char	*lock_path;
+extern char	*home;
 
 
 #define get_boolean(v) (v != NULL && *v == 'o') ? 1 : 0
+#define conferr(m) errx(100, "config:%d: " m, linenum)
 
 
 /*
@@ -65,64 +62,74 @@ extern wchar_t	home[MAXPATHLEN];
  * just in case.
  */
 static void
-set_variable(wchar_t *name, wchar_t *value, int linenum)
+set_variable(char *name, char *value, int linenum)
 {
 	/* set gpg_path <string> */
-	if (wcscmp(name, L"gpg_path") == 0) {
-		if (value == NULL || *value == '\0') {
-			*cfg_gpg_path = '\0';
-			return;
+	if (strcmp(name, "gpg_path") == 0) {
+		if (cfg_gpg_path != NULL) {
+			conferr("gpg_path defined multiple times");
 		}
-		wcslcpy(cfg_gpg_path, value, MAXPATHLEN);
+
+		if (value == NULL || *value == '\0') {
+			conferr("invalid value for gpg_path");
+		}
+
+		cfg_gpg_path = strdup(value);
 
 	/* set gpg_key_id <string> */
-	} else if (wcscmp(name, L"gpg_key_id") == 0) {
-		if (value == NULL || *value == '\0') {
-			*cfg_gpg_key_id = '\0';
-			return;
+	} else if (strcmp(name, "gpg_key_id") == 0) {
+		if (cfg_gpg_key_id != NULL) {
+			conferr("gpg_key_id defined multiple times");
 		}
-		wcslcpy(cfg_gpg_key_id, value, MAXPATHLEN);
+
+		if (value == NULL || *value == '\0') {
+			conferr("invalid value for gpg_key_id");
+		}
+
+		cfg_gpg_key_id = strdup(value);
 
 	/* set gpg_timeout <integer> */
-	} else if (wcscmp(name, L"gpg_timeout") == 0) {
-		if (value == NULL || *value == '\0')
-			errx(1, "config:%d: invalid value for gpg_timeout\n",
-					linenum);
+	} else if (strcmp(name, "gpg_timeout") == 0) {
+		if (value == NULL || *value == '\0') {
+			conferr("invalid value for gpg_timeout");
+		}
 
-		cfg_gpg_timeout = wcstoumax(value, NULL, 10);
+		cfg_gpg_timeout = strtoull(value, NULL, 10);
 
 	/* set editor <string> */
-	} else if (wcscmp(name, L"editor") == 0) {
-		if (value == NULL || *value == '\0') {
-			*cfg_editor = '\0';
-			return;
+	} else if (strcmp(name, "editor") == 0) {
+		if (cfg_editor != NULL) {
+			conferr("editor defined multiple times");
 		}
-		wcslcpy(cfg_editor, value, MAXPATHLEN);
+
+		if (value == NULL || *value == '\0') {
+			conferr("invalid value for gpg_timeout");
+		}
+		cfg_editor = strdup(value);
 
 	/* set password_count <integer> */
-	} else if (wcscmp(name, L"password_count") == 0) {
-		if (value == NULL || *value == '\0')
-			errx(1, "config:%d: invalid value for "
-					"password_count\n", linenum);
+	} else if (strcmp(name, "password_count") == 0) {
+		if (value == NULL || *value == '\0') {
+			conferr("invalid value for password_count");
+		}
 
-		cfg_password_count = wcstoumax(value, NULL, 10);
+		cfg_password_count = strtoull(value, NULL, 10);
 
 	/* set timeout <integer> */
-	} else if (wcscmp(name, L"timeout") == 0) {
+	} else if (strcmp(name, "timeout") == 0) {
 		if (value == NULL || *value == '\0')
 			errx(1, "config:%d: invalid value for timeout\n",
 					linenum);
 
-		cfg_timeout = wcstoumax(value, NULL, 10);
+		cfg_timeout = strtoull(value, NULL, 10);
 
 	/* set backup <bool> */
-	} else if (wcscmp(name, L"backup") == 0) {
+	} else if (strcmp(name, "backup") == 0) {
 		cfg_backup = get_boolean(value);
 
 	/* ??? */
 	} else {
-		errx(1, "config: unknown variable for set on line %d.\n",
-				linenum);
+		conferr("unknown variable");
 	}
 }
 
@@ -134,9 +141,9 @@ set_variable(wchar_t *name, wchar_t *value, int linenum)
  * since most fatal errors will quit the program with an error message anyways.
  */
 static int
-process_config_line(wchar_t *line, int linenum)
+process_config_line(char *line, int linenum)
 {
-	wchar_t *keyword, *name, *value;
+	char *keyword, *name, *value;
 
 	strip_trailing_whitespaces(line);
 
@@ -152,9 +159,9 @@ process_config_line(wchar_t *line, int linenum)
 		return 0;
 
 	/* set varname value */
-	if (wcscmp(keyword, L"set") == 0) {
+	if (strcmp(keyword, "set") == 0) {
 		if ((name = strdelim(&line)) == NULL) {
-			errx(1, "%ls: set without variable name on line %d.\n",
+			errx(1, "%s: set without variable name on line %d.\n",
 					cfg_config_path, linenum);
 			return -1;
 		}
@@ -163,7 +170,7 @@ process_config_line(wchar_t *line, int linenum)
 
 	/* Unknown operation... Code help us. */
 	} else {
-		errx(1, "%ls: unknown command on line %d.\n", cfg_config_path,
+		errx(1, "%s: unknown command on line %d.\n", cfg_config_path,
 				linenum);
 		return -1;
 	}
@@ -177,36 +184,33 @@ process_config_line(wchar_t *line, int linenum)
  * Exits program with error message if anything is wrong.
  */
 void
-config_check_directory(wchar_t *path)
+config_check_directory(char *path)
 {
 	struct stat sb;
-	char mbs_path[MAXPATHLEN];
 
-	wcstombs(mbs_path, path, MAXPATHLEN);
-
-	if (stat(mbs_path, &sb) != 0) {
+	if (stat(path, &sb) != 0) {
 		if (errno == ENOENT) {
-			if (mkdir(mbs_path, 0700) != 0) {
-				errx(1, "can't create %ls: %s", path,
+			if (mkdir(path, 0700) != 0) {
+				errx(1, "can't create %s: %s", path,
 						strerror(errno));
 			}
-			if (stat(mbs_path, &sb) != 0) {
-				errx(1, "can't stat newly created %ls: %s",
+			if (stat(path, &sb) != 0) {
+				errx(1, "can't stat newly created %s: %s",
 						path, strerror(errno));
 			}
 		} else {
-			errx(1, "can't access %ls: %s", path, strerror(errno));
+			errx(1, "can't access %s: %s", path, strerror(errno));
 		}
 	}
 
 	if (!S_ISDIR(sb.st_mode))
-		errx(1, "%ls is not a directory", path);
+		errx(1, "%s is not a directory", path);
 
 	if (sb.st_uid != 0 && sb.st_uid != getuid())
-		errx(1, "bad owner on %ls", path);
+		errx(1, "bad owner on %s", path);
 
 	if ((sb.st_mode & 022) != 0)
-		errx(1, "bad permissions on %ls", path);
+		errx(1, "bad permissions on %s", path);
 }
 
 
@@ -216,30 +220,27 @@ config_check_directory(wchar_t *path)
  * Exits program with error message if anything is wrong.
  */
 void
-config_check_file(wchar_t *path)
+config_check_file(char *path)
 {
 	struct stat sb;
-	char mbs_path[MAXPATHLEN];
 
-	wcstombs(mbs_path, path, MAXPATHLEN);
-
-	if (stat(mbs_path, &sb) != 0) {
+	if (stat(path, &sb) != 0) {
 		/* User hasn't created a config file, that's perfectly fine. */
 		if (errno == ENOENT) {
 			return;
 		} else {
-			errx(1, "can't access %ls: %s", path, strerror(errno));
+			errx(1, "can't access %s: %s", path, strerror(errno));
 		}
 	}
 
 	if (!S_ISREG(sb.st_mode))
-		errx(1, "%ls is not a regular file", path);
+		errx(1, "%s is not a regular file", path);
 
 	if (sb.st_uid != 0 && sb.st_uid != getuid())
-		errx(1, "bad owner on %ls", path);
+		errx(1, "bad owner on %s", path);
 
 	if ((sb.st_mode & 022) != 0)
-		errx(1, "bad permissions on %ls", path);
+		errx(1, "bad permissions on %s", path);
 }
 
 
@@ -252,15 +253,16 @@ config_check_file(wchar_t *path)
 void
 config_check_paths()
 {
-	wchar_t path[MAXPATHLEN];
+	char *path;
 
-	swprintf(path, MAXPATHLEN, L"%ls/.mdp", home);
+	path = join_path(home, ".mdp");
 	config_check_directory(path);
+	xfree(path);
 
-	swprintf(passwords_path, MAXPATHLEN, L"%ls/.mdp/passwords", home);
+	passwords_path = join_path(home, ".mdp/passwords");
 	config_check_file(passwords_path);
 
-	swprintf(path, MAXPATHLEN, L"%ls/.mdp/config", home);
+	path = join_path(home, ".mdp/config");
 	config_check_file(path);
 }
 
@@ -268,10 +270,11 @@ config_check_paths()
 void
 config_set_defaults()
 {
-	if (wcslen(cfg_config_path) == 0)
-		swprintf(cfg_config_path, MAXPATHLEN, L"%ls/.mdp/config", home);
+	if (cfg_gpg_path == NULL) {
+		cfg_gpg_path = strdup("/usr/bin/gpg");
+	}
 
-	swprintf(lock_path, MAXPATHLEN, L"%ls/.mdp/lock", home);
+	lock_path = join_path(home, ".mdp/lock");
 }
 
 
@@ -282,20 +285,16 @@ void
 config_read()
 {
 	FILE *fp;
+	// FIXME remove the limit here.
 	char line[128];
-	wchar_t wline[128];
 	int linenum = 1;
-	char path[MAXPATHLEN];
 
-	wcstombs(path, cfg_config_path, MAXPATHLEN);
-
-	fp = fopen(path, "r");
+	fp = fopen(cfg_config_path, "r");
 	if (fp == NULL)
 		return;
 
 	while (fgets(line, sizeof(line), fp)) {
-		mbstowcs(wline, line, sizeof(line));
-		process_config_line(wline, linenum++);
+		process_config_line(line, linenum++);
 	}
 
 	fclose(fp);

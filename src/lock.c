@@ -19,7 +19,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <wchar.h>
 #include <errno.h>
 #include <err.h>
 
@@ -27,17 +26,13 @@
 #include "lock.h"
 
 
-extern wchar_t	 lock_path[MAXPATHLEN];
+extern char	*lock_path;
 
 
 int
 lock_exists()
 {
-	char mbs_lock_path[MAXPATHLEN];
-
-	wcstombs(mbs_lock_path, lock_path, MAXPATHLEN);
-
-	return file_exists(mbs_lock_path);
+	return file_exists(lock_path);
 }
 
 
@@ -45,14 +40,12 @@ void
 lock_set()
 {
 	FILE *fp;
-	char mbs_lock_path[MAXPATHLEN];
 
-	wcstombs(mbs_lock_path, lock_path, MAXPATHLEN);
+	if (lock_exists()) {
+		errx(1, "locked (%s)", lock_path);
+	}
 
-	if (lock_exists())
-		errx(1, "locked (%ls)", lock_path);
-
-	fp = fopen(mbs_lock_path, "w");
+	fp = fopen(lock_path, "w");
 	fprintf(fp, "%d", getpid());
 	fclose(fp);
 }
@@ -61,10 +54,7 @@ lock_set()
 void
 lock_unset()
 {
-	char mbs_lock_path[MAXPATHLEN];
-
-	wcstombs(mbs_lock_path, lock_path, MAXPATHLEN);
-
-	if (lock_exists())
-		unlink(mbs_lock_path);
+	if (lock_exists()) {
+		unlink(lock_path);
+	}
 }
