@@ -22,7 +22,7 @@ INSTALLATION
 UPGRADING
     Make sure you keep backups of your password file between upgrades:
 
-        cp -p ~/.mdp/passwords ~/.mdp/passwords.preX.Y
+        cp -p ~/.mdp/passwords ~/.mdp/passwords.preX.Y.Z
 
 
 RELEASE
@@ -33,12 +33,12 @@ RELEASE
     5. Set a date in the ChangeLog,
     6. Tag the new branch:
 
-        git tag -a vX.Y -m 'Releasing vX.Y'
+        git tag -a vX.Y.Z -m 'Releasing vX.Y.Z'
         git push --tags
 
     7. Download the file from github (release section),
     8. Sign it:
 
-        gpg --armor --detach-sig mdp-X.Y.tar.gz
+        gpg --armor --detach-sig mdp-X.Y.Z.tar.gz
 
     9. Distribute!

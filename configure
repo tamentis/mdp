@@ -6,7 +6,7 @@
 #
 
 PROG="mdp"
-MDP_VERSION="0.6"
+MDP_VERSION="0.6.0"
 
 
 # Some shells have shitty echos

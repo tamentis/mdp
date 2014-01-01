@@ -1,7 +1,9 @@
-0.6 Bertrand Janin <b@janin.com> (..........)
+0.6.0 Bertrand Janin <b@janin.com> (..........)
 
+	* Switch to semantic versioning.
 	* Increase default GPG timeout to 20s (suggested by Franck Labadille)
 	* Build using -lncurses on Mac (ncursesw not available).
+	* Use c99 boolean for results 'show' instead of two value enum.
 
 0.5 Bertrand Janin <b@janin.com> (2013-08-01)
 
