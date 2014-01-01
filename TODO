@@ -1,9 +1,9 @@
 BUGS
  - Make sure we measure the size of the mbs before doing wcstombs.
- - If a line is too long for the pager, the next line seems to start right
-   after.
  - Don't use a buffer to read lines in the password file, assume
    lines can have any length.
+ - Use the key_id for decrypt if possible or don't let the user edit unless the
+   key is valid.
 
 NEEDED FEATURES
  - Create "profiles" for password styles allowing the configuration of:

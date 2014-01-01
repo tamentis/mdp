@@ -79,7 +79,7 @@ result_new(wchar_t *value)
 /*
  * Count of visible results.
  */
-int
+unsigned int
 results_visible_length()
 {
 	unsigned int i, len = 0;
@@ -165,7 +165,7 @@ line_matches(const wchar_t *line)
 }
 
 
-int
+unsigned int
 get_max_length()
 {
 	unsigned int i, maxlen = 0;

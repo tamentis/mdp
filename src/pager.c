@@ -39,10 +39,10 @@
 #include "keywords.h"
 
 
-extern int	 window_width;
-extern int	 window_height;
-extern WINDOW	*screen;
-extern struct wlist results;
+extern unsigned int	 window_width;
+extern unsigned int	 window_height;
+extern WINDOW		*screen;
+extern struct wlist	 results;
 
 #define MSG_TOO_MANY "Too many results, please refine your search."
 
@@ -57,7 +57,7 @@ refresh_listing(void)
 {
 	unsigned int i;
 	int top_offset, left_offset;
-	int len = results_visible_length();
+	unsigned int len = results_visible_length();
 	struct result *result;
 
 	if (len >= window_height || len >= RESULTS_MAX_LEN) {
@@ -69,7 +69,11 @@ refresh_listing(void)
 	}
 
 	top_offset = (window_height - len) / 2;
-	left_offset = (window_width - get_max_length()) / 2;
+	if (window_width < get_max_length()) {
+		left_offset = 0;
+	} else {
+		left_offset = (window_width - get_max_length()) / 2;
+	}
 
 	/*
 	 * Place the lines on screen. Since curses will automatically wrap
@@ -83,6 +87,11 @@ refresh_listing(void)
 
 		wmove(screen, top_offset, left_offset);
 		waddstr(screen, result->mbs_value);
+
+		if (result->wcs_len > window_width) {
+			top_offset += (result->wcs_len / window_width);
+		}
+
 		top_offset++;
 	}
 

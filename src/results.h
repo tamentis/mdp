@@ -30,8 +30,8 @@ ARRAY_DECL(wlist, struct result *);
 
 struct result	*result_new(wchar_t *);
 void		 result_kill(struct result *);
-int		 results_visible_length(void);
-int		 get_max_length(void);
+unsigned int	 results_visible_length(void);
+unsigned int	 get_max_length(void);
 void		 filter_results(void);
 int		 load_results_gpg(void);
 int		 load_results_fp(FILE *);

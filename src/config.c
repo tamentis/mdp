@@ -54,7 +54,7 @@ extern char	*home;
 
 
 #define get_boolean(v) (v != NULL && *v == 'o') ? 1 : 0
-#define conferr(m) errx(100, "config:%d: " m, linenum)
+#define conf_err(m) errx(100, "config:%d: " m, linenum)
 
 
 /*
@@ -67,11 +67,11 @@ set_variable(char *name, char *value, int linenum)
 	/* set gpg_path <string> */
 	if (strcmp(name, "gpg_path") == 0) {
 		if (cfg_gpg_path != NULL) {
-			conferr("gpg_path defined multiple times");
+			conf_err("gpg_path defined multiple times");
 		}
 
 		if (value == NULL || *value == '\0') {
-			conferr("invalid value for gpg_path");
+			conf_err("invalid value for gpg_path");
 		}
 
 		cfg_gpg_path = strdup(value);
@@ -79,11 +79,11 @@ set_variable(char *name, char *value, int linenum)
 	/* set gpg_key_id <string> */
 	} else if (strcmp(name, "gpg_key_id") == 0) {
 		if (cfg_gpg_key_id != NULL) {
-			conferr("gpg_key_id defined multiple times");
+			conf_err("gpg_key_id defined multiple times");
 		}
 
 		if (value == NULL || *value == '\0') {
-			conferr("invalid value for gpg_key_id");
+			conf_err("invalid value for gpg_key_id");
 		}
 
 		cfg_gpg_key_id = strdup(value);
@@ -91,7 +91,7 @@ set_variable(char *name, char *value, int linenum)
 	/* set gpg_timeout <integer> */
 	} else if (strcmp(name, "gpg_timeout") == 0) {
 		if (value == NULL || *value == '\0') {
-			conferr("invalid value for gpg_timeout");
+			conf_err("invalid value for gpg_timeout");
 		}
 
 		cfg_gpg_timeout = strtoull(value, NULL, 10);
@@ -99,18 +99,18 @@ set_variable(char *name, char *value, int linenum)
 	/* set editor <string> */
 	} else if (strcmp(name, "editor") == 0) {
 		if (cfg_editor != NULL) {
-			conferr("editor defined multiple times");
+			conf_err("editor defined multiple times");
 		}
 
 		if (value == NULL || *value == '\0') {
-			conferr("invalid value for gpg_timeout");
+			conf_err("invalid value for gpg_timeout");
 		}
 		cfg_editor = strdup(value);
 
 	/* set password_count <integer> */
 	} else if (strcmp(name, "password_count") == 0) {
 		if (value == NULL || *value == '\0') {
-			conferr("invalid value for password_count");
+			conf_err("invalid value for password_count");
 		}
 
 		cfg_password_count = strtoull(value, NULL, 10);
@@ -129,7 +129,7 @@ set_variable(char *name, char *value, int linenum)
 
 	/* ??? */
 	} else {
-		conferr("unknown variable");
+		conf_err("unknown variable");
 	}
 }
 

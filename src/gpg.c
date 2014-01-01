@@ -214,7 +214,7 @@ gpg_encrypt(char *tmp_path)
 	char cmd_key[GPG_KEY_MAX_LENGTH] = "";
 	char *backup_path, *tmp_encrypted_path;
 
-	if (strlen(cfg_gpg_key_id) == 8) {
+	if (cfg_gpg_key_id != NULL) {
 		snprintf(cmd_key, sizeof(cmd_key), "-r %s", cfg_gpg_key_id);
 	}
 
