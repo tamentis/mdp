@@ -52,10 +52,11 @@ extern struct wlist results;
  *
  * This function assumes curses is initialized.
  */
-void
-refresh_listing()
+static void
+refresh_listing(void)
 {
-	int top_offset, left_offset, i;
+	unsigned int i;
+	int top_offset, left_offset;
 	int len = results_visible_length();
 	struct result *result;
 	char line[MAX_LINE_SIZE];
@@ -69,7 +70,7 @@ refresh_listing()
 	}
 
 	top_offset = (window_height - len) / 2;
-	left_offset = (window_width - get_widest_result()) / 2;
+	left_offset = (window_width - get_max_length()) / 2;
 
 	/*
 	 * Place the lines on screen. Since curses will automatically wrap
@@ -94,7 +95,7 @@ refresh_listing()
 /*
  * Request search keywords from the user.
  */
-void
+static void
 keyword_prompt(void)
 {
 	char kw[50] = "";

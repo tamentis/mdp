@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -61,7 +61,7 @@ struct zzsym smbl[95] = {
 };
 
 
-int
+static int
 construct_mode(char *s_mode)
 {
 	unsigned int mode = 0;

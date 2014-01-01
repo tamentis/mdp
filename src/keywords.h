@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,6 +17,7 @@
 
 ARRAY_DECL(kwlist, char *);
 
+void		 keywords_clear(void);
 void		 keywords_load_from_argv(char **);
 void		 keywords_load_from_char(char *);
 

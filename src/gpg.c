@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -32,6 +32,7 @@
 #include <err.h>
 
 #include "utils.h"
+#include "gpg.h"
 
 
 extern wchar_t	 cfg_gpg_path[MAXPATHLEN];
@@ -49,7 +50,7 @@ extern wchar_t	 passwords_path[MAXPATHLEN];
  * Ensures gpg exists, runs and is configured.
  */
 void
-gpg_check()
+gpg_check(void)
 {
 	struct stat sb;
 	char cmd[MAXPATHLEN];

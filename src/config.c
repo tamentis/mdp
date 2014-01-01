@@ -35,6 +35,7 @@
 
 #include "mdp.h"
 #include "utils.h"
+#include "config.h"
 #include "wcslcpy.h"
 #include "strdelim.h"
 
@@ -63,7 +64,7 @@ extern wchar_t	home[MAXPATHLEN];
  * Sets the value of the given variable, also do some type check
  * just in case.
  */
-void
+static void
 set_variable(wchar_t *name, wchar_t *value, int linenum)
 {
 	/* set gpg_path <string> */
@@ -132,7 +133,7 @@ set_variable(wchar_t *name, wchar_t *value, int linenum)
  * Returns 0 on success or anything else if an error occurred, it will be rare
  * since most fatal errors will quit the program with an error message anyways.
  */
-int
+static int
 process_config_line(wchar_t *line, int linenum)
 {
 	wchar_t *keyword, *name, *value;

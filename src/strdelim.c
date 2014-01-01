@@ -1,5 +1,3 @@
-/* $Id$ */
-/* $OpenBSD: misc.c,v 1.69 2008/06/13 01:38:23 dtucker Exp $ */
 /*
  * Copyright (c) 2000 Markus Friedl.  All rights reserved.
  * Copyright (c) 2005,2006 Damien Miller.  All rights reserved.
@@ -27,6 +25,8 @@
 
 #include <string.h>
 #include <wchar.h>
+
+#include "strdelim.h"
 
 
 /* Characters considered whitespace in strsep calls. */

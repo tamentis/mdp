@@ -4,6 +4,7 @@
 	* Increase default GPG timeout to 20s (suggested by Franck Labadille)
 	* Build using -lncurses on Mac (ncursesw not available).
 	* Use c99 boolean for results 'show' instead of two value enum.
+	* Increase compilation warnings and clean most of them up.
 
 0.5 Bertrand Janin <b@janin.com> (2013-08-01)
 

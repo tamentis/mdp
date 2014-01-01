@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -28,6 +28,8 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <signal.h>
+
+#include "utils.h"
 
 
 #define WHITESPACE	L" \t\r\n"
@@ -107,6 +109,11 @@ wcscasestr(const wchar_t *s, const wchar_t *find)
 		} while (wcsncasecmp(s, find, len) != 0);
 		s--;
 	}
+
+	/*
+	 * Ignore the warning for this, it's better to accept const explicitly
+	 * and have a warning than removing const everywhere.
+	 */
 	return ((wchar_t *)s);
 }
 

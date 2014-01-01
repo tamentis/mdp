@@ -69,8 +69,12 @@ extern struct wlist results;
 extern uint32_t result_sum;
 extern uint32_t result_size;
 
+/* getopt globals */
+extern int optind;
+extern char *optarg;
 
-void
+
+static void
 cleanup(void)
 {
 	if (tmp_path[0] != '\0' && unlink(tmp_path) != 0)
@@ -83,7 +87,7 @@ cleanup(void)
 }
 
 
-void
+static void
 atexit_cleanup(void)
 {
 	debug("atexit_cleanup (PID: %d)", getpid());
@@ -91,9 +95,12 @@ atexit_cleanup(void)
 }
 
 
-void
+static void
 sig_cleanup(int dummy)
 {
+	/* Avoid unused parameter warning. */
+	(void)(dummy);
+
 	debug("sig_cleanup (PID: %d)", getpid());
 	cleanup();
 }
@@ -102,7 +109,7 @@ sig_cleanup(int dummy)
 /*
  * Spawn the editor on a file.
  */
-void
+static void
 spawn_editor(char *path)
 {
 	char s[MAXPATHLEN];
@@ -130,7 +137,7 @@ spawn_editor(char *path)
  * This is far from perfect, but for the purpose of detecting change, this is
  * just fine. Returns 1 if it matches.
  */
-int
+static int
 has_changed(char *tmp_path)
 {
 	FILE *fp;
@@ -161,10 +168,11 @@ has_changed(char *tmp_path)
  * file in your * ~/.mdp/ folder, fires your editor and save the output back
  * to your password file.
  */
-void
-edit_results()
+static void
+edit_results(void)
 {
-	int i, tmp_fd = -1;
+	unsigned int i;
+	int tmp_fd = -1;
 	struct result *result;
 	char line[MAX_LINE_SIZE];
 
@@ -199,10 +207,13 @@ edit_results()
 }
 
 
-void
-print_results()
+/*
+ * Print the results to screen in "raw" mode (-r).
+ */
+static void
+print_results(void)
 {
-	int i;
+	unsigned int i;
 	struct result *result;
 
 	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
@@ -213,7 +224,7 @@ print_results()
 }
 
 
-void
+static void
 print_passwords(int length, int count)
 {
 	char password[MAX_PASSWORD_LENGTH];
@@ -226,8 +237,8 @@ print_passwords(int length, int count)
 }
 
 
-void
-usage()
+static void
+usage(void)
 {
 	printf("usage: mdp [-ecrVh] [-g len] [keyword ...]\n");
 	exit(-1);
@@ -239,8 +250,6 @@ main(int ac, char **av)
 {
 	char *t;
 	int opt, mode = MODE_PAGER;
-	extern int optind;
-	extern char *optarg;
 
 	if (ac < 2)
 		usage();
@@ -313,7 +322,7 @@ main(int ac, char **av)
 				usage();
 
 			gpg_check();
-			if (load_results_gpg(NULL) == 0)
+			if (load_results_gpg() == 0)
 				errx(100, "no passwords");
 			filter_results();
 			print_results();
@@ -325,7 +334,7 @@ main(int ac, char **av)
 				usage();
 
 			gpg_check();
-			if (load_results_gpg(NULL) == 0)
+			if (load_results_gpg() == 0)
 				errx(100, "no passwords");
 			filter_results();
 			pager(START_WITHOUT_PROMPT);
@@ -334,7 +343,7 @@ main(int ac, char **av)
 		case MODE_QUERY:
 			debug("mode: MODE_QUERY");
 			gpg_check();
-			if (load_results_gpg(NULL) == 0)
+			if (load_results_gpg() == 0)
 				errx(100, "no passwords");
 			pager(START_WITH_PROMPT);
 			break;
@@ -358,7 +367,7 @@ main(int ac, char **av)
 			signal(SIGINT, sig_cleanup);
 			signal(SIGKILL, sig_cleanup);
 
-			load_results_gpg(NULL);
+			load_results_gpg();
 			edit_results();
 			break;
 

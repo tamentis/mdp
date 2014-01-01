@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -26,6 +26,7 @@
 #include <curses.h>
 
 #include "config.h"
+#include "curses.h"
 
 
 int	 window_width = 0;
@@ -52,9 +53,12 @@ shutdown_curses()
 void
 resize(int signal)
 {
+	/* Ignore unused parameter, this is only called from SIGWINCH. */
+	(void)(signal);
+
 	clear();
 	shutdown_curses();
-	errx(1, "terminal resize, exiting...");
+	errx(1, "terminal resize");
 }
 
 

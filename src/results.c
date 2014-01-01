@@ -66,6 +66,7 @@ result_new(wchar_t *value)
 	new = xmalloc(sizeof(struct result));
 	new->visible = true;
 	new->value = wcsdup(value);
+	new->len = wcslen(value);
 
 	return new;
 }
@@ -77,7 +78,7 @@ result_new(wchar_t *value)
 int
 results_visible_length()
 {
-	int i, len = 0;
+	unsigned int i, len = 0;
 	struct result *result;
 
 	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
@@ -93,17 +94,18 @@ results_visible_length()
 /*
  * Check if the line matches all the keywords.
  */
-int
+static bool
 line_matches_plain(const wchar_t *line)
 {
-	int i, matches = 1;
+	unsigned int i;
+	bool matches = true;
 	wchar_t kw[KEYWORD_LENGTH];
 
 	for (i = 0; i < ARRAY_LENGTH(&keywords); i++) {
 		mbstowcs(kw, ARRAY_ITEM(&keywords, i), KEYWORD_LENGTH);
 
 		if (wcscasestr(line, (const wchar_t *)kw) == NULL) {
-			matches = 0;
+			matches = false;
 			break;
 		}
 	}
@@ -117,10 +119,11 @@ line_matches_plain(const wchar_t *line)
  * regexes are compiled from scratch every time. It's okay, it makes the
  * implementation simpler.
  */
-int
+static int
 line_matches_regex(const wchar_t *line)
 {
-	int i, matches = 1;
+	unsigned int i;
+	bool matches = true;
 	int flags = 0;
 	char mbs_line[MAX_LINE_SIZE];
 	regex_t preg;
@@ -132,7 +135,7 @@ line_matches_regex(const wchar_t *line)
 			err(100, "line_matches_regex");
 
 		if (regexec(&preg, mbs_line, 0, NULL, 0) != 0) {
-			matches = 0;
+			matches = false;
 			regfree(&preg);
 			break;
 		}
@@ -147,7 +150,7 @@ line_matches_regex(const wchar_t *line)
 /*
  * Check if the line matches all the keywords.
  */
-int
+static bool
 line_matches(const wchar_t *line)
 {
 	if (cfg_regex) {
@@ -159,23 +162,22 @@ line_matches(const wchar_t *line)
 
 
 int
-get_widest_result()
+get_max_length()
 {
-	int i, len = 0, res_len;
+	unsigned int i, maxlen = 0;
 	struct result *result;
 
 	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
-		res_len = wcslen(result->value);
 
 		if (!result->visible)
 			continue;
 
-		if (res_len > len)
-			len = res_len;
+		if (result->len > maxlen)
+			maxlen = result->len;
 	}
 
-	return len;
+	return maxlen;
 }
 
 
@@ -187,7 +189,7 @@ get_widest_result()
 void
 filter_results()
 {
-	int i;
+	unsigned int i;
 	struct result *result;
 
 	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
@@ -208,7 +210,7 @@ filter_results()
 int
 load_results_fp(FILE *fp)
 {
-	int i, line_count = 0;
+	unsigned int i, line_count = 0;
 	wchar_t wline[MAX_LINE_SIZE];
 	char line[MAX_LINE_SIZE];
 

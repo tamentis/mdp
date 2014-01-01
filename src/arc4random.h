@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 1996, David Mazieres <dm@uun.org>
  * Copyright (c) 2008, Damien Miller <djm@openbsd.org>
+ * Copyright (c) 2013, Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void		 arc4random_stir();
+void		 arc4random_stir(void);
 void		 arc4random_addrandom(u_char *, int);
-u_int32_t	 arc4random();
+u_int32_t	 arc4random(void);
 void		 arc4random_buf(void *, size_t);
 u_int32_t	 arc4random_uniform(u_int32_t);

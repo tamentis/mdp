@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -34,7 +34,7 @@ struct kwlist keywords = ARRAY_INITIALIZER;
 void
 keywords_clear()
 {
-	int i;
+	unsigned int i;
 
 	for (i = 0; i < ARRAY_LENGTH(&keywords); i++)
 		xfree(ARRAY_ITEM(&keywords, i));
