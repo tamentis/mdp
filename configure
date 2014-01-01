@@ -26,6 +26,9 @@ generate_makefile() {
 	echo
 
 	echo "PROG=$PROG"
+	echo "CFLAGS+=-Wall -W -Wpointer-arith -Wbad-function-cast -Wcast-qual"
+	echo "CFLAGS+=-Wstrict-prototypes -Wmissing-prototypes"
+	echo "CFLAGS+=-Wmissing-declarations -Wnested-externs -Winline"
 	echo "CFLAGS+=-DMDP_VERSION=\\\"$MDP_VERSION\\\" $X_CFLAGS"
 
 	if [ "$DEBUG_MODE" = "Y" ]; then
