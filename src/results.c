@@ -29,6 +29,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <regex.h>
+#include <stdbool.h>
 
 #include "xmalloc.h"
 #include "array.h"
@@ -63,7 +64,7 @@ result_new(wchar_t *value)
 	struct result *new;
 
 	new = xmalloc(sizeof(struct result));
-	new->status = RESULT_SHOW;
+	new->visible = true;
 	new->value = wcsdup(value);
 
 	return new;
@@ -71,7 +72,7 @@ result_new(wchar_t *value)
 
 
 /*
- * Count of results with visible status (RESULT_SHOW).
+ * Count of visible results.
  */
 int
 results_visible_length()
@@ -81,7 +82,7 @@ results_visible_length()
 
 	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
-		if (result->status == RESULT_SHOW)
+		if (result->visible)
 			len++;
 	}
 
@@ -167,7 +168,7 @@ get_widest_result()
 		result = ARRAY_ITEM(&results, i);
 		res_len = wcslen(result->value);
 
-		if (result->status != RESULT_SHOW)
+		if (!result->visible)
 			continue;
 
 		if (res_len > len)
@@ -193,9 +194,9 @@ filter_results()
 		result = ARRAY_ITEM(&results, i);
 
 		if (line_matches((const wchar_t *)result->value)) {
-			result->status = RESULT_SHOW;
+			result->visible = true;
 		} else {
-			result->status = RESULT_HIDDEN;
+			result->visible = false;
 		}
 	}
 }

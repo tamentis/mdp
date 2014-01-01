@@ -27,6 +27,7 @@
 #include <stdarg.h>
 #include <locale.h>
 #include <inttypes.h>
+#include <stdbool.h>
 
 #include "curses.h"
 #include "xmalloc.h"
@@ -206,7 +207,7 @@ print_results()
 
 	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
-		if (result->status == RESULT_SHOW)
+		if (result->visible)
 			printf("%ls\n", result->value);
 	}
 }

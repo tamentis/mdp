@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -19,13 +19,9 @@
 
 
 struct result {
-	int status;
+	bool visible;
 	wchar_t *value;
-};
-
-enum result_status {
-	RESULT_SHOW,
-	RESULT_HIDDEN
+	size_t len;
 };
 
 ARRAY_DECL(wlist, struct result *);

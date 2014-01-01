@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,8 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  *
- * The "pager" ensures password to not linger on screen. Our pager
- * is written using curses to make it fullscreen.
+ * The pager is a fullscreen curses app with a built-in timeout which ensures
+ * passwords do not linger on screen.
  */
 
 #include <sys/ioctl.h>
@@ -44,6 +44,8 @@ extern int	 window_height;
 extern WINDOW	*screen;
 extern struct wlist results;
 
+#define MSG_TOO_MANY "Too many results, please refine your search."
+
 
 /*
  * Display all the results.
@@ -57,13 +59,11 @@ refresh_listing()
 	int len = results_visible_length();
 	struct result *result;
 	char line[MAX_LINE_SIZE];
-	char refine_msg[] = "Too many results, please refine "
-			    "your search.";
 
 	if (len >= window_height || len >= RESULTS_MAX_LEN) {
 		wmove(screen, window_height / 2,
-				(window_width - strlen(refine_msg))/ 2);
-		waddstr(screen, refine_msg);
+				(window_width - sizeof(MSG_TOO_MANY) - 1) / 2);
+		waddstr(screen, MSG_TOO_MANY);
 		refresh();
 		return;
 	}
@@ -71,11 +71,14 @@ refresh_listing()
 	top_offset = (window_height - len) / 2;
 	left_offset = (window_width - get_widest_result()) / 2;
 
-	/* Place the lines on screen. */
+	/*
+	 * Place the lines on screen. Since curses will automatically wrap
+	 * longer lines, we need to force a new-line on lines following them.
+	 */
 	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
 
-		if (result->status != RESULT_SHOW)
+		if (!result->visible)
 			continue;
 
 		wcstombs(line, result->value, sizeof(line));
@@ -88,6 +91,9 @@ refresh_listing()
 }
 
 
+/*
+ * Request search keywords from the user.
+ */
 void
 keyword_prompt(void)
 {
@@ -143,4 +149,3 @@ pager(enum pager_start_mode mode)
 
 	return MODE_EXIT;
 }
-
