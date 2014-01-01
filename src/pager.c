@@ -59,7 +59,6 @@ refresh_listing(void)
 	int top_offset, left_offset;
 	int len = results_visible_length();
 	struct result *result;
-	char line[MAX_LINE_SIZE];
 
 	if (len >= window_height || len >= RESULTS_MAX_LEN) {
 		wmove(screen, window_height / 2,
@@ -82,9 +81,8 @@ refresh_listing(void)
 		if (!result->visible)
 			continue;
 
-		wcstombs(line, result->value, sizeof(line));
 		wmove(screen, top_offset, left_offset);
-		waddstr(screen, line);
+		waddstr(screen, result->mbs_value);
 		top_offset++;
 	}
 

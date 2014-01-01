@@ -20,7 +20,8 @@
 
 struct result {
 	bool visible;
-	wchar_t *value;
+	wchar_t *wcs_value;
+	char *mbs_value;
 	size_t len;
 };
 

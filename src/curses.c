@@ -27,6 +27,8 @@
 
 #include "config.h"
 #include "curses.h"
+#include "utils.h"
+#include "xmalloc.h"
 
 
 int	 window_width = 0;
@@ -49,7 +51,9 @@ shutdown_curses()
 }
 
 
-/* resize - called when the terminal is resized ... */
+/*
+ * Called when the terminal is resized.
+ */
 void
 resize(int signal)
 {
@@ -59,6 +63,23 @@ resize(int signal)
 	clear();
 	shutdown_curses();
 	errx(1, "terminal resize");
+}
+
+
+/*
+ * Wrapper around waddstr which automatically converts wide-char strings.
+ */
+int
+waddwcs(WINDOW *win, const wchar_t *str)
+{
+	int ret;
+	char *mbs;
+
+	mbs = wcs_duplicate_as_mbs(str);
+	ret = waddstr(win, mbs);
+	xfree(mbs);
+
+	return ret;
 }
 
 
@@ -86,4 +107,3 @@ init_curses()
 
 	timeout(cfg_timeout * 1000);
 }
-

@@ -30,6 +30,7 @@
 #include <signal.h>
 
 #include "utils.h"
+#include "xmalloc.h"
 
 
 #define WHITESPACE	L" \t\r\n"
@@ -115,6 +116,34 @@ wcscasestr(const wchar_t *s, const wchar_t *find)
 	 * and have a warning than removing const everywhere.
 	 */
 	return ((wchar_t *)s);
+}
+
+
+/*
+ * Duplicate a wide-char string as a multi-byte strings.
+ *
+ * This is essentially a wrapper around wcstombs with proper memory allocation.
+ * You are responsible for free'ing the returned pointer's data. Any
+ * encoding/decoding error will cause an immediate exit (e.g. one of the
+ * wide-char can't be converted according to the current locale).
+ */
+char *
+wcs_duplicate_as_mbs(const wchar_t *str)
+{
+	size_t bytelen, clen;
+	char *output;
+
+	/* Find out how much space we need to store the multi-byte string. */
+	bytelen = wcstombs(NULL, str, 0);
+
+	output = xmalloc(bytelen);
+
+	clen = wcstombs(output, str, bytelen);
+	if (clen == (size_t)-1) {
+		err(100, "encoding error (invalid locale?)");
+	}
+
+	return output;
 }
 
 

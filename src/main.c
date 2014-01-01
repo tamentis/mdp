@@ -28,6 +28,7 @@
 #include <locale.h>
 #include <inttypes.h>
 #include <stdbool.h>
+#include <curses.h>
 
 #include "curses.h"
 #include "xmalloc.h"
@@ -77,8 +78,9 @@ extern char *optarg;
 static void
 cleanup(void)
 {
-	if (tmp_path[0] != '\0' && unlink(tmp_path) != 0)
+	if (tmp_path[0] != '\0' && unlink(tmp_path) != 0) {
 		err(1, "WARNING: unable to remove '%s'", tmp_path);
+	}
 
 	lock_unset();
 
@@ -165,8 +167,8 @@ has_changed(char *tmp_path)
  * Edit the passwords.
  *
  * This function dumps all the plain-text passwords ("results") in a temporary
- * file in your * ~/.mdp/ folder, fires your editor and save the output back
- * to your password file.
+ * file in your ~/.mdp/ folder, fires your editor and save the output back to
+ * your password file.
  */
 static void
 edit_results(void)
@@ -174,7 +176,6 @@ edit_results(void)
 	unsigned int i;
 	int tmp_fd = -1;
 	struct result *result;
-	char line[MAX_LINE_SIZE];
 
 	/* Create the temporary file for edit mode. */
 	snprintf(tmp_path, MAXPATHLEN, "%ls/.mdp/tmp_edit.XXXXXXXX", home);
@@ -186,8 +187,7 @@ edit_results(void)
 	/* Iterate over the results and dump them in this file. */
 	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
-		wcstombs(line, result->value, sizeof(line));
-		if (write(tmp_fd, line, strlen(line)) == -1)
+		if (write(tmp_fd, result->mbs_value, result->len) == -1)
 			err(1, "edit_results write");
 		if (write(tmp_fd, "\n", 1) == -1)
 			err(1, "edit_results write (new-line)");
@@ -218,8 +218,9 @@ print_results(void)
 
 	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
-		if (result->visible)
-			printf("%ls\n", result->value);
+		if (result->visible) {
+			printf("%ls\n", result->wcs_value);
+		}
 	}
 }
 

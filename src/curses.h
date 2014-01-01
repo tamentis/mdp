@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+int		 waddwcs(WINDOW *, const wchar_t *);
 void		 shutdown_curses(void);
 void		 resize(int);
 void		 init_curses(void);

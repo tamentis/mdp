@@ -57,6 +57,8 @@ uint32_t result_size = 0, result_sum = 0;
  * Instantiate a new result.
  *
  * These items won't be free'd, they will stay around until the program ends.
+ * We convert and measure everything from here, unless you have a million
+ * password this shouldn't be much of a bottleneck.
  */
 struct result *
 result_new(wchar_t *value)
@@ -65,7 +67,8 @@ result_new(wchar_t *value)
 
 	new = xmalloc(sizeof(struct result));
 	new->visible = true;
-	new->value = wcsdup(value);
+	new->wcs_value = wcsdup(value);
+	new->mbs_value = wcs_duplicate_as_mbs(value);
 	new->len = wcslen(value);
 
 	return new;
@@ -195,7 +198,7 @@ filter_results()
 	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
 
-		if (line_matches((const wchar_t *)result->value)) {
+		if (line_matches(result->wcs_value)) {
 			result->visible = true;
 		} else {
 			result->visible = false;
@@ -223,9 +226,9 @@ load_results_fp(FILE *fp)
 
                 /* One of the line may not have been read completely. */
 		if (strchr(line, '\n') == NULL) {
-			fprintf(stderr, "WARNING: Line %d is too long (max:%ld) "
-					"or does not end with a new line.",
-					line_count, sizeof(line));
+			fprintf(stderr, "WARNING: Line %d is too long "
+					"(max:%ld) or does not end with a new "
+					"line.\n", line_count, sizeof(line));
 		}
 
 		result_size += strlen(line);
