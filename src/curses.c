@@ -62,7 +62,7 @@ resize(int signal)
 
 	clear();
 	shutdown_curses();
-	errx(1, "terminal resize");
+	errx(EXIT_FAILURE, "terminal resize");
 }
 
 

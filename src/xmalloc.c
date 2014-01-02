@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2004 Nicholas Marriott <nicm@users.sourceforge.net>
+ * Copyright (c) 2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -47,12 +48,15 @@ xcalloc(size_t nmemb, size_t size)
 {
 	void	*ptr;
 
-	if (size == 0 || nmemb == 0)
-		errx(1, "zero size");
-	if (SIZE_MAX / nmemb < size)
-		errx(1, "nmemb * size > SIZE_MAX");
-	if ((ptr = calloc(nmemb, size)) == NULL)
-		err(1, "xcalloc failed");
+	if (size == 0 || nmemb == 0) {
+		errx(EXIT_FAILURE, "zero size");
+	}
+	if (SIZE_MAX / nmemb < size) {
+		errx(EXIT_FAILURE, "nmemb * size > SIZE_MAX");
+	}
+	if ((ptr = calloc(nmemb, size)) == NULL) {
+		err(EXIT_FAILURE, "xcalloc failed");
+	}
 
 	return (ptr);
 }
@@ -62,10 +66,12 @@ xmalloc(size_t size)
 {
 	void	*ptr;
 
-	if (size == 0)
-		errx(1, "zero size");
-	if ((ptr = malloc(size)) == NULL)
-		err(1, "xmalloc failed");
+	if (size == 0) {
+		errx(EXIT_FAILURE, "zero size");
+	}
+	if ((ptr = malloc(size)) == NULL) {
+		err(EXIT_FAILURE, "xmalloc failed");
+	}
 
 	return (ptr);
 }
@@ -76,12 +82,15 @@ xrealloc(void *oldptr, size_t nmemb, size_t size)
 	size_t	 newsize = nmemb * size;
 	void	*newptr;
 
-	if (newsize == 0)
-		errx(1, "zero size");
-	if (SIZE_MAX / nmemb < size)
-		errx(1, "nmemb * size > SIZE_MAX");
-	if ((newptr = realloc(oldptr, newsize)) == NULL)
-		err(1, "xrealloc failed");
+	if (newsize == 0) {
+		errx(EXIT_FAILURE, "zero size");
+	}
+	if (SIZE_MAX / nmemb < size) {
+		errx(EXIT_FAILURE, "nmemb * size > SIZE_MAX");
+	}
+	if ((newptr = realloc(oldptr, newsize)) == NULL) {
+		err(EXIT_FAILURE, "xrealloc failed");
+	}
 
 	return (newptr);
 }
@@ -89,8 +98,9 @@ xrealloc(void *oldptr, size_t nmemb, size_t size)
 void
 xfree(void *ptr)
 {
-	if (ptr == NULL)
-		errx(1, "null pointer");
+	if (ptr == NULL) {
+		errx(EXIT_FAILURE, "null pointer");
+	}
 	free(ptr);
 }
 
@@ -113,8 +123,9 @@ xvasprintf(char **ret, const char *fmt, va_list ap)
 	int	i;
 
 	i = vasprintf(ret, fmt, ap);
-	if (i < 0 || *ret == NULL)
-		err(1, "xvasprintf failed");
+	if (i < 0 || *ret == NULL) {
+		err(EXIT_FAILURE, "xvasprintf failed");
+	}
 
 	return (i);
 }
@@ -137,12 +148,14 @@ xvsnprintf(char *buf, size_t len, const char *fmt, va_list ap)
 {
 	int	i;
 
-	if (len > INT_MAX)
-		errx(1, "len > INT_MAX");
+	if (len > INT_MAX) {
+		errx(EXIT_FAILURE, "len > INT_MAX");
+	}
 
 	i = vsnprintf(buf, len, fmt, ap);
-	if (i < 0)
-		err(1, "vsnprintf failed");
+	if (i < 0) {
+		err(EXIT_FAILURE, "vsnprintf failed");
+	}
 
 	return (i);
 }

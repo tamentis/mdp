@@ -77,7 +77,7 @@ static void
 cleanup(void)
 {
 	if (tmp_path != NULL && unlink(tmp_path) != 0) {
-		err(1, "WARNING: unable to remove '%s'", tmp_path);
+		err(EXIT_FAILURE, "WARNING: unable to remove '%s'", tmp_path);
 	}
 
 	lock_unset();
@@ -119,7 +119,7 @@ spawn_editor(char *path)
 	debug("spawn_editor: %s", s);
 
 	if (system(s) != 0)
-		err(1, "unable to spawn editor: %s", s);
+		err(EXIT_FAILURE, "unable to spawn editor: %s", s);
 }
 
 
@@ -171,20 +171,20 @@ edit_results(void)
 	tmp_path = join_path(home, ".mdp/tmp_edit.XXXXXXXX");
 	tmp_fd = mkstemp(tmp_path);
 	if (tmp_fd == -1) {
-		err(1, "edit_results mkstemp()");
+		err(EXIT_FAILURE, "edit_results mkstemp()");
 	}
 
 	/* Iterate over the results and dump them in this file. */
 	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
 		if (write(tmp_fd, result->mbs_value, result->mbs_len) == -1)
-			err(1, "edit_results write");
+			err(EXIT_FAILURE, "edit_results write");
 		if (write(tmp_fd, "\n", 1) == -1)
-			err(1, "edit_results write (new-line)");
+			err(EXIT_FAILURE, "edit_results write (new-line)");
 	}
 
 	if (close(tmp_fd) != 0) {
-		err(1, "edit_results close(tmp_fd)");
+		err(EXIT_FAILURE, "edit_results close(tmp_fd)");
 	}
 
 	spawn_editor(tmp_path);
@@ -232,7 +232,7 @@ static void
 usage(void)
 {
 	printf("usage: mdp [-ecrVh] [-g len] [keyword ...]\n");
-	exit(-1);
+	exit(EXIT_FAILURE);
 }
 
 
@@ -248,11 +248,11 @@ get_home(void)
 	s = getenv("HOME");
 
 	if (s == NULL) {
-		errx(0, "unknown variable '$HOME'");
+		errx(EXIT_FAILURE, "unknown variable '$HOME'");
 	}
 
 	if (!file_exists(s)) {
-		errx(0, "your $HOME does not exist");
+		errx(EXIT_FAILURE, "your $HOME does not exist");
 	}
 
 	return strdup(s);
@@ -349,7 +349,7 @@ main(int ac, char **av)
 
 			gpg_check();
 			if (load_results_gpg() == 0)
-				errx(100, "no passwords");
+				errx(EXIT_FAILURE, "no passwords");
 			filter_results();
 			print_results();
 			break;
@@ -361,7 +361,7 @@ main(int ac, char **av)
 
 			gpg_check();
 			if (load_results_gpg() == 0)
-				errx(100, "no passwords");
+				errx(EXIT_FAILURE, "no passwords");
 			filter_results();
 			pager(START_WITHOUT_PROMPT);
 			break;
@@ -370,7 +370,7 @@ main(int ac, char **av)
 			debug("mode: MODE_QUERY");
 			gpg_check();
 			if (load_results_gpg() == 0)
-				errx(100, "no passwords");
+				errx(EXIT_FAILURE, "no passwords");
 			pager(START_WITH_PROMPT);
 			break;
 
@@ -387,8 +387,9 @@ main(int ac, char **av)
 			 * right away in case something fail before a normal
 			 * exit.
 			 */
-			if (atexit(atexit_cleanup) != 0)
-				err(1, "get_results atexit");
+			if (atexit(atexit_cleanup) != 0) {
+				err(EXIT_FAILURE, "get_results atexit");
+			}
 
 			signal(SIGINT, sig_cleanup);
 			signal(SIGKILL, sig_cleanup);
@@ -406,11 +407,11 @@ main(int ac, char **av)
 			break;
 
 		default:
-			errx(1, "unknown mode");
+			errx(EXIT_FAILURE, "unknown mode");
 			break;
 	}
 
 	debug("normal shutdown");
 
-	return 0;
+	return EXIT_SUCCESS;
 }

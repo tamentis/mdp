@@ -63,8 +63,9 @@ debug(const char *fmt, ...)
 	time(&tvec);
 	timeptr = localtime(&tvec);
 	i = strftime(tbuf, sizeof(tbuf), "%Y-%m-%d %H:%M:%S", timeptr);
-	if (i == 0)
-		errx(0, "strftime failed");
+	if (i == 0) {
+		errx(EXIT_FAILURE, "strftime failed");
+	}
 
 	snprintf(pfmt, sizeof(pfmt), "[%s] [pid:%5d] %s\n", tbuf, pid, fmt);
 
@@ -185,7 +186,7 @@ wcs_duplicate_as_mbs(const wchar_t *str)
 
 	clen = wcstombs(output, str, bytelen);
 	if (clen == (size_t)-1) {
-		err(100, "encoding error (invalid locale?)");
+		err(EXIT_FAILURE, "encoding error (invalid locale?)");
 	}
 
 	return output;
@@ -205,7 +206,7 @@ cancel_pid_timeout()
 
 	if (kill(watcher_pid, SIGINT) != 0) {
 		if (errno != ESRCH) {
-			err(1, "cancel_pid_timeout");
+			err(EXIT_FAILURE, "cancel_pid_timeout");
 		}
 	}
 
@@ -226,7 +227,7 @@ set_pid_timeout(pid_t pid, int timeout)
 
 	switch (watcher_pid) {
 	case -1:
-		err(1, "set_pid_timeout fork()");
+		err(EXIT_FAILURE, "set_pid_timeout fork()");
 		break;
 
 	case 0: /* Child process */
@@ -240,8 +241,9 @@ set_pid_timeout(pid_t pid, int timeout)
 		debug("set_pid_timeout kill: %d", pid);
 		fprintf(stderr, "gpg timed out after %d seconds, aborting\n",
 				timeout);
-		if (kill(pid, SIGINT) != 0)
-			err(1, "set_pid_timeout child kill");
+		if (kill(pid, SIGINT) != 0) {
+			err(EXIT_FAILURE, "set_pid_timeout child kill");
+		}
 		/* Avoid atexit() to run on the child. */
 		_Exit(0);
 
@@ -269,7 +271,7 @@ file_exists(char *filepath)
 		if (errno == ENOENT) {
 			return 0;
 		}
-		err(1, "file_exists stat()");
+		err(EXIT_FAILURE, "file_exists stat()");
 	}
 
 	return 1;

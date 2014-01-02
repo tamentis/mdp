@@ -54,7 +54,7 @@ extern char	*home;
 
 
 #define get_boolean(v) (v != NULL && *v == 'o') ? 1 : 0
-#define conf_err(m) errx(100, "config:%d: " m, linenum)
+#define conf_err(m) errx(EXIT_FAILURE, "config:%d: " m, linenum)
 
 
 /*
@@ -118,8 +118,8 @@ set_variable(char *name, char *value, int linenum)
 	/* set timeout <integer> */
 	} else if (strcmp(name, "timeout") == 0) {
 		if (value == NULL || *value == '\0')
-			errx(1, "config:%d: invalid value for timeout\n",
-					linenum);
+			errx(EXIT_FAILURE, "config:%d: invalid value for "
+					"timeout", linenum);
 
 		cfg_timeout = strtoull(value, NULL, 10);
 
@@ -161,8 +161,8 @@ process_config_line(char *line, int linenum)
 	/* set varname value */
 	if (strcmp(keyword, "set") == 0) {
 		if ((name = strdelim(&line)) == NULL) {
-			errx(1, "%s: set without variable name on line %d.\n",
-					cfg_config_path, linenum);
+			errx(EXIT_FAILURE, "%s: set without variable name on "
+					"line %d.", cfg_config_path, linenum);
 			return -1;
 		}
 		value = strdelim(&line);
@@ -170,8 +170,8 @@ process_config_line(char *line, int linenum)
 
 	/* Unknown operation... Code help us. */
 	} else {
-		errx(1, "%s: unknown command on line %d.\n", cfg_config_path,
-				linenum);
+		errx(EXIT_FAILURE, "%s: unknown command on line %d.",
+				cfg_config_path, linenum);
 		return -1;
 	}
 
@@ -191,26 +191,25 @@ config_check_directory(char *path)
 	if (stat(path, &sb) != 0) {
 		if (errno == ENOENT) {
 			if (mkdir(path, 0700) != 0) {
-				errx(1, "can't create %s: %s", path,
-						strerror(errno));
+				err(EXIT_FAILURE, "can't create %s", path);
 			}
 			if (stat(path, &sb) != 0) {
-				errx(1, "can't stat newly created %s: %s",
-						path, strerror(errno));
+				err(EXIT_FAILURE, "can't stat newly created "
+						"file %s", path);
 			}
 		} else {
-			errx(1, "can't access %s: %s", path, strerror(errno));
+			err(EXIT_FAILURE, "can't access %s", path);
 		}
 	}
 
 	if (!S_ISDIR(sb.st_mode))
-		errx(1, "%s is not a directory", path);
+		errx(EXIT_FAILURE, "%s is not a directory", path);
 
 	if (sb.st_uid != 0 && sb.st_uid != getuid())
-		errx(1, "bad owner on %s", path);
+		errx(EXIT_FAILURE, "bad owner on %s", path);
 
 	if ((sb.st_mode & 022) != 0)
-		errx(1, "bad permissions on %s", path);
+		errx(EXIT_FAILURE, "bad permissions on %s", path);
 }
 
 
@@ -229,18 +228,21 @@ config_check_file(char *path)
 		if (errno == ENOENT) {
 			return;
 		} else {
-			errx(1, "can't access %s: %s", path, strerror(errno));
+			err(EXIT_FAILURE, "can't access %s", path);
 		}
 	}
 
-	if (!S_ISREG(sb.st_mode))
-		errx(1, "%s is not a regular file", path);
+	if (!S_ISREG(sb.st_mode)) {
+		errx(EXIT_FAILURE, "%s is not a regular file", path);
+	}
 
-	if (sb.st_uid != 0 && sb.st_uid != getuid())
-		errx(1, "bad owner on %s", path);
+	if (sb.st_uid != 0 && sb.st_uid != getuid()) {
+		errx(EXIT_FAILURE, "bad owner on %s", path);
+	}
 
-	if ((sb.st_mode & 022) != 0)
-		errx(1, "bad permissions on %s", path);
+	if ((sb.st_mode & 022) != 0) {
+		errx(EXIT_FAILURE, "bad permissions on %s", path);
+	}
 }
 
 

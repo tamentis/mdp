@@ -42,7 +42,7 @@ lock_set()
 	FILE *fp;
 
 	if (lock_exists()) {
-		errx(1, "locked (%s)", lock_path);
+		errx(EXIT_FAILURE, "locked (%s)", lock_path);
 	}
 
 	fp = fopen(lock_path, "w");

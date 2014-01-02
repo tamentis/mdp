@@ -136,7 +136,7 @@ line_matches_regex(const wchar_t *line)
 		wcstombs(mbs_line, line, sizeof(mbs_line));
 
 		if (regcomp(&preg, ARRAY_ITEM(&keywords, i), flags) != 0)
-			err(100, "line_matches_regex");
+			err(EXIT_FAILURE, "line_matches_regex");
 
 		if (regexec(&preg, mbs_line, 0, NULL, 0) != 0) {
 			matches = false;
@@ -269,8 +269,9 @@ load_results_gpg()
 	length = load_results_fp(fp);
 
 	/* GnuPG exited with an non-zero return code. */
-	if (gpg_close(fp) != 0)
-		errx(100, "GnuPG returned with an error");
+	if (gpg_close(fp) != 0) {
+		errx(EXIT_FAILURE, "GnuPG returned with an error");
+	}
 
 	return length;
 }

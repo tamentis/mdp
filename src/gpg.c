@@ -60,13 +60,13 @@ gpg_check(void)
 
 	cmd = join(' ', cfg_gpg_path, "--version > /dev/null");
 	if (system(cmd) != 0) {
-		errx(1, "unable to run gpg (check gpg_path)");
+		errx(EXIT_FAILURE, "unable to run gpg (check gpg_path)");
 	}
 	xfree(cmd);
 
 	cmd = join(' ', cfg_gpg_path, "--list-secret-keys | grep -q sec");
 	if (system(cmd) != 0) {
-		errx(1, "no gpg key found");
+		errx(EXIT_FAILURE, "no gpg key found");
 	}
 }
 
@@ -91,30 +91,30 @@ gpg_open()
 	debug("gpg_open %s %s", cfg_gpg_path, passwords_path);
 
 	if (pipe(pout) != 0)
-		err(1, "gpg_decode pipe(pout)");
+		err(EXIT_FAILURE, "gpg_decode pipe(pout)");
 
 	pid = fork();
 
 	switch (pid) {
 	case -1:
-		err(1, "gpg_decode fork");
+		err(EXIT_FAILURE, "gpg_decode fork");
 		break;
 	case 0:
 		/* Child process pipe dance. */
 		if (close(pout[0]))
-			err(1, "child close(pout[0])");
+			err(EXIT_FAILURE, "child close(pout[0])");
 
 		if (dup2(pout[1], STDOUT_FILENO) == -1)
-			err(1, "dup2 (child stdout)");
+			err(EXIT_FAILURE, "dup2 (child stdout)");
 
 		if (pout[1] != STDOUT_FILENO)
 			if (close(pout[1]))
-				err(1, "child close(pipe_out_fd[1])");
+				err(EXIT_FAILURE, "child close(pipe_out[1])");
 
 		debug("gpg_open child pid: %d", getpid());
 
 		execlp(cfg_gpg_path, "-q", "--decrypt", passwords_path, NULL);
-		err(1, "couldn't execute");
+		err(EXIT_FAILURE, "couldn't execute");
 		/* NOTREACHED */
 	default:
 		/* Parent process. NOP'ing. */
@@ -122,8 +122,9 @@ gpg_open()
 	}
 
 	/* We are the parent. Close the child side of the pipe. */
-	if (close(pout[1]) != 0)
-		err(1, "close(pout[1])");
+	if (close(pout[1]) != 0) {
+		err(EXIT_FAILURE, "close(pout[1])");
+	}
 
 	fp = fdopen(pout[0], "r");
 
@@ -150,16 +151,19 @@ gpg_close(FILE *fp)
 
 	debug("gpg_close");
 
-	if (fclose(fp) != 0)
-		err(1, "gpg_close fclose()");
+	if (fclose(fp) != 0) {
+		err(EXIT_FAILURE, "gpg_close fclose()");
+	}
 
 	x = wait(&status);
 
-	if (WIFSIGNALED(status))
-		errx(1, "gpg_close gpg interrupted");
+	if (WIFSIGNALED(status)) {
+		errx(EXIT_FAILURE, "gpg_close gpg interrupted");
+	}
 
-	if (x == -1)
-		err(1, "gpg_close wait()");
+	if (x == -1) {
+		err(EXIT_FAILURE, "gpg_close wait()");
+	}
 
 	retcode = WEXITSTATUS(status);
 	debug("gpg_close return code: %d", retcode);
@@ -222,8 +226,9 @@ gpg_encrypt(char *tmp_path)
 			tmp_path);
 
 	debug("gpg_encrypt system(%s)", cmd);
-	if (system(cmd) != 0)
-		errx(1, "gpg_encrypt system(%s) != 0", cmd);
+	if (system(cmd) != 0) {
+		errx(EXIT_FAILURE, "gpg_encrypt system(%s) != 0", cmd);
+	}
 
 	/* Generate the backup filename. */
 	backup_path = duplicate_with_backup_suffix(passwords_path);
@@ -235,29 +240,36 @@ gpg_encrypt(char *tmp_path)
 
 			/* Delete the previous backup. */
 			if (unlink(backup_path) != 0) {
-				if (errno != ENOENT)
-					err(1, "gpg_encrypt backup unlink");
+				if (errno != ENOENT) {
+					err(EXIT_FAILURE, "gpg_encrypt backup "
+							"unlink");
+				}
 			}
 
 			/* Create a physical link. */
-			if (link(passwords_path, backup_path) != 0)
-				err(1, "gpg_encrypt backup link");
+			if (link(passwords_path, backup_path) != 0) {
+				err(EXIT_FAILURE, "gpg_encrypt backup link");
+			}
 		}
 
 		/* Unlink the previous location, keeping only the backup. */
-		if (unlink(passwords_path) != 0)
-			err(1, "gpg_encrypt unlink(passwords_path)");
+		if (unlink(passwords_path) != 0) {
+			err(EXIT_FAILURE, "gpg_encrypt unlink(passwords_path)");
+		}
 	}
 
 	/* Move the newly encrypted file to its new location. */
 	tmp_encrypted_path = duplicate_with_gpg_suffix(tmp_path);
-	if (link(tmp_encrypted_path, passwords_path) != 0)
-		err(1, "gpg_encrypt link(tmp_encrypted_path, passwords_path)");
-	else {
-		if (chmod(passwords_path, S_IRUSR | S_IWUSR) !=0)
-			err(1, "gpg_encrypt chmod");
+	if (link(tmp_encrypted_path, passwords_path) != 0) {
+		err(EXIT_FAILURE, "gpg_encrypt link(tmp_encrypted_path, "
+				"passwords_path)");
+	} else {
+		if (chmod(passwords_path, S_IRUSR | S_IWUSR) !=0) {
+			err(EXIT_FAILURE, "gpg_encrypt chmod");
+		}
 	}
 
-	if (unlink(tmp_encrypted_path) != 0)
-		err(1, "gpg_encrypt unlink(tmp_encrypted_path)");
+	if (unlink(tmp_encrypted_path) != 0) {
+		err(EXIT_FAILURE, "gpg_encrypt unlink(tmp_encrypted_path)");
+	}
 }
