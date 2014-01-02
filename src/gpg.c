@@ -54,22 +54,30 @@ pid_t gpg_pid;
 
 
 /*
- * Ensures gpg exists, runs and is configured.
+ * Ensures gpg exists, runs and is configured. Also makes sure we have a
+ * recipient key configured or passed via the command-line argument.
  */
 void
 gpg_check(void)
 {
 	char *cmd;
 
+	/* Doesn't run, doesn't exist. */
 	cmd = join(' ', cfg_gpg_path, "--version > /dev/null");
 	if (system(cmd) != 0) {
 		errx(EXIT_FAILURE, "unable to run gpg (check gpg_path)");
 	}
 	xfree(cmd);
 
+	/* No key configured at all. */
 	cmd = join(' ', cfg_gpg_path, "--list-secret-keys | grep -q sec");
 	if (system(cmd) != 0) {
 		errx(EXIT_FAILURE, "no gpg key found");
+	}
+
+	/* No key defined in the configuration/cmd-line. */
+	if (cfg_gpg_key_id == NULL) {
+		errx(EXIT_FAILURE, "no gpg_key_id (use -k or ~/.mdp/config).");
 	}
 }
 
@@ -216,15 +224,9 @@ duplicate_with_gpg_suffix(const char *path)
 void
 gpg_encrypt(char *tmp_path)
 {
-	char cmd[GPG_CMD_LENGTH];
-	char cmd_key[GPG_KEY_MAX_LENGTH] = "";
-	char *backup_path, *tmp_encrypted_path;
+	char *cmd, *backup_path, *tmp_encrypted_path;
 
-	if (cfg_gpg_key_id != NULL) {
-		snprintf(cmd_key, sizeof(cmd_key), "-r %s", cfg_gpg_key_id);
-	}
-
-	snprintf(cmd, sizeof(cmd), "%s %s -e %s", cfg_gpg_path, cmd_key,
+	cmd = xprintf("%s -r %s -e %s", cfg_gpg_path, cfg_gpg_key_id,
 			tmp_path);
 
 	debug("gpg_encrypt system(%s)", cmd);

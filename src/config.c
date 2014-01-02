@@ -48,6 +48,7 @@ extern unsigned int	 cfg_password_count;
 extern bool		 cfg_backup;
 extern unsigned int	 cfg_timeout;
 
+extern char		*cmd_gpg_key_id;
 extern char		*passwords_path;
 extern char		*lock_path;
 extern char		*home;
@@ -274,6 +275,13 @@ config_set_defaults()
 {
 	if (cfg_gpg_path == NULL) {
 		cfg_gpg_path = strdup("/usr/bin/gpg");
+	}
+
+	if (cmd_gpg_key_id != NULL) {
+		if (cfg_gpg_key_id != NULL) {
+			xfree(cfg_gpg_key_id);
+		}
+		cfg_gpg_key_id = cmd_gpg_key_id;
 	}
 
 	lock_path = join_path(home, ".mdp/lock");

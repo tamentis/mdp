@@ -159,3 +159,29 @@ xvsnprintf(char *buf, size_t len, const char *fmt, va_list ap)
 
 	return (i);
 }
+
+/*
+ * Same as sprintf except that the output string is dynamically allocated.
+ *
+ * This is not a fast function, you don't want to use it in a tight loop.
+ */
+char *
+xprintf(const char *fmt, ...)
+{
+	va_list ap;
+	int len;
+	char *s;
+
+	/* First run to identify the required length. */
+	va_start(ap, fmt);
+	len = xvsnprintf(NULL, 0, fmt, ap);
+	va_end(ap);
+
+	/* Second run actually write to the newly allocated char* */
+	s = xmalloc(len + 1);
+	va_start(ap, fmt);
+	xvsnprintf(s, len + 1, fmt, ap);
+	va_end(ap);
+
+	return s;
+}

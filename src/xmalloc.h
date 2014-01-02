@@ -23,3 +23,4 @@ int		 xasprintf(char **, const char *, ...);
 int		 xvasprintf(char **, const char *, va_list);
 int		 xsnprintf(char *, size_t, const char *, ...);
 int		 xvsnprintf(char *, size_t, const char *, va_list);
+char		*xprintf(const char *, ...);

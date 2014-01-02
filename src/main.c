@@ -62,6 +62,7 @@ char		*passwords_path = NULL;
 char		*lock_path = NULL;
 char		*tmp_path = NULL;
 unsigned int	 password_length = 16;
+char		*cmd_gpg_key_id = NULL;
 
 /* Result set defined in results.c */
 extern struct wlist results;
@@ -228,7 +229,8 @@ print_passwords(int length, unsigned int count)
 static void
 usage(void)
 {
-	printf("usage: mdp [-ecrVh] [-g len] [keyword ...]\n");
+	printf("usage: mdp [-eErqVhd] [-c config] [-k key_id] [-g len] "
+			"[keyword ...]\n");
 	exit(EXIT_FAILURE);
 }
 
@@ -287,7 +289,7 @@ main(int ac, char **av)
 	home = get_home();
 	cfg_editor = get_env_editor();
 
-	while ((opt = getopt(ac, av, "hdEVqeg:rc:")) != -1) {
+	while ((opt = getopt(ac, av, "eErqVhdc:k:g:")) != -1) {
 		switch (opt) {
 		case 'd':
 			cfg_debug = true;
@@ -313,6 +315,9 @@ main(int ac, char **av)
 			break;
 		case 'c':
 			cfg_config_path = strdup(optarg);
+			break;
+		case 'k':
+			cmd_gpg_key_id = strdup(optarg);
 			break;
 		default:
 			usage();

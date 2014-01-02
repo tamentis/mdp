@@ -2,7 +2,9 @@ NAME
      mdp - minimalist password safe
 
 SYNOPSIS
-     mdp [-c config] [-g length] [-erqVh] [keyword ...]
+     mdp [-eVh] [-c config] [-k key_id]
+     mdp [-Vh] file ... -g length
+     mdp [-ErqVh] [-c config] [-k key_id] keyword ...
 
 DESCRIPTION
      mdp wraps GnuPG, your favorite editor and a custom temporary fullscreen
@@ -23,11 +25,17 @@ DESCRIPTION
 
      -E      Use regexes instead of plain text matches (e.g. ^.mail).
 
+     -k key_id
+             GnuPG key id (8 alpha-numeric characters). This could be used to
+             specify your GnuPG key id in case you did not define it in your
+             configuration file.
+
      -q      Start mdp in query mode instead of displaying results directly.
              This will avoid you from entering your GPG password multiple
              time. Query mode times out after a few seconds of inactivity.
 
-     -r      Displays the result without pager, plain terminal dump.
+     -r      Displays the result without pager, plain terminal dump (not
+             recommended).
 
      -g length
              Generates 4 passwords of the given length.
@@ -63,11 +71,12 @@ CONFIGURATION
              GnuPG absolute path (default: /usr/bin/gpg)
 
      set gpg_key_id key_id
-             GnuPG key id (default: none). If no key is selected, gpg will
-             attempt to pick the key bound to the password file. When saving
-             the file, you will be prompted to pick the encryption key. This
-             can get quickly annoying, you're highly suggested to set this
-             value.
+             GnuPG key id (default: none). If no key is selected, mdp will
+             expect you to specify it on the command-line (-k). If no key was
+             specified either way, mdp will abort. This was made mandatory to
+             avoid password loss. Note that this parameter is ignored during
+             the decryption phase, GnuPG picks the key based on the content of
+             the password file.
 
      set gpg_timeout seconds
              Number of seconds to give GnuPG for password and pipe
