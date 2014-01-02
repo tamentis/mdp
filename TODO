@@ -1,7 +1,4 @@
 BUGS
- - Don't use a buffer to read lines in the password file, assume
-   lines can have any length.
-
  - Use the key_id for decrypt if possible or don't let the user edit unless the
    key is valid.
 

@@ -15,6 +15,12 @@
  */
 
 
+/*
+ * Define how much memory to allocate when reading lines from files. If you
+ * define new buffers of this size, try to make them static if possible.
+ */
+#define MAX_LINE_SIZE 16 * 1024
+
 enum action_mode {
 	MODE_EXIT,
 	MODE_VERSION,

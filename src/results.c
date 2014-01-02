@@ -37,6 +37,7 @@
 #include "keywords.h"
 #include "utils.h"
 #include "gpg.h"
+#include "mdp.h"
 
 
 #define KEYWORD_LENGTH 50
@@ -129,7 +130,7 @@ line_matches_regex(const wchar_t *line)
 	unsigned int i;
 	bool matches = true;
 	int flags = 0;
-	char mbs_line[MAX_LINE_SIZE];
+	static char mbs_line[MAX_LINE_SIZE];
 	regex_t preg;
 
 	for (i = 0; i < ARRAY_LENGTH(&keywords); i++) {
@@ -215,8 +216,8 @@ int
 load_results_fp(FILE *fp)
 {
 	unsigned int i, line_count = 0;
-	wchar_t wline[MAX_LINE_SIZE];
-	char line[MAX_LINE_SIZE];
+	static wchar_t wline[MAX_LINE_SIZE];
+	static char line[MAX_LINE_SIZE];
 
 	/* Global variables used to check if the result set changed. */
 	result_sum = 0;

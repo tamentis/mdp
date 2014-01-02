@@ -15,9 +15,6 @@
  */
 
 
-#define MAX_LINE_SIZE 1024
-
-
 struct result {
 	bool visible;
 	wchar_t *wcs_value;

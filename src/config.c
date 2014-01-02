@@ -287,8 +287,7 @@ void
 config_read()
 {
 	FILE *fp;
-	// FIXME remove the limit here.
-	char line[128];
+	static char line[MAX_LINE_SIZE];
 	int linenum = 1;
 
 	fp = fopen(cfg_config_path, "r");

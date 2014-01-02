@@ -7,6 +7,7 @@
 	* Increase compilation warnings and clean most of them up.
 	* Fix pager display bug on long lines.
 	* Fix a bug with mdp unable to properly detect a SIGINT sent to gpg.
+	* Increased max line size to 16KB (both password and config).
 
 0.5 Bertrand Janin <b@janin.com> (2013-08-01)
 
