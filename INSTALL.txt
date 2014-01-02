@@ -2,13 +2,14 @@ mdp - installation notes
 ========================
 
 REQUIREMENTS
-    You need GnuPG and a working key configured. Have a look at the following
-    URL if you have no idea what this means:
+    - GCC or clang (recent enough to compile C99).
+    - GnuPG configured with a working key. Have a look at the following URL if
+      you are not sure how to configure GnuPG:
 
         http://www.dewinter.com/gnupg_howto/english/GPGMiniHowto-3.html
 
-    On most Linux distribution, ncurses headers and wide-char libraries
-    need to be installed too::
+    - On most Linux distribution, ncurses headers and wide-char libraries need
+      to be installed too::
 
         apt-get install libncursesw5-dev libncursesw5
 
