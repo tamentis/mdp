@@ -27,6 +27,7 @@
 #include <err.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <signal.h>
 #include <strings.h>
 
@@ -38,7 +39,7 @@
 #define WHITESPACE	 " \t\r\n"
 
 
-extern int	 cfg_debug;
+extern bool	 cfg_debug;
 pid_t		 watcher_pid = 0;
 
 
@@ -51,11 +52,11 @@ debug(const char *fmt, ...)
 	va_list	ap;
 	time_t tvec;
 	struct tm *timeptr;
-	char pfmt[256], tbuf[20];
+	static char pfmt[256], tbuf[20];
 	int i;
 	pid_t pid;
 
-	if (cfg_debug != 1)
+	if (!cfg_debug)
 		return 0;
 
 	pid = getpid();

@@ -41,7 +41,7 @@
 
 #define KEYWORD_LENGTH 50
 
-extern int cfg_regex;
+extern bool cfg_regex;
 
 struct wlist results = ARRAY_INITIALIZER;
 extern struct kwlist keywords;

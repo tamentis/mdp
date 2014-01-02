@@ -52,9 +52,9 @@ int		 cfg_gpg_timeout = 20;
 char		*cfg_editor;
 int		 cfg_timeout = 10;
 int		 cfg_password_count = 4;
-int		 cfg_backup = 1;
-int		 cfg_debug = 0;
-int		 cfg_regex = 0;
+bool		 cfg_backup = true;
+bool		 cfg_debug = false;
+bool		 cfg_regex = false;
 
 /* Other globals */
 char		*home = NULL;
@@ -293,10 +293,10 @@ main(int ac, char **av)
 	while ((opt = getopt(ac, av, "hdEVqeg:rc:")) != -1) {
 		switch (opt) {
 		case 'd':
-			cfg_debug = 1;
+			cfg_debug = true;
 			break;
 		case 'E':
-			cfg_regex = 1;
+			cfg_regex = true;
 			break;
 		case 'V':
 			mode = MODE_VERSION;
@@ -325,7 +325,7 @@ main(int ac, char **av)
 	if (cfg_config_path == NULL) {
 		cfg_config_path = join_path(home, ".mdp/config");
 	}
-	debug("read config (%ls)", cfg_config_path);
+	debug("read config (%s)", cfg_config_path);
 
 	config_check_paths();
 	config_read();

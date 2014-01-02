@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <wchar.h>
 #include <errno.h>
 #include <err.h>
@@ -40,7 +41,7 @@
 extern char	*cfg_gpg_path;
 extern char	*cfg_gpg_key_id;
 extern int	 cfg_gpg_timeout;
-extern int	 cfg_backup;
+extern bool	 cfg_backup;
 extern char	*passwords_path;
 
 

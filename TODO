@@ -1,6 +1,8 @@
 BUGS
  - If the gpg_timeout kicks in, we still spawn the editor, wrongly.
 
+ - Properly kill the pid watch for gpg, it remains in the background on OS X.
+
  - Don't use a buffer to read lines in the password file, assume
    lines can have any length.
 

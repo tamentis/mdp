@@ -45,7 +45,7 @@ extern char	*cfg_gpg_key_id;
 extern int	 cfg_gpg_timeout;
 extern char	*cfg_editor;
 extern int	 cfg_password_count;
-extern int	 cfg_backup;
+extern bool	 cfg_backup;
 extern int	 cfg_timeout;
 
 extern char	*passwords_path;
@@ -53,7 +53,7 @@ extern char	*lock_path;
 extern char	*home;
 
 
-#define get_boolean(v) (v != NULL && *v == 'o') ? 1 : 0
+#define parse_boolean(v) (v != NULL && *v == 'o') ? true : false
 #define conf_err(m) errx(EXIT_FAILURE, "config:%d: " m, linenum)
 
 
@@ -125,7 +125,7 @@ set_variable(char *name, char *value, int linenum)
 
 	/* set backup <bool> */
 	} else if (strcmp(name, "backup") == 0) {
-		cfg_backup = get_boolean(value);
+		cfg_backup = parse_boolean(value);
 
 	/* ??? */
 	} else {
