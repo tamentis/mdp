@@ -39,18 +39,18 @@
 #include "xmalloc.h"
 
 
-extern char	*cfg_config_path;
-extern char	*cfg_gpg_path;
-extern char	*cfg_gpg_key_id;
-extern int	 cfg_gpg_timeout;
-extern char	*cfg_editor;
-extern int	 cfg_password_count;
-extern bool	 cfg_backup;
-extern int	 cfg_timeout;
+extern char		*cfg_config_path;
+extern char		*cfg_gpg_path;
+extern char		*cfg_gpg_key_id;
+extern unsigned int	 cfg_gpg_timeout;
+extern char		*cfg_editor;
+extern unsigned int	 cfg_password_count;
+extern bool		 cfg_backup;
+extern unsigned int	 cfg_timeout;
 
-extern char	*passwords_path;
-extern char	*lock_path;
-extern char	*home;
+extern char		*passwords_path;
+extern char		*lock_path;
+extern char		*home;
 
 
 #define parse_boolean(v) (v != NULL && *v == 'o') ? true : false

@@ -48,10 +48,10 @@
 char		*cfg_config_path = NULL;
 char		*cfg_gpg_path = NULL;
 char		*cfg_gpg_key_id = NULL;
-int		 cfg_gpg_timeout = 20;
+unsigned int	 cfg_gpg_timeout = 20;
 char		*cfg_editor;
-int		 cfg_timeout = 10;
-int		 cfg_password_count = 4;
+unsigned int	 cfg_timeout = 10;
+unsigned int	 cfg_password_count = 4;
 bool		 cfg_backup = true;
 bool		 cfg_debug = false;
 bool		 cfg_regex = false;
@@ -61,7 +61,7 @@ char		*home = NULL;
 char		*passwords_path = NULL;
 char		*lock_path = NULL;
 char		*tmp_path = NULL;
-int		 password_length = 16;
+unsigned int	 password_length = 16;
 
 /* Result set defined in results.c */
 extern struct wlist results;
@@ -163,7 +163,6 @@ has_changed(char *tmp_path)
 static void
 edit_results(void)
 {
-	unsigned int i;
 	int tmp_fd = -1;
 	struct result *result;
 
@@ -175,7 +174,7 @@ edit_results(void)
 	}
 
 	/* Iterate over the results and dump them in this file. */
-	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
+	for (unsigned int i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
 		if (write(tmp_fd, result->mbs_value, result->mbs_len) == -1)
 			err(EXIT_FAILURE, "edit_results write");
@@ -203,10 +202,9 @@ edit_results(void)
 static void
 print_results(void)
 {
-	unsigned int i;
 	struct result *result;
 
-	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
+	for (unsigned int i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
 		if (result->visible) {
 			printf("%ls\n", result->wcs_value);
@@ -216,12 +214,11 @@ print_results(void)
 
 
 static void
-print_passwords(int length, int count)
+print_passwords(int length, unsigned int count)
 {
 	char password[MAX_PASSWORD_LENGTH];
-	int i;
 
-	for (i = 0; i < count; i++) {
+	for (unsigned int i = 0; i < count; i++) {
 		generate_password(password, length, "NCL");
 		printf("%s\n", password);
 	}

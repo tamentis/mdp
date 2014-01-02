@@ -83,10 +83,10 @@ result_new(wchar_t *value)
 unsigned int
 results_visible_length()
 {
-	unsigned int i, len = 0;
+	unsigned int len = 0;
 	struct result *result;
 
-	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
+	for (unsigned int i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
 		if (result->visible)
 			len++;
@@ -102,11 +102,10 @@ results_visible_length()
 static bool
 line_matches_plain(const wchar_t *line)
 {
-	unsigned int i;
 	bool matches = true;
 	wchar_t kw[KEYWORD_LENGTH];
 
-	for (i = 0; i < ARRAY_LENGTH(&keywords); i++) {
+	for (unsigned int i = 0; i < ARRAY_LENGTH(&keywords); i++) {
 		mbstowcs(kw, ARRAY_ITEM(&keywords, i), KEYWORD_LENGTH);
 
 		if (wcscasestr(line, (const wchar_t *)kw) == NULL) {
@@ -127,13 +126,12 @@ line_matches_plain(const wchar_t *line)
 static int
 line_matches_regex(const wchar_t *line)
 {
-	unsigned int i;
 	bool matches = true;
 	int flags = 0;
 	static char mbs_line[MAX_LINE_SIZE];
 	regex_t preg;
 
-	for (i = 0; i < ARRAY_LENGTH(&keywords); i++) {
+	for (unsigned int i = 0; i < ARRAY_LENGTH(&keywords); i++) {
 		wcstombs(mbs_line, line, sizeof(mbs_line));
 
 		if (regcomp(&preg, ARRAY_ITEM(&keywords, i), flags) != 0)
@@ -169,10 +167,10 @@ line_matches(const wchar_t *line)
 unsigned int
 get_max_length()
 {
-	unsigned int i, maxlen = 0;
+	unsigned int maxlen = 0;
 	struct result *result;
 
-	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
+	for (unsigned int i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
 
 		if (!result->visible)
@@ -194,10 +192,9 @@ get_max_length()
 void
 filter_results()
 {
-	unsigned int i;
 	struct result *result;
 
-	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
+	for (unsigned int i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
 
 		if (line_matches(result->wcs_value)) {
@@ -215,7 +212,7 @@ filter_results()
 int
 load_results_fp(FILE *fp)
 {
-	unsigned int i, line_count = 0;
+	unsigned int line_count = 0;
 	static wchar_t wline[MAX_LINE_SIZE];
 	static char line[MAX_LINE_SIZE];
 
@@ -235,7 +232,7 @@ load_results_fp(FILE *fp)
 
 		result_size += strlen(line);
 
-		for (i = 0; i < strlen(line); i++) {
+		for (unsigned int i = 0; i < strlen(line); i++) {
 			result_sum += line[i];
 		}
 

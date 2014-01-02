@@ -34,10 +34,9 @@ struct kwlist keywords = ARRAY_INITIALIZER;
 void
 keywords_clear()
 {
-	unsigned int i;
-
-	for (i = 0; i < ARRAY_LENGTH(&keywords); i++)
+	for (unsigned int i = 0; i < ARRAY_LENGTH(&keywords); i++) {
 		xfree(ARRAY_ITEM(&keywords, i));
+	}
 
 	ARRAY_CLEAR(&keywords);
 }

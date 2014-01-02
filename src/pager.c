@@ -55,7 +55,6 @@ extern struct wlist	 results;
 static void
 refresh_listing(void)
 {
-	unsigned int i;
 	int top_offset, left_offset;
 	unsigned int len = results_visible_length();
 	struct result *result;
@@ -79,7 +78,7 @@ refresh_listing(void)
 	 * Place the lines on screen. Since curses will automatically wrap
 	 * longer lines, we need to force a new-line on lines following them.
 	 */
-	for (i = 0; i < ARRAY_LENGTH(&results); i++) {
+	for (unsigned int i = 0; i < ARRAY_LENGTH(&results); i++) {
 		result = ARRAY_ITEM(&results, i);
 
 		if (!result->visible)

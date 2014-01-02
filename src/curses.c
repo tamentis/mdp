@@ -31,11 +31,10 @@
 #include "xmalloc.h"
 
 
-int	 window_width = 0;
-int	 window_height = 0;
-WINDOW	*screen = NULL;
+unsigned int		 window_width = 0, window_height = 0;
+WINDOW			*screen = NULL;
 
-extern int	 cfg_timeout;
+extern unsigned int	 cfg_timeout;
 
 
 /*

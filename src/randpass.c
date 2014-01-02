@@ -66,7 +66,6 @@ construct_mode(char *s_mode)
 {
 	unsigned int mode = 0;
 	int ch = 0;
-	int i = 0;
 	int str_length = 0;
 
 	str_length = strlen(s_mode);
@@ -74,7 +73,7 @@ construct_mode(char *s_mode)
 	if (str_length > MAX_MODE_LENGTH)
 		return -1;
 
-	for (i = 0; i < str_length; i++) {
+	for (int i = 0; i < str_length; i++) {
 		ch = (int)*s_mode;
 		switch (ch) {
 			case 'S':
@@ -110,7 +109,6 @@ construct_mode(char *s_mode)
 int
 generate_password(char *password_string, int length, char *mode)
 {
-	int i = 0;
 	int j = 0;
 	int pass_mode;
 	char *str_pointer;
@@ -124,13 +122,13 @@ generate_password(char *password_string, int length, char *mode)
 		return -1;
 	}
 
-	for (i = 0; i <= 93; i++) {
+	for (int i = 0; i <= 93; i++) {
 		random_weight[i] = 0;
 	}
 
 	str_pointer = password_string;
 
-	for (i = 0; i < length; i++) {
+	for (int i = 0; i < length; i++) {
 		/* Assign random weight in weight array if mode is present */
 		for (j = 0; j <= 93 ; j++) {
 			if ( ( (pass_mode & smbl[j].type) > 0) &&
