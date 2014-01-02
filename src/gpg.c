@@ -44,6 +44,8 @@ extern int	 cfg_gpg_timeout;
 extern bool	 cfg_backup;
 extern char	*passwords_path;
 
+pid_t gpg_pid;
+
 
 #define BACKUP_SUFFIX ".bak"
 #define GPG_SUFFIX ".gpg"
@@ -82,7 +84,6 @@ gpg_open()
 {
 	int pout[2];	// {read, write}
 	FILE *fp;
-	pid_t pid;
 
 	if (!file_exists(passwords_path)) {
 		debug("gpg_open password file does not exist (yet)");
@@ -94,9 +95,9 @@ gpg_open()
 	if (pipe(pout) != 0)
 		err(EXIT_FAILURE, "gpg_decode pipe(pout)");
 
-	pid = fork();
+	gpg_pid = fork();
 
-	switch (pid) {
+	switch (gpg_pid) {
 	case -1:
 		err(EXIT_FAILURE, "gpg_decode fork");
 		break;
@@ -133,7 +134,7 @@ gpg_open()
 	 * Since we spawned a new process, we keep track of it and shut it down
 	 * by force if it takes too long.
 	 */
-	set_pid_timeout(pid, cfg_gpg_timeout);
+	set_pid_timeout(gpg_pid, cfg_gpg_timeout);
 
 	return fp;
 }
@@ -156,7 +157,7 @@ gpg_close(FILE *fp)
 		err(EXIT_FAILURE, "gpg_close fclose()");
 	}
 
-	x = wait(&status);
+	x = waitpid(gpg_pid, &status, 0);
 
 	if (WIFSIGNALED(status)) {
 		errx(EXIT_FAILURE, "gpg_close gpg interrupted");

@@ -6,6 +6,7 @@
 	* Use c99 boolean for results 'show' instead of two value enum.
 	* Increase compilation warnings and clean most of them up.
 	* Fix pager display bug on long lines.
+	* Fix a bug with mdp unable to properly detect a SIGINT sent to gpg.
 
 0.5 Bertrand Janin <b@janin.com> (2013-08-01)
 
