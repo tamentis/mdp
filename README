@@ -5,20 +5,14 @@ SYNOPSIS
      mdp [-c config] [-g length] [-erqVh] [keyword ...]
 
 DESCRIPTION
-     mdp is an acronym for "Mot de Passe" which means "password" in French. It
-     wraps GnuPG for encryption and deals with all the small details of
-     generating, managing and fetching your passwords.
+     mdp wraps GnuPG, your favorite editor and a custom temporary fullscreen
+     pager to let you manage your password library.
 
-     mdp is similar to a dozen other programs. What differentiate it from
-     others is an overall goal for simplicity, not your average button-driven
-     simplicity but more like a Unix-y less is more style. For example, beyond
-     the use of GnuPG for encryption, mdp lets you use your own editor to
-     manage your passwords, categorize them and delete them. I wouldn't use
-     anything but my favorite editor to manage a list, would you?
-
-     In order to avoid passwords to linger on your screen, the results from
-     the queries are displayed through a custom pager that gets cleared after
-     a customizable timeout (default 10 seconds).
+     Naturally manage your listing (create, sort, delete) with your editor,
+     rely on GnuPG to do the right thing for crypto and let mdp do the rest.
+     In order to avoid passwords to linger on your screen, results from your
+     queries are displayed through a custom pager that gets cleared after a
+     customizable timeout (default 10 seconds).
 
      The options are as follows:
 
@@ -143,7 +137,7 @@ BUGS
 
 AUTHORS
      mdp was written by Bertrand Janin <b@janin.com> and is distributed under
-     an ISC license (BSD compatible, OSI compatible).
+     an ISC license (BSD, MIT and OSI compatible).
 
      A bunch of utility functions are borrowed from OpenBSD and OpenSSH, both
      under ISC and BSD licenses, with copyrights from the following authors:
