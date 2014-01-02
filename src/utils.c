@@ -242,7 +242,17 @@ set_pid_timeout(pid_t pid, int timeout)
 		debug("set_pid_timeout sleep(%d)", timeout);
 		sleep(timeout);
 
-		debug("set_pid_timeout kill: %d", pid);
+		/*
+		 * If the parent died in the mean time, don't bother trying to
+		 * kill anything, don't even mention anything to the user
+		 * unless in debug mode.
+		 */
+		if (kill(getppid(), 0) != 0) {
+			debug("set_pid_timeout parent is gone, aborting");
+			_Exit(0);
+		}
+
+		debug("set_pid_timeout kill(%d, SIGINT)", pid);
 		fprintf(stderr, "gpg timed out after %d seconds, aborting\n",
 				timeout);
 		if (kill(pid, SIGINT) != 0) {
