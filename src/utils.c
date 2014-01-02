@@ -180,12 +180,15 @@ wcs_duplicate_as_mbs(const wchar_t *str)
 	size_t bytelen, clen;
 	char *output;
 
-	/* Find out how much space we need to store the multi-byte string. */
+	/*
+	 * Find out how much space we need to store the multi-byte string
+	 * (excluding the NUL-byte).
+	 */
 	bytelen = wcstombs(NULL, str, 0);
 
-	output = xmalloc(bytelen);
+	output = xmalloc(bytelen + 1);
 
-	clen = wcstombs(output, str, bytelen);
+	clen = wcstombs(output, str, bytelen + 1);
 	if (clen == (size_t)-1) {
 		err(EXIT_FAILURE, "encoding error (invalid locale?)");
 	}
