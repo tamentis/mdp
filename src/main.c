@@ -113,14 +113,17 @@ sig_cleanup(int dummy)
 static void
 spawn_editor(char *path)
 {
-	char s[MAXPATHLEN];
+	char *cmd;
 
-	snprintf(s, MAXPATHLEN, "%s \"%s\"", cfg_editor, path);
+	cmd = xprintf("%s \"%s\"", cfg_editor, path);
 
-	debug("spawn_editor: %s", s);
+	debug("spawn_editor: %s", cmd);
 
-	if (system(s) != 0)
-		err(EXIT_FAILURE, "unable to spawn editor: %s", s);
+	if (system(cmd) != 0) {
+		err(EXIT_FAILURE, "unable to spawn editor: %s", cmd);
+	}
+
+	xfree(cmd);
 }
 
 

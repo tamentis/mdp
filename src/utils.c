@@ -52,7 +52,8 @@ debug(const char *fmt, ...)
 	va_list	ap;
 	time_t tvec;
 	struct tm *timeptr;
-	static char pfmt[256], tbuf[20];
+	char *pfmt;
+	static char tbuf[20];
 	int i;
 	pid_t pid;
 
@@ -68,11 +69,13 @@ debug(const char *fmt, ...)
 		errx(EXIT_FAILURE, "strftime failed");
 	}
 
-	snprintf(pfmt, sizeof(pfmt), "[%s] [pid:%5d] %s\n", tbuf, pid, fmt);
+	pfmt = xprintf("[%s] [pid:%5d] %s\n", tbuf, pid, fmt);
 
 	va_start(ap, fmt);
 	i = vfprintf(stderr, pfmt, ap);
 	va_end(ap);
+
+	xfree(pfmt);
 
 	return i;
 }
@@ -84,14 +87,7 @@ debug(const char *fmt, ...)
 char *
 join(char sep, char *base, char *suffix)
 {
-	size_t len;
-	char *s;
-
-	len = strlen(base) + strlen(suffix) + 1;
-	s = xmalloc(len + 1);
-	snprintf(s, len + 1, "%s%c%s", base, sep, suffix);
-
-	return s;
+	return xprintf("%s%c%s", base, sep, suffix);
 }
 
 

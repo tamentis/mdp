@@ -47,12 +47,6 @@ extern char		*passwords_path;
 pid_t gpg_pid;
 
 
-#define BACKUP_SUFFIX ".bak"
-#define GPG_SUFFIX ".gpg"
-#define GPG_KEY_MAX_LENGTH 128
-#define GPG_CMD_LENGTH (MAXPATHLEN * 2 + GPG_KEY_MAX_LENGTH + 16)
-
-
 /*
  * Ensures gpg exists, runs and is configured. Also makes sure we have a
  * recipient key configured or passed via the command-line argument.
@@ -185,40 +179,6 @@ gpg_close(FILE *fp)
 
 
 /*
- * Return the given path with the backup suffix.
- */
-static char *
-duplicate_with_backup_suffix(const char *data_path)
-{
-	char *backup_path;
-	size_t len;
-
-	len = strlen(data_path) + sizeof(BACKUP_SUFFIX);
-	backup_path = xmalloc(len + 1);
-	snprintf(backup_path, len + 1, "%s" BACKUP_SUFFIX, data_path);
-
-	return backup_path;
-}
-
-
-/*
- * Return the given path with the GPG suffix.
- */
-static char *
-duplicate_with_gpg_suffix(const char *path)
-{
-	char *backup_path;
-	size_t len;
-
-	len = strlen(path) + sizeof(GPG_SUFFIX);
-	backup_path = xmalloc(len + 1);
-	snprintf(backup_path, len + 1, "%s" GPG_SUFFIX, path);
-
-	return backup_path;
-}
-
-
-/*
  * Saves the file back though GnuPG by saving to a temp file.
  */
 void
@@ -235,7 +195,7 @@ gpg_encrypt(char *tmp_path)
 	}
 
 	/* Generate the backup filename. */
-	backup_path = duplicate_with_backup_suffix(passwords_path);
+	backup_path = xprintf("%s.bak", passwords_path);
 
 	if (file_exists(passwords_path)) {
 		/* Backup the previous password file. */
@@ -263,7 +223,7 @@ gpg_encrypt(char *tmp_path)
 	}
 
 	/* Move the newly encrypted file to its new location. */
-	tmp_encrypted_path = duplicate_with_gpg_suffix(tmp_path);
+	tmp_encrypted_path = xprintf("%s.gpg", tmp_path);
 	if (link(tmp_encrypted_path, passwords_path) != 0) {
 		err(EXIT_FAILURE, "gpg_encrypt link(tmp_encrypted_path, "
 				"passwords_path)");

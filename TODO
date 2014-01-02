@@ -1,8 +1,5 @@
 BUGS
- - Use the key_id for decrypt if possible or don't let the user edit unless the
-   key is valid.
-
- - Replace all the snprintf and other commands by xmalloc equivalents.
+ - nope
 
 NEEDED FEATURES
  - Create "profiles" for password styles allowing the configuration of:
