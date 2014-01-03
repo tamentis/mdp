@@ -24,7 +24,13 @@ assert_output() {
 	if diff output expected > diff; then
 		return 0
 	else
-		fail "output is not as expected"
+		echo "fail - output is not as expected"
+		echo "--expected-----------"
+		cat expected
+		echo "--output-------------"
+		cat output
+		echo "---------------------"
+		exit 1
 	fi
 }
 
