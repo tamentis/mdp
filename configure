@@ -220,10 +220,12 @@ fi
 echo "found (${CURSESLIB})"
 rm -f fake_curses*
 
-
-generate_makefile Makefile.src > Makefile
-generate_makefile src/Makefile.src > src/Makefile
-generate_makefile tests/regress/debug/Makefile.src > tests/regress/debug/Makefile
+echo
+find . -name "Makefile.src" | while read input; do
+	output=${input%%.src}
+	echo "generating $output"
+	generate_makefile $input > $output
+done
 
 echo
 echo "Configured for '$OS', run 'make' (or 'gmake') to compile."

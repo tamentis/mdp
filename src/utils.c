@@ -248,4 +248,3 @@ file_exists(char *filepath)
 
 	return 1;
 }
-

@@ -6,6 +6,9 @@
 # working when porting to other environments.
 #
 
+set -e
+# set -v
+
 . ./bootstrap.sh
 
 run_test test_initial_setup

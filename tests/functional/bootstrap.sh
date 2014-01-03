@@ -5,8 +5,12 @@
 #
 
 MDP=../../src/mdp
-GPG=`which gpg`
 SELF=$0
+
+if ! GPG=`which gpg`; then
+	echo "error: couldn't find gpg in your PATH"
+	exit 1
+fi
 
 test_count_passed=0
 test_count_failed=0
@@ -15,11 +19,6 @@ alias echo=/bin/echo
 
 if [ ! -f "$MDP" ]; then
 	echo "error: you need to run make first"
-	exit 1
-fi
-
-if [ ! -f "$GPG" ]; then
-	echo "error: couldn't find gpg in your PATH"
 	exit 1
 fi
 
@@ -53,9 +52,11 @@ run_test() {
 	if [ "$output" = "pass" ]; then
 		echo pass
 		test_count_passed=$(( test_count_passed + 1 ))
+		return 0
 	else
 		echo "FAILED! (output=$output)"
 		test_count_failed=$(( test_count_failed + 1 ))
+		return 1
 	fi
 }
 

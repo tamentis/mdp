@@ -2,6 +2,8 @@ PROG=stub
 OBJECTS= \
 	main.o \
 	../../../src/debug.o \
+	../../../src/lock.o \
+	../../../src/utils.o \
 	../../../src/xmalloc.o
 
 OBJECTS+=${EXTRA_OBJECTS}
@@ -13,7 +15,9 @@ ${PROG}: ${OBJECTS}
 	${CC} ${LDFLAGS} -o ${PROG} ${OBJECTS} ${CURSESLIB} 
 
 test: ${PROG}
-	./test_debug.sh
+	./test_lock_exists.sh
+	./test_lock_set.sh
+	./test_lock_unset.sh
 
 clean:
 	rm -f ${PROG} *.o *core expected output diff

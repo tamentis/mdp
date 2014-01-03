@@ -14,9 +14,10 @@ mantest:
 
 clean:
 	cd src/ && make clean
+	cd tests/ && make clean
 
 test:
-	cd tests/ && sh ./run_tests.sh
+	cd tests/ && make test
 
 README: ${PROG}.1
 	# On Linux
