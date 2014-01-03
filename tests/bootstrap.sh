@@ -11,9 +11,16 @@ SELF=$0
 test_count_passed=0
 test_count_failed=0
 
+alias echo=/bin/echo
+
 if [ ! -f "$MDP" ]; then
 	echo "error: you need to run make first"
-	exit 100
+	exit 1
+fi
+
+if [ ! -f "$GPG" ]; then
+	echo "error: couldn't find gpg in your PATH"
+	exit 1
 fi
 
 # Run mdp capturing stderr and using the test config file.
@@ -40,7 +47,7 @@ run_test() {
 	if ! output=`test_unit`; then
 		echo "error: unit failure"
 		echo $output
-		exit 100
+		exit 1
 	fi
 
 	if [ "$output" = "pass" ]; then
@@ -64,7 +71,7 @@ get_md5() {
 		md5sum $1 | sed 's/ .*//g'
 	else
 		echo "no md5 available"
-		exit 100
+		exit 1
 	fi
 }
 

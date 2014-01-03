@@ -97,7 +97,7 @@ set_variable(char *name, char *value, int linenum)
 	/* set editor <string> */
 	} else if (strcmp(name, "editor") == 0) {
 		if (cfg_editor != NULL) {
-			conf_err("editor defined multiple times");
+			xfree(cfg_editor);
 		}
 
 		if (value == NULL || *value == '\0') {
