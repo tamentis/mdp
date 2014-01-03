@@ -1,13 +1,23 @@
 PROG=stub
+SRC=../../../src
 OBJECTS= \
 	stub.o \
-	../../../src/generate.o \
-	../../../src/randpass.o
+	${SRC}/generate.o \
+	${SRC}/randpass.o
 
 OBJECTS+=${EXTRA_OBJECTS}
-CFLAGS+=-I../../../src/
+CFLAGS+=-I${SRC}/
 
 all: ${PROG}
+
+arc4random.o:
+	cp ${SRC}/arc4random.o .
+
+strlcpy.o:
+	cp ${SRC}/strlcpy.o .
+
+wcslcpy.o:
+	cp ${SRC}/wcslcpy.o .
 
 ${PROG}: ${OBJECTS}
 	${CC} ${LDFLAGS} -o ${PROG} ${OBJECTS} ${CURSESLIB} 

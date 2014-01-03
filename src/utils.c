@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <signal.h>
-#include <strings.h>
+#include <string.h>
 
 #include "utils.h"
 #include "debug.h"

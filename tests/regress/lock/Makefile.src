@@ -1,15 +1,25 @@
 PROG=stub
+SRC=../../../src
 OBJECTS= \
 	stub.o \
-	../../../src/debug.o \
-	../../../src/lock.o \
-	../../../src/utils.o \
-	../../../src/xmalloc.o
+	${SRC}/debug.o \
+	${SRC}/lock.o \
+	${SRC}/utils.o \
+	${SRC}/xmalloc.o
 
 OBJECTS+=${EXTRA_OBJECTS}
-CFLAGS+=-I../../../src/
+CFLAGS+=-I${SRC}/
 
 all: ${PROG}
+
+arc4random.o:
+	cp ${SRC}/arc4random.o .
+
+strlcpy.o:
+	cp ${SRC}/strlcpy.o .
+
+wcslcpy.o:
+	cp ${SRC}/wcslcpy.o .
 
 ${PROG}: ${OBJECTS}
 	${CC} ${LDFLAGS} -o ${PROG} ${OBJECTS} ${CURSESLIB} 

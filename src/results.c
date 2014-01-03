@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <err.h>
-#include <strings.h>
+#include <string.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>

@@ -20,7 +20,8 @@
 #include <err.h>
 #include <stdarg.h>
 #include <stdbool.h>
-#include <strings.h>
+#include <string.h>
+#include <inttypes.h>
 
 #include "debug.h"
 #include "config.h"

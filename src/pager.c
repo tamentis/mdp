@@ -29,6 +29,7 @@
 #include <signal.h>
 #include <string.h>
 #include <curses.h>
+#include <inttypes.h>
 
 #include "array.h"
 #include "mdp.h"

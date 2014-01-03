@@ -26,10 +26,10 @@ generate_makefile() {
 	echo
 
 	echo "PROG=$PROG"
+	echo "CFLAGS+=$CFLAGS -std=c99"
 	echo "CFLAGS+=-Wall -W -Wpointer-arith -Wbad-function-cast -Wcast-qual"
 	echo "CFLAGS+=-Wstrict-prototypes -Wmissing-prototypes"
 	echo "CFLAGS+=-Wmissing-declarations -Wnested-externs -Winline"
-	echo "CFLAGS+=-std=c99"
 	echo "CFLAGS+=-DMDP_VERSION=\\\"$MDP_VERSION\\\" $X_CFLAGS"
 
 	if [ "$DEBUG_MODE" = "Y" ]; then
@@ -123,7 +123,7 @@ echo $OS
 case $OS in
 	Linux|Unix|POSIX)
 		X_CFLAGS="-D_GNU_SOURCE"
-		X_OBJECTS="arc4random.o strlcpy.o"
+		X_OBJECTS="arc4random.o"
 		MANDEST="share/man"
 		;;
 
