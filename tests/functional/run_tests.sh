@@ -9,6 +9,13 @@
 set -e
 # set -v
 
+# Since we kinda need a minimum of terminal emulation for these to work, we
+# skip them on Travis-CI.
+if [ -n "$TRAVIS" ]; then
+	echo "skipping functional tests on Travis"
+	exit 0
+fi
+
 . ./bootstrap.sh
 
 run_test test_initial_setup
