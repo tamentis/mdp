@@ -10,6 +10,7 @@
 	* Increased max line size to 16KB (both password and config).
 	* gpg_key_id is now mandatory.
 	* Added -k parameter to define the GnuPG key if missing from config.
+	* Preliminary regression tests for a couple modules.
 
 0.5 Bertrand Janin <b@janin.com> (2013-08-01)
 
