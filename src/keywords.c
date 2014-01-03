@@ -31,6 +31,13 @@
 struct kwlist keywords = ARRAY_INITIALIZER;
 
 
+unsigned int
+keywords_count()
+{
+	return ARRAY_LENGTH(&keywords);
+}
+
+
 void
 keywords_clear()
 {
@@ -68,4 +75,3 @@ keywords_load_from_char(char *kw)
 		ARRAY_ADD(&keywords, strdup(p));
 	}
 }
-

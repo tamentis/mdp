@@ -14,7 +14,19 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
+
 #define RESULTS_MAX_LEN	64
+
+extern char		*cfg_config_path;
+extern char		*cfg_gpg_path;
+extern char		*cfg_gpg_key_id;
+extern unsigned int	 cfg_gpg_timeout;
+extern char		*cfg_editor;
+extern unsigned int	 cfg_timeout;
+extern unsigned int	 cfg_password_count;
+extern bool		 cfg_backup;
 
 void		 config_check_directory(char *);
 void		 config_check_file(char *);
@@ -22,3 +34,5 @@ void		 config_check_paths(void);
 void		 config_check_variables(void);
 void		 config_read(void);
 void		 config_set_defaults(void);
+
+#endif

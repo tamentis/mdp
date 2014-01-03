@@ -14,10 +14,14 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifndef _ARRAY_H_
+#define _ARRAY_H_
 
 ARRAY_DECL(kwlist, char *);
 
+unsigned int	 keywords_count(void);
 void		 keywords_clear(void);
 void		 keywords_load_from_argv(char **);
 void		 keywords_load_from_char(char *);
 
+#endif /* _ARRAY_H_ */

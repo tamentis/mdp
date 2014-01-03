@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,19 +14,19 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _UTIL_H_
-#define _UTIL_H_
+#include <stdio.h>
 
-void		 wcs_strip_trailing_whitespaces(wchar_t *);
-void		 strip_trailing_whitespaces(char *);
-wchar_t		*wcscasestr(const wchar_t *, const wchar_t *);
-char		*wcs_duplicate_as_mbs(const wchar_t *);
-void		 cancel_pid_timeout(void);
-void		 set_pid_timeout(pid_t, int);
-int		 file_exists(char *);
-char		*join(char, char *, char *);
-char		*join_path(char *, char *);
-void		 xerr(const char *, ...);
-void		 xerrx(const char *, ...);
+#include "randpass.h"
+#include "generate.h"
 
-#endif
+
+void
+generate_passwords(int length, unsigned int count)
+{
+	char password[MAX_PASSWORD_LENGTH];
+
+	for (unsigned int i = 0; i < count; i++) {
+		generate_password(password, length, "NCL");
+		printf("%s\n", password);
+	}
+}

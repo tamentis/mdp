@@ -19,4 +19,4 @@ enum pager_start_mode {
 	START_WITHOUT_PROMPT
 };
 
-int		 pager(enum pager_start_mode);
+void pager(enum pager_start_mode);

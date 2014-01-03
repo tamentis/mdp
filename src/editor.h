@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,19 +14,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _UTIL_H_
-#define _UTIL_H_
+#ifndef _EDITOR_H_
+#define _EDITOR_H_
 
-void		 wcs_strip_trailing_whitespaces(wchar_t *);
-void		 strip_trailing_whitespaces(char *);
-wchar_t		*wcscasestr(const wchar_t *, const wchar_t *);
-char		*wcs_duplicate_as_mbs(const wchar_t *);
-void		 cancel_pid_timeout(void);
-void		 set_pid_timeout(pid_t, int);
-int		 file_exists(char *);
-char		*join(char, char *, char *);
-char		*join_path(char *, char *);
-void		 xerr(const char *, ...);
-void		 xerrx(const char *, ...);
+extern char	*editor_tmp_path;
 
-#endif
+void		 edit_results(void);
+void		 editor_init(void);
+
+#endif /* _EDITOR_H_ */

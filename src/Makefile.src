@@ -1,5 +1,22 @@
-OBJECTS=main.o gpg.o pager.o utils.o config.o strdelim.o \
-	lock.o randpass.o curses.o xmalloc.o results.o keywords.o
+OBJECTS= \
+	cleanup.o \
+	cmd.o \
+	config.o \
+	curses.o \
+	debug.o \
+	editor.o \
+	generate.o \
+	gpg.o \
+	keywords.o \
+	lock.o \
+	main.o \
+	pager.o \
+	randpass.o \
+	results.o \
+	strdelim.o \
+	utils.o \
+	xmalloc.o
+
 OBJECTS+=${EXTRA_OBJECTS}
 
 all: ${PROG}

@@ -33,25 +33,26 @@
 #include <curses.h>
 
 #include "mdp.h"
+#include "cmd.h"
 #include "utils.h"
 #include "config.h"
 #include "strdelim.h"
 #include "xmalloc.h"
 
 
-extern char		*cfg_config_path;
-extern char		*cfg_gpg_path;
-extern char		*cfg_gpg_key_id;
-extern unsigned int	 cfg_gpg_timeout;
-extern char		*cfg_editor;
-extern unsigned int	 cfg_password_count;
-extern bool		 cfg_backup;
-extern unsigned int	 cfg_timeout;
+/* main.c */
+extern char	*cmd_gpg_key_id;
+extern char	*passwords_path;
+extern char	*lock_path;
+extern char	*home;
 
-extern char		*cmd_gpg_key_id;
-extern char		*passwords_path;
-extern char		*lock_path;
-extern char		*home;
+char		*cfg_gpg_path = NULL;
+char		*cfg_gpg_key_id = NULL;
+unsigned int	 cfg_gpg_timeout = 20;
+char		*cfg_editor;
+unsigned int	 cfg_timeout = 10;
+unsigned int	 cfg_password_count = 4;
+bool		 cfg_backup = true;
 
 
 #define parse_boolean(v) (v != NULL && *v == 'o') ? true : false
@@ -163,7 +164,7 @@ process_config_line(char *line, int linenum)
 	if (strcmp(keyword, "set") == 0) {
 		if ((name = strdelim(&line)) == NULL) {
 			errx(EXIT_FAILURE, "%s: set without variable name on "
-					"line %d.", cfg_config_path, linenum);
+					"line %d.", cmd_config_path, linenum);
 			return -1;
 		}
 		value = strdelim(&line);
@@ -172,7 +173,7 @@ process_config_line(char *line, int linenum)
 	/* Unknown operation... Code help us. */
 	} else {
 		errx(EXIT_FAILURE, "%s: unknown command on line %d.",
-				cfg_config_path, linenum);
+				cmd_config_path, linenum);
 		return -1;
 	}
 
@@ -298,7 +299,7 @@ config_read()
 	static char line[MAX_LINE_SIZE];
 	int linenum = 1;
 
-	fp = fopen(cfg_config_path, "r");
+	fp = fopen(cmd_config_path, "r");
 	if (fp == NULL)
 		return;
 

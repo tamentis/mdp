@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,19 +14,25 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _UTIL_H_
-#define _UTIL_H_
+#ifndef _CMD_H_
+#define _CMD_H_
 
-void		 wcs_strip_trailing_whitespaces(wchar_t *);
-void		 strip_trailing_whitespaces(char *);
-wchar_t		*wcscasestr(const wchar_t *, const wchar_t *);
-char		*wcs_duplicate_as_mbs(const wchar_t *);
-void		 cancel_pid_timeout(void);
-void		 set_pid_timeout(pid_t, int);
-int		 file_exists(char *);
-char		*join(char, char *, char *);
-char		*join_path(char *, char *);
-void		 xerr(const char *, ...);
-void		 xerrx(const char *, ...);
+enum action_mode {
+	MODE_EXIT,
+	MODE_VERSION,
+	MODE_USAGE,
+	MODE_PAGER,
+	MODE_RAW,
+	MODE_EDIT,
+	MODE_GENERATE,
+	MODE_QUERY
+};
 
-#endif
+extern char		*cmd_config_path;
+extern char		*cmd_gpg_key_id;
+extern bool		 cmd_regex;
+extern unsigned int	 cmd_password_length;
+
+enum action_mode	 cmd_parse(int, char **);
+
+#endif /* _CMD_H_ */

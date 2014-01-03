@@ -32,6 +32,7 @@
 #include <strings.h>
 
 #include "utils.h"
+#include "debug.h"
 #include "xmalloc.h"
 
 
@@ -39,46 +40,7 @@
 #define WHITESPACE	 " \t\r\n"
 
 
-extern bool	 cfg_debug;
 pid_t		 watcher_pid = 0;
-
-
-/*
- * Print to stderr if debug flag is on.
- */
-int
-debug(const char *fmt, ...)
-{
-	va_list	ap;
-	time_t tvec;
-	struct tm *timeptr;
-	char *pfmt;
-	static char tbuf[20];
-	int i;
-	pid_t pid;
-
-	if (!cfg_debug)
-		return 0;
-
-	pid = getpid();
-
-	time(&tvec);
-	timeptr = localtime(&tvec);
-	i = strftime(tbuf, sizeof(tbuf), "%Y-%m-%d %H:%M:%S", timeptr);
-	if (i == 0) {
-		errx(EXIT_FAILURE, "strftime failed");
-	}
-
-	pfmt = xprintf("[%s] [pid:%5d] %s\n", tbuf, pid, fmt);
-
-	va_start(ap, fmt);
-	i = vfprintf(stderr, pfmt, ap);
-	va_end(ap);
-
-	xfree(pfmt);
-
-	return i;
-}
 
 
 /*

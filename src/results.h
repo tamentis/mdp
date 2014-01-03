@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifndef _RESULTS_H_
+#define _RESULTS_H_
 
 struct result {
 	bool visible;
@@ -22,6 +24,10 @@ struct result {
 	size_t wcs_len;
 	size_t mbs_len;
 };
+
+extern struct wlist results;
+extern uint32_t result_sum;
+extern uint32_t result_size;
 
 ARRAY_DECL(wlist, struct result *);
 
@@ -32,3 +38,6 @@ unsigned int	 get_max_length(void);
 void		 filter_results(void);
 int		 load_results_gpg(void);
 int		 load_results_fp(FILE *);
+void		 print_results(void);
+
+#endif /* _RESULTS_H_ */

@@ -14,24 +14,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <sys/param.h>
-
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
+#include <limits.h>
 #include <stdlib.h>
-#include <wchar.h>
-#include <errno.h>
 #include <err.h>
 #include <signal.h>
-#include <stdarg.h>
-#include <locale.h>
 #include <inttypes.h>
 #include <stdbool.h>
-#include <curses.h>
 
-#include "curses.h"
-#include "xmalloc.h"
 #include "array.h"
 #include "mdp.h"
 #include "utils.h"
@@ -40,200 +31,25 @@
 #include "pager.h"
 #include "gpg.h"
 #include "lock.h"
-#include "randpass.h"
+#include "generate.h"
 #include "keywords.h"
+#include "cleanup.h"
+#include "editor.h"
+#include "debug.h"
+#include "cmd.h"
 
 
-/* Configuration variables with defaults (global, defined in config.c). */
-char		*cfg_config_path = NULL;
-char		*cfg_gpg_path = NULL;
-char		*cfg_gpg_key_id = NULL;
-unsigned int	 cfg_gpg_timeout = 20;
-char		*cfg_editor;
-unsigned int	 cfg_timeout = 10;
-unsigned int	 cfg_password_count = 4;
-bool		 cfg_backup = true;
-bool		 cfg_debug = false;
-bool		 cfg_regex = false;
-
-/* Other globals */
 char		*home = NULL;
 char		*passwords_path = NULL;
-char		*lock_path = NULL;
-char		*tmp_path = NULL;
-unsigned int	 password_length = 16;
-char		*cmd_gpg_key_id = NULL;
-
-/* Result set defined in results.c */
-extern struct wlist results;
-extern uint32_t result_sum;
-extern uint32_t result_size;
-
-/* getopt globals */
-extern int optind;
-extern char *optarg;
-
-
-static void
-cleanup(void)
-{
-	if (tmp_path != NULL && unlink(tmp_path) != 0) {
-		err(EXIT_FAILURE, "WARNING: unable to remove '%s'", tmp_path);
-	}
-
-	lock_unset();
-
-	/* Just in case we error'd out somewhere during the pager. */
-	shutdown_curses();
-}
-
-
-static void
-atexit_cleanup(void)
-{
-	debug("atexit_cleanup (PID: %d)", getpid());
-	cleanup();
-}
-
-
-static void
-sig_cleanup(int dummy)
-{
-	/* Avoid unused parameter warning. */
-	(void)(dummy);
-
-	debug("sig_cleanup (PID: %d)", getpid());
-	cleanup();
-}
-
-
-/*
- * Spawn the editor on a file.
- */
-static void
-spawn_editor(char *path)
-{
-	char *cmd;
-
-	cmd = xprintf("%s \"%s\"", cfg_editor, path);
-
-	debug("spawn_editor: %s", cmd);
-
-	if (system(cmd) != 0) {
-		err(EXIT_FAILURE, "unable to spawn editor: %s", cmd);
-	}
-
-	xfree(cmd);
-}
-
-
-/*
- * Check if the given path has the right sum and size.
- *
- * This is far from perfect, but for the purpose of detecting change, this is
- * just fine. Returns 1 if it matches.
- */
-static int
-has_changed(char *tmp_path)
-{
-	FILE *fp;
-	uint32_t previous_sum, previous_size;
-
-	/*
-	 * Keep track of the previous sum/size so we can check if anything
-	 * changed.
-	 */
-	previous_sum = result_sum;
-	previous_size = result_size;
-
-	fp = fopen(tmp_path, "r");
-	load_results_fp(fp);
-	fclose(fp);
-
-	if (previous_sum != result_sum || previous_size != result_size)
-		return 1;
-
-	return 0;
-}
-
-
-/*
- * Edit the passwords.
- *
- * This function dumps all the plain-text passwords ("results") in a temporary
- * file in your ~/.mdp/ folder, fires your editor and save the output back to
- * your password file.
- */
-static void
-edit_results(void)
-{
-	int tmp_fd = -1;
-	struct result *result;
-
-	/* Create the temporary file for edit mode. */
-	tmp_path = join_path(home, ".mdp/tmp_edit.XXXXXXXX");
-	tmp_fd = mkstemp(tmp_path);
-	if (tmp_fd == -1) {
-		err(EXIT_FAILURE, "edit_results mkstemp()");
-	}
-
-	/* Iterate over the results and dump them in this file. */
-	for (unsigned int i = 0; i < ARRAY_LENGTH(&results); i++) {
-		result = ARRAY_ITEM(&results, i);
-		if (write(tmp_fd, result->mbs_value, result->mbs_len) == -1)
-			err(EXIT_FAILURE, "edit_results write");
-		if (write(tmp_fd, "\n", 1) == -1)
-			err(EXIT_FAILURE, "edit_results write (new-line)");
-	}
-
-	if (close(tmp_fd) != 0) {
-		err(EXIT_FAILURE, "edit_results close(tmp_fd)");
-	}
-
-	spawn_editor(tmp_path);
-
-	if (has_changed(tmp_path)) {
-		gpg_encrypt(tmp_path);
-	} else {
-		fprintf(stderr, "No changes, exiting...\n");
-	}
-}
-
-
-/*
- * Print the results to screen in "raw" mode (-r).
- */
-static void
-print_results(void)
-{
-	struct result *result;
-
-	for (unsigned int i = 0; i < ARRAY_LENGTH(&results); i++) {
-		result = ARRAY_ITEM(&results, i);
-		if (result->visible) {
-			printf("%ls\n", result->wcs_value);
-		}
-	}
-}
-
-
-static void
-print_passwords(int length, unsigned int count)
-{
-	char password[MAX_PASSWORD_LENGTH];
-
-	for (unsigned int i = 0; i < count; i++) {
-		generate_password(password, length, "NCL");
-		printf("%s\n", password);
-	}
-}
 
 
 static void
 usage(void)
 {
-	printf("usage: mdp [-eErqVhd] [-c config] [-k key_id] [-g len] "
-			"[keyword ...]\n");
+	printf("usage: mdp [-eVh] [-c config] [-k key_id]\n");
+	printf("       mdp [-Vh] file ... -g length\n");
+	printf("       mdp [-ErqVh] [-c config] [-k key_id] keyword ...\n");
+
 	exit(EXIT_FAILURE);
 }
 
@@ -261,160 +77,114 @@ get_home(void)
 }
 
 
-/*
- * Return a copy of the $EDITOR environment variable or NULL if not found.
- */
-static char *
-get_env_editor(void)
+static void
+mdp(enum action_mode mode)
 {
-	char *s;
+	switch (mode) {
+	case MODE_VERSION:
+		debug("mode: VERSION");
+		printf("mdp-%s\n", MDP_VERSION);
+		break;
 
-	s = getenv("EDITOR");
+	case MODE_USAGE:
+		debug("mode: USAGE");
+		usage();
+		/* NOT REACHED */
+		break;
 
-	if (s == NULL) {
-		return NULL;
+	case MODE_RAW:
+		debug("mode: RAW");
+		if (keywords_count() == 0) {
+			usage();
+		}
+
+		gpg_check();
+		if (load_results_gpg() == 0)
+			errx(EXIT_FAILURE, "no passwords");
+		filter_results();
+		print_results();
+		break;
+
+	case MODE_PAGER:
+		debug("mode: PAGER");
+		if (keywords_count() == 0) {
+			usage();
+		}
+
+		gpg_check();
+		if (load_results_gpg() == 0)
+			errx(EXIT_FAILURE, "no passwords");
+		filter_results();
+		pager(START_WITHOUT_PROMPT);
+		break;
+
+	case MODE_QUERY:
+		debug("mode: QUERY");
+		gpg_check();
+		if (load_results_gpg() == 0)
+			errx(EXIT_FAILURE, "no passwords");
+		pager(START_WITH_PROMPT);
+		break;
+
+	case MODE_EDIT:
+		debug("mode: EDIT");
+		if (keywords_count() > 0) {
+			usage();
+		}
+
+		gpg_check();
+		lock_set();
+
+		/*
+		 * Since we set the lock, configure atexit and signals right
+		 * away in case something fail before a normal exit.
+		 */
+		if (atexit(atexit_cleanup) != 0) {
+			err(EXIT_FAILURE, "get_results atexit");
+		}
+
+		signal(SIGINT, sig_cleanup);
+		signal(SIGKILL, sig_cleanup);
+
+		load_results_gpg();
+		edit_results();
+		break;
+
+	case MODE_GENERATE:
+		debug("mode: GENERATE");
+		if (keywords_count() > 0) {
+			usage();
+		}
+
+		generate_passwords(cmd_password_length,
+				cfg_password_count);
+		break;
+
+	default:
+		errx(EXIT_FAILURE, "unknown mode");
+		break;
 	}
-
-	return strdup(s);
 }
-
 
 int
 main(int ac, char **av)
 {
-	int opt, mode = MODE_PAGER;
-
-	if (ac < 2)
-		usage();
-
-	setlocale(LC_ALL, "");
+	enum action_mode mode;
 
 	home = get_home();
-	cfg_editor = get_env_editor();
+	editor_init();
 
-	while ((opt = getopt(ac, av, "eErqVhdc:k:g:")) != -1) {
-		switch (opt) {
-		case 'd':
-			cfg_debug = true;
-			break;
-		case 'E':
-			cfg_regex = true;
-			break;
-		case 'V':
-			mode = MODE_VERSION;
-			break;
-		case 'q':
-			mode = MODE_QUERY;
-			break;
-		case 'e':
-			mode = MODE_EDIT;
-			break;
-		case 'g':
-			mode = MODE_GENERATE;
-			password_length = strtoumax(optarg, NULL, 10);
-			break;
-		case 'r':
-			mode = MODE_RAW;
-			break;
-		case 'c':
-			cfg_config_path = strdup(optarg);
-			break;
-		case 'k':
-			cmd_gpg_key_id = strdup(optarg);
-			break;
-		default:
-			usage();
-		}
+	mode = cmd_parse(ac, av);
+
+	if (cmd_config_path == NULL) {
+		cmd_config_path = join_path(home, ".mdp/config");
 	}
-
-	if (cfg_config_path == NULL) {
-		cfg_config_path = join_path(home, ".mdp/config");
-	}
-	debug("read config (%s)", cfg_config_path);
-
+	debug("read config (%s)", cmd_config_path);
 	config_check_paths();
 	config_read();
 	config_set_defaults();
 
-	ac -= optind;
-	av += optind;
-
-	keywords_load_from_argv(av);
-
-	/* Decide if we use the internal pager or just dump to screen. */
-	switch (mode) {
-		case MODE_VERSION:
-			printf("mdp-%s\n", MDP_VERSION);
-			break;
-
-		case MODE_RAW:
-			debug("mode: MODE_RAW");
-			if (ac == 0)
-				usage();
-
-			gpg_check();
-			if (load_results_gpg() == 0)
-				errx(EXIT_FAILURE, "no passwords");
-			filter_results();
-			print_results();
-			break;
-
-		case MODE_PAGER:
-			debug("mode: MODE_PAGER");
-			if (ac == 0)
-				usage();
-
-			gpg_check();
-			if (load_results_gpg() == 0)
-				errx(EXIT_FAILURE, "no passwords");
-			filter_results();
-			pager(START_WITHOUT_PROMPT);
-			break;
-
-		case MODE_QUERY:
-			debug("mode: MODE_QUERY");
-			gpg_check();
-			if (load_results_gpg() == 0)
-				errx(EXIT_FAILURE, "no passwords");
-			pager(START_WITH_PROMPT);
-			break;
-
-		case MODE_EDIT:
-			debug("mode: MODE_EDIT");
-			if (ac != 0)
-				usage();
-
-			gpg_check();
-			lock_set();
-
-			/*
-			 * Since we set the lock, configure atexit and signals
-			 * right away in case something fail before a normal
-			 * exit.
-			 */
-			if (atexit(atexit_cleanup) != 0) {
-				err(EXIT_FAILURE, "get_results atexit");
-			}
-
-			signal(SIGINT, sig_cleanup);
-			signal(SIGKILL, sig_cleanup);
-
-			load_results_gpg();
-			edit_results();
-			break;
-
-		case MODE_GENERATE:
-			debug("mode: MODE_GENERATE");
-			if (ac != 0)
-				usage();
-
-			print_passwords(password_length, cfg_password_count);
-			break;
-
-		default:
-			errx(EXIT_FAILURE, "unknown mode");
-			break;
-	}
+	mdp(mode);
 
 	debug("normal shutdown");
 

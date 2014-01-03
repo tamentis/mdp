@@ -125,7 +125,7 @@ keyword_prompt(void)
  * If the number of results is greater than the available lines on screen,
  * display a prompt to refine the keywords.
  */
-int
+void
 pager(enum pager_start_mode mode)
 {
 	init_curses();
@@ -153,6 +153,4 @@ pager(enum pager_start_mode mode)
 	}
 
 	shutdown_curses();
-
-	return MODE_EXIT;
 }

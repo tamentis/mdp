@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,47 +14,49 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <sys/param.h>
+#include <sys/types.h>
 
+#include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <errno.h>
 #include <err.h>
+#include <curses.h>
 
-#include "utils.h"
+#include "debug.h"
+#include "curses.h"
 #include "lock.h"
+#include "cleanup.h"
+#include "editor.h"
 
 
-char		*lock_path = NULL;
-
-
-int
-lock_exists()
+void
+cleanup(void)
 {
-	return file_exists(lock_path);
+	if (editor_tmp_path != NULL && unlink(editor_tmp_path) != 0) {
+		err(EXIT_FAILURE, "unable to remove '%s'", editor_tmp_path);
+	}
+
+	lock_unset();
+
+	/* Just in case we error'd out somewhere during the pager. */
+	shutdown_curses();
 }
 
 
 void
-lock_set()
+atexit_cleanup(void)
 {
-	FILE *fp;
-
-	if (lock_exists()) {
-		errx(EXIT_FAILURE, "locked (%s)", lock_path);
-	}
-
-	fp = fopen(lock_path, "w");
-	fprintf(fp, "%d", getpid());
-	fclose(fp);
+	debug("atexit_cleanup (PID: %d)", getpid());
+	cleanup();
 }
 
 
 void
-lock_unset()
+sig_cleanup(int dummy)
 {
-	if (lock_exists()) {
-		unlink(lock_path);
-	}
+	/* Avoid unused parameter warning. */
+	(void)(dummy);
+
+	debug("sig_cleanup (PID: %d)", getpid());
+	cleanup();
 }

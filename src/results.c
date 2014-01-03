@@ -42,7 +42,7 @@
 
 #define KEYWORD_LENGTH 50
 
-extern bool cfg_regex;
+extern bool cmd_regex;
 
 struct wlist results = ARRAY_INITIALIZER;
 extern struct kwlist keywords;
@@ -156,7 +156,7 @@ line_matches_regex(const wchar_t *line)
 static bool
 line_matches(const wchar_t *line)
 {
-	if (cfg_regex) {
+	if (cmd_regex) {
 		return line_matches_regex(line);
 	} else {
 		return line_matches_plain(line);
@@ -272,4 +272,21 @@ load_results_gpg()
 	}
 
 	return length;
+}
+
+
+/*
+ * Print the results to screen in "raw" mode (-r).
+ */
+void
+print_results(void)
+{
+	struct result *result;
+
+	for (unsigned int i = 0; i < ARRAY_LENGTH(&results); i++) {
+		result = ARRAY_ITEM(&results, i);
+		if (result->visible) {
+			printf("%ls\n", result->wcs_value);
+		}
+	}
 }

@@ -33,15 +33,13 @@
 #include <errno.h>
 #include <err.h>
 
+#include "config.h"
+#include "debug.h"
 #include "utils.h"
 #include "gpg.h"
 #include "xmalloc.h"
 
 
-extern char		*cfg_gpg_path;
-extern char		*cfg_gpg_key_id;
-extern unsigned int	 cfg_gpg_timeout;
-extern bool		 cfg_backup;
 extern char		*passwords_path;
 
 pid_t gpg_pid;
