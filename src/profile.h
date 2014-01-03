@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,23 +14,24 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _CONFIG_H_
-#define _CONFIG_H_
+#ifndef _PROFILE_H_
+#define _PROFILE_H_
 
-extern char		*cfg_config_path;
-extern char		*cfg_gpg_path;
-extern char		*cfg_gpg_key_id;
-extern unsigned int	 cfg_gpg_timeout;
-extern char		*cfg_editor;
-extern unsigned int	 cfg_timeout;
-extern unsigned int	 cfg_password_count;
-extern bool		 cfg_backup;
+#define CHARSET_ALPHANUMERIC "abcdefghijklmnopqrstuvwxyz" \
+			     "ABCDEFGHIJKLMNOPQRSTUVWXYZ" \
+			     "1234567890"
 
-void			 config_check_directory(char *);
-void			 config_check_file(char *);
-void			 config_check_paths(const char *);
-void			 config_check_variables(void);
-void			 config_read(void);
-void			 config_set_defaults(const char *);
+struct profile {
+	char *name;
+	unsigned int password_count;
+	unsigned int character_count;
+	char *character_set;
+};
 
-#endif /* _CONFIG_H_ */
+ARRAY_DECL(profile_list, struct profile *);
+
+extern struct profile_list profiles;
+
+struct profile	*profile_new(char *);
+
+#endif /* _PROFILE_H_ */

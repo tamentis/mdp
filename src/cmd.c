@@ -30,6 +30,7 @@
 
 char		*cmd_config_path = NULL;
 char		*cmd_gpg_key_id = NULL;
+char		*cmd_profile_name = NULL;
 bool		 cmd_regex = false;
 unsigned int	 cmd_password_length = 16;
 
@@ -44,7 +45,7 @@ cmd_parse(int ac, char **av)
 		return MODE_USAGE;
 	}
 
-	while ((opt = getopt(ac, av, "eErqVhdc:k:g:")) != -1) {
+	while ((opt = getopt(ac, av, "eErqVhdc:k:g:p:")) != -1) {
 		switch (opt) {
 		case 'd':
 			debug_enabled = true;
@@ -73,6 +74,9 @@ cmd_parse(int ac, char **av)
 			break;
 		case 'k':
 			cmd_gpg_key_id = strdup(optarg);
+			break;
+		case 'p':
+			cmd_profile_name = strdup(optarg);
 			break;
 		default:
 			mode = MODE_USAGE;

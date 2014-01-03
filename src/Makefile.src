@@ -11,6 +11,7 @@ OBJECTS= \
 	lock.o \
 	main.o \
 	pager.o \
+	profile.o \
 	randpass.o \
 	results.o \
 	strdelim.o \

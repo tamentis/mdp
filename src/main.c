@@ -155,6 +155,11 @@ mdp(enum action_mode mode)
 			usage();
 		}
 
+		if (cmd_profile_name != NULL) {
+			profile_generate_from_name(cmd_profile_name);
+			break;
+		}
+
 		generate_passwords(cmd_password_length,
 				cfg_password_count);
 		break;

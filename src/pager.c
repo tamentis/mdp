@@ -40,6 +40,7 @@
 #include "keywords.h"
 
 
+#define RESULTS_MAX_LEN 128
 #define MSG_TOO_MANY "Too many results, please refine your search."
 
 

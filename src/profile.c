@@ -12,28 +12,45 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *
+ *
+ * All the profile related variables and functions.
  */
 
-#ifndef _CMD_H_
-#define _CMD_H_
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
 
-enum action_mode {
-	MODE_EXIT,
-	MODE_VERSION,
-	MODE_USAGE,
-	MODE_PAGER,
-	MODE_RAW,
-	MODE_EDIT,
-	MODE_GENERATE,
-	MODE_QUERY
-};
+#include "xmalloc.h"
+#include "array.h"
+#include "profile.h"
+#include "cmd.h"
+#include "config.h"
 
-extern char		*cmd_config_path;
-extern char		*cmd_gpg_key_id;
-extern char		*cmd_profile_name;
-extern bool		 cmd_regex;
-extern unsigned int	 cmd_password_length;
 
-enum action_mode	 cmd_parse(int, char **);
+struct profile_list profiles = ARRAY_INITIALIZER;
 
-#endif /* _CMD_H_ */
+
+struct profile *
+profile_new(char *name)
+{
+	struct profile *new;
+
+	new = xcalloc(1, sizeof(struct profile));
+	new->name = strdup(name);
+	new->password_count = cfg_password_count;
+	new->character_count = cmd_password_length;
+	new->character_set = strdup(CHARSET_ALPHANUMERIC);
+
+	return new;
+}
+
+
+void
+profile_generate_from_name(char *name)
+{
+	struct profile *profile;
+
+	profile = profile_get_from_name(name);
+}

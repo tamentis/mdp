@@ -32,6 +32,7 @@
 #include <inttypes.h>
 #include <curses.h>
 
+#include "array.h"
 #include "mdp.h"
 #include "cmd.h"
 #include "gpg.h"
@@ -39,6 +40,7 @@
 #include "utils.h"
 #include "config.h"
 #include "strdelim.h"
+#include "profile.h"
 #include "xmalloc.h"
 
 
@@ -115,9 +117,9 @@ set_variable(char *name, char *value, int linenum)
 
 	/* set timeout <integer> */
 	} else if (strcmp(name, "timeout") == 0) {
-		if (value == NULL || *value == '\0')
-			errx(EXIT_FAILURE, "config:%d: invalid value for "
-					"timeout", linenum);
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for timeout");
+		}
 
 		cfg_timeout = strtoull(value, NULL, 10);
 
@@ -133,6 +135,48 @@ set_variable(char *name, char *value, int linenum)
 
 
 /*
+ * Sets the value of the given profile variable, also do some type check just
+ * in case.
+ */
+static void
+set_profile_variable(struct profile *profile, char *name, char *value,
+		int linenum)
+{
+	/* set password_count <unsigned integer> */
+	if (strcmp(name, "password_count") == 0) {
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for password_count");
+		}
+
+		profile->password_count = strtoull(value, NULL, 10);
+
+	/* set timeout <unsigned integer> */
+	} else if (strcmp(name, "character_count") == 0) {
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for character_count");
+		}
+
+		profile->character_count = strtoull(value, NULL, 10);
+
+	/* set character_set <bool> */
+	} else if (strcmp(name, "character_set") == 0) {
+		if (profile->character_set != NULL) {
+			xfree(profile->character_set);
+		}
+
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for character_set");
+		}
+		profile->character_set = strdup(value);
+
+	/* ??? */
+	} else {
+		conf_err("unknown profile variable");
+	}
+}
+
+
+/*
  * Parse a single line of the configuration file.
  *
  * Returns 0 on success or anything else if an error occurred, it will be rare
@@ -142,6 +186,7 @@ static int
 process_config_line(char *line, int linenum)
 {
 	char *keyword, *name, *value;
+	static struct profile *current_profile = NULL;
 
 	strip_trailing_whitespaces(line);
 
@@ -164,7 +209,25 @@ process_config_line(char *line, int linenum)
 			return -1;
 		}
 		value = strdelim(&line);
-		set_variable(name, value, linenum);
+		if (current_profile == NULL) {
+			set_variable(name, value, linenum);
+		} else {
+			set_profile_variable(current_profile, name, value,
+					linenum);
+		}
+
+	/* profile name */
+	} else if (strcmp(keyword, "profile") == 0) {
+		if ((name = strdelim(&line)) == NULL) {
+			errx(EXIT_FAILURE, "%s: profile without variable name "
+					"on line %d.", cmd_config_path,
+					linenum);
+			return -1;
+		}
+
+		/* Every set after that moment is to configure this profile. */
+		current_profile = profile_new(name);
+		ARRAY_ADD(&profiles, current_profile);
 
 	/* Unknown operation... Code help us. */
 	} else {

@@ -16,3 +16,10 @@ set editor "/usr/bin/vim"
 # Timeout in show mode in seconds (default: 10)
 set timeout 10
 
+profile chiffres
+	set password_count 10
+	set character_count 7
+	set character_set 1234567890
+
+profile hex
+	set character_set ABCDEF1234567890
