@@ -1,8 +1,8 @@
 PROG=stub
 OBJECTS= \
 	stub.o \
-	../../../src/debug.o \
-	../../../src/xmalloc.o
+	../../../src/generate.o \
+	../../../src/randpass.o
 
 OBJECTS+=${EXTRA_OBJECTS}
 CFLAGS+=-I../../../src/
@@ -13,7 +13,7 @@ ${PROG}: ${OBJECTS}
 	${CC} ${LDFLAGS} -o ${PROG} ${OBJECTS} ${CURSESLIB} 
 
 test: ${PROG}
-	./test_debug.sh
+	./test_generate_passwords.sh
 
 clean:
 	rm -f ${PROG} *.o *core expected output diff

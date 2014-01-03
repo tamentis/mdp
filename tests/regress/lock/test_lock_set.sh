@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. ../functions.sh
+. ../_functions.sh
 
 announce "lock_set (missing)"
 rm -f fake_lock

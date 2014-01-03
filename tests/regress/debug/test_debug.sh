@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. ../functions.sh
+. ../_functions.sh
 
 announce debug
 ./stub something 2>&1 | awk '{print $5}' > output

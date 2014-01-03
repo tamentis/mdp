@@ -1,6 +1,6 @@
 PROG=stub
 OBJECTS= \
-	main.o \
+	stub.o \
 	../../../src/debug.o \
 	../../../src/lock.o \
 	../../../src/utils.o \
