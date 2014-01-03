@@ -1,5 +1,7 @@
 # Test the output of mdp if locked.
 
+set +e
+
 use_config sloweditor
 
 run_mdp -e > /dev/null &
