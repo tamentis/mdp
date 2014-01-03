@@ -14,8 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _CURSES_H_
-#define _CURSES_H_
+#ifndef _MDP_CURSES_H_
+#define _MDP_CURSES_H_
 
 extern unsigned int	 window_width;
 extern unsigned int	 window_height;
@@ -26,4 +26,4 @@ void		 shutdown_curses(void);
 void		 resize(int);
 void		 init_curses(void);
 
-#endif /* _CURSES_H_ */
+#endif /* _MDP_CURSES_H_ */
