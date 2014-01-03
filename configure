@@ -223,6 +223,7 @@ rm -f fake_curses*
 
 generate_makefile Makefile.src > Makefile
 generate_makefile src/Makefile.src > src/Makefile
+generate_makefile tests/regress/debug/Makefile.src > tests/regress/debug/Makefile
 
 echo
 echo "Configured for '$OS', run 'make' (or 'gmake') to compile."

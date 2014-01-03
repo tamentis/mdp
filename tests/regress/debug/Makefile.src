@@ -1,0 +1,19 @@
+PROG=run
+OBJECTS= \
+	main.o \
+	../../../src/debug.o \
+	../../../src/xmalloc.o
+
+OBJECTS+=${EXTRA_OBJECTS}
+CFLAGS+=-I../../../src/
+
+all: ${PROG}
+
+${PROG}: ${OBJECTS}
+	${CC} ${LDFLAGS} -o ${PROG} ${OBJECTS} ${CURSESLIB} 
+
+test: ${PROG}
+	./run_tests.sh ./${PROG}
+
+clean:
+	rm -f ${PROG} *.o *core expected output

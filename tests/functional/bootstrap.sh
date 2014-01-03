@@ -4,7 +4,7 @@
 # this test suite.
 #
 
-MDP=../src/mdp
+MDP=../../src/mdp
 GPG=`which gpg`
 SELF=$0
 
