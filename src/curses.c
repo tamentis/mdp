@@ -34,8 +34,6 @@
 unsigned int		 window_width = 0, window_height = 0;
 WINDOW			*screen = NULL;
 
-extern unsigned int	 cfg_timeout;
-
 
 /*
  * Shuts down curses.

@@ -14,8 +14,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _ARRAY_H_
-#define _ARRAY_H_
+#ifndef _KEYWORDS_H_
+#define _KEYWORDS_H_
+
+extern struct kwlist keywords;
 
 ARRAY_DECL(kwlist, char *);
 
@@ -24,4 +26,4 @@ void		 keywords_clear(void);
 void		 keywords_load_from_argv(char **);
 void		 keywords_load_from_char(char *);
 
-#endif /* _ARRAY_H_ */
+#endif /* _KEYWORDS_H_ */

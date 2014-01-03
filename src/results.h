@@ -17,6 +17,8 @@
 #ifndef _RESULTS_H_
 #define _RESULTS_H_
 
+#define KEYWORD_LENGTH 50
+
 struct result {
 	bool visible;
 	wchar_t *wcs_value;

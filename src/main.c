@@ -39,8 +39,7 @@
 #include "cmd.h"
 
 
-char		*home = NULL;
-char		*passwords_path = NULL;
+char *home = NULL;
 
 
 static void
@@ -172,7 +171,7 @@ main(int ac, char **av)
 	enum action_mode mode;
 
 	home = get_home();
-	editor_init();
+	editor_init(home);
 
 	mode = cmd_parse(ac, av);
 
@@ -180,9 +179,9 @@ main(int ac, char **av)
 		cmd_config_path = join_path(home, ".mdp/config");
 	}
 	debug("read config (%s)", cmd_config_path);
-	config_check_paths();
+	config_check_paths(home);
 	config_read();
-	config_set_defaults();
+	config_set_defaults(home);
 
 	mdp(mode);
 

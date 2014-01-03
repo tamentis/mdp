@@ -39,11 +39,6 @@
 #include "keywords.h"
 
 
-extern unsigned int	 window_width;
-extern unsigned int	 window_height;
-extern WINDOW		*screen;
-extern struct wlist	 results;
-
 #define MSG_TOO_MANY "Too many results, please refine your search."
 
 

@@ -26,7 +26,7 @@
 #include "lock.h"
 
 
-char		*lock_path = NULL;
+char *lock_path = NULL;
 
 
 int

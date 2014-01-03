@@ -40,8 +40,7 @@
 #include "xmalloc.h"
 
 
-extern char		*passwords_path;
-
+char *gpg_passwords_path = NULL;
 pid_t gpg_pid;
 
 
@@ -85,12 +84,12 @@ gpg_open()
 	int pout[2];	// {read, write}
 	FILE *fp;
 
-	if (!file_exists(passwords_path)) {
+	if (!file_exists(gpg_passwords_path)) {
 		debug("gpg_open password file does not exist (yet)");
 		return NULL;
 	}
 
-	debug("gpg_open %s %s", cfg_gpg_path, passwords_path);
+	debug("gpg_open %s %s", cfg_gpg_path, gpg_passwords_path);
 
 	if (pipe(pout) != 0)
 		err(EXIT_FAILURE, "gpg_decode pipe(pout)");
@@ -115,7 +114,8 @@ gpg_open()
 
 		debug("gpg_open child pid: %d", getpid());
 
-		execlp(cfg_gpg_path, "-q", "--decrypt", passwords_path, NULL);
+		execlp(cfg_gpg_path, "-q", "--decrypt", gpg_passwords_path,
+				NULL);
 		err(EXIT_FAILURE, "couldn't execute");
 		/* NOTREACHED */
 	default:
@@ -193,9 +193,9 @@ gpg_encrypt(char *tmp_path)
 	}
 
 	/* Generate the backup filename. */
-	backup_path = xprintf("%s.bak", passwords_path);
+	backup_path = xprintf("%s.bak", gpg_passwords_path);
 
-	if (file_exists(passwords_path)) {
+	if (file_exists(gpg_passwords_path)) {
 		/* Backup the previous password file. */
 		if (cfg_backup) {
 			debug("gpg_encrypt backup: %s", backup_path);
@@ -209,24 +209,24 @@ gpg_encrypt(char *tmp_path)
 			}
 
 			/* Create a physical link. */
-			if (link(passwords_path, backup_path) != 0) {
+			if (link(gpg_passwords_path, backup_path) != 0) {
 				err(EXIT_FAILURE, "gpg_encrypt backup link");
 			}
 		}
 
 		/* Unlink the previous location, keeping only the backup. */
-		if (unlink(passwords_path) != 0) {
-			err(EXIT_FAILURE, "gpg_encrypt unlink(passwords_path)");
+		if (unlink(gpg_passwords_path) != 0) {
+			err(EXIT_FAILURE, "gpg_encrypt unlink(gpg_passwords_path)");
 		}
 	}
 
 	/* Move the newly encrypted file to its new location. */
 	tmp_encrypted_path = xprintf("%s.gpg", tmp_path);
-	if (link(tmp_encrypted_path, passwords_path) != 0) {
+	if (link(tmp_encrypted_path, gpg_passwords_path) != 0) {
 		err(EXIT_FAILURE, "gpg_encrypt link(tmp_encrypted_path, "
-				"passwords_path)");
+				"gpg_passwords_path)");
 	} else {
-		if (chmod(passwords_path, S_IRUSR | S_IWUSR) !=0) {
+		if (chmod(gpg_passwords_path, S_IRUSR | S_IWUSR) !=0) {
 			err(EXIT_FAILURE, "gpg_encrypt chmod");
 		}
 	}

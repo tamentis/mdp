@@ -20,6 +20,6 @@
 extern char	*editor_tmp_path;
 
 void		 edit_results(void);
-void		 editor_init(void);
+void		 editor_init(char *);
 
 #endif /* _EDITOR_H_ */

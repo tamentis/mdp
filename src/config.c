@@ -34,17 +34,13 @@
 
 #include "mdp.h"
 #include "cmd.h"
+#include "gpg.h"
+#include "lock.h"
 #include "utils.h"
 #include "config.h"
 #include "strdelim.h"
 #include "xmalloc.h"
 
-
-/* main.c */
-extern char	*cmd_gpg_key_id;
-extern char	*passwords_path;
-extern char	*lock_path;
-extern char	*home;
 
 char		*cfg_gpg_path = NULL;
 char		*cfg_gpg_key_id = NULL;
@@ -255,7 +251,7 @@ config_check_file(char *path)
  * the right permissions, including all the relevant files within.
  */
 void
-config_check_paths()
+config_check_paths(const char *home)
 {
 	char *path;
 
@@ -263,8 +259,8 @@ config_check_paths()
 	config_check_directory(path);
 	xfree(path);
 
-	passwords_path = join_path(home, ".mdp/passwords");
-	config_check_file(passwords_path);
+	gpg_passwords_path = join_path(home, ".mdp/passwords");
+	config_check_file(gpg_passwords_path);
 
 	path = join_path(home, ".mdp/config");
 	config_check_file(path);
@@ -272,7 +268,7 @@ config_check_paths()
 
 
 void
-config_set_defaults()
+config_set_defaults(const char *home)
 {
 	if (cfg_gpg_path == NULL) {
 		cfg_gpg_path = strdup("/usr/bin/gpg");

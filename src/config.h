@@ -30,9 +30,9 @@ extern bool		 cfg_backup;
 
 void		 config_check_directory(char *);
 void		 config_check_file(char *);
-void		 config_check_paths(void);
+void		 config_check_paths(const char *);
 void		 config_check_variables(void);
 void		 config_read(void);
-void		 config_set_defaults(void);
+void		 config_set_defaults(const char *);
 
 #endif

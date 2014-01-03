@@ -40,14 +40,14 @@
 #define WHITESPACE	 " \t\r\n"
 
 
-pid_t		 watcher_pid = 0;
+pid_t watcher_pid = 0;
 
 
 /*
  * Join two strings with the given separator.
  */
 char *
-join(char sep, char *base, char *suffix)
+join(const char sep, const char *base, const char *suffix)
 {
 	return xprintf("%s%c%s", base, sep, suffix);
 }
@@ -57,7 +57,7 @@ join(char sep, char *base, char *suffix)
  * Create a new path with the two parts given as parameter.
  */
 char *
-join_path(char *base, char *suffix)
+join_path(const char *base, const char *suffix)
 {
 	return join('/', base, suffix);
 }

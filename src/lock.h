@@ -14,6 +14,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifndef _LOCK_H_
+#define _LOCK_H_
+
+extern char	*lock_path;
+
 int		 lock_exists(void);
 void		 lock_set(void);
 void		 lock_unset(void);
+
+#endif /* _LOCK_H_ */

@@ -14,7 +14,14 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifndef _GPG_H_
+#define _GPG_H_
+
+extern char	*gpg_passwords_path;
+
 FILE 		*gpg_open(void);
 int		 gpg_close(FILE *);
 void		 gpg_encrypt(char *);
 void		 gpg_check(void);
+
+#endif /* _GPG_H_ */

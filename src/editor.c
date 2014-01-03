@@ -31,8 +31,6 @@
 #include "utils.h"
 #include "xmalloc.h"
 
-/* main.c */
-extern char *home;
 
 char *editor_tmp_path = NULL;
 
@@ -41,7 +39,7 @@ char *editor_tmp_path = NULL;
  * Return a copy of the $EDITOR environment variable or NULL if not found.
  */
 void
-editor_init(void)
+editor_init(char *home)
 {
 	char *s;
 
@@ -52,6 +50,8 @@ editor_init(void)
 	}
 
 	cfg_editor = strdup(s);
+
+	editor_tmp_path = join_path(home, ".mdp/tmp_edit.XXXXXXXX");
 }
 
 
@@ -119,7 +119,6 @@ edit_results(void)
 	struct result *result;
 
 	/* Create the temporary file for edit mode. */
-	editor_tmp_path = join_path(home, ".mdp/tmp_edit.XXXXXXXX");
 	tmp_fd = mkstemp(editor_tmp_path);
 	if (tmp_fd == -1) {
 		err(EXIT_FAILURE, "edit_results mkstemp()");

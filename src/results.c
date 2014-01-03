@@ -37,15 +37,11 @@
 #include "keywords.h"
 #include "utils.h"
 #include "gpg.h"
+#include "cmd.h"
 #include "mdp.h"
 
 
-#define KEYWORD_LENGTH 50
-
-extern bool cmd_regex;
-
 struct wlist results = ARRAY_INITIALIZER;
-extern struct kwlist keywords;
 
 /*
  * This holds a sum and size of all the characters in the result set. This is
