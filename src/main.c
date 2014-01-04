@@ -24,19 +24,20 @@
 #include <stdbool.h>
 
 #include "array.h"
-#include "mdp.h"
-#include "utils.h"
-#include "config.h"
-#include "results.h"
-#include "pager.h"
-#include "gpg.h"
-#include "lock.h"
-#include "generate.h"
-#include "keywords.h"
 #include "cleanup.h"
-#include "editor.h"
-#include "debug.h"
 #include "cmd.h"
+#include "config.h"
+#include "debug.h"
+#include "editor.h"
+#include "generate.h"
+#include "gpg.h"
+#include "keywords.h"
+#include "lock.h"
+#include "mdp.h"
+#include "pager.h"
+#include "profile.h"
+#include "results.h"
+#include "utils.h"
 
 
 char *home = NULL;
@@ -156,7 +157,12 @@ mdp(enum action_mode mode)
 		}
 
 		if (cmd_profile_name != NULL) {
-			profile_generate_from_name(cmd_profile_name);
+			struct profile *profile;
+			profile = profile_get_from_name(cmd_profile_name);
+			if (profile == NULL) {
+				errx(EXIT_FAILURE, "unknown profile");
+			}
+			profile_fprint_passwords(stdout, profile);
 			break;
 		}
 

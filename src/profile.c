@@ -32,6 +32,9 @@
 struct profile_list profiles = ARRAY_INITIALIZER;
 
 
+/*
+ * Instantiate a new profile with default values.
+ */
 struct profile *
 profile_new(char *name)
 {
@@ -47,10 +50,55 @@ profile_new(char *name)
 }
 
 
-void
-profile_generate_from_name(char *name)
+/*
+ * Return a profile from the global profile list.
+ *
+ * If the name is not found in the registry, this funtion returns NULL.
+ */
+struct profile *
+profile_get_from_name(char *name)
 {
 	struct profile *profile;
 
-	profile = profile_get_from_name(name);
+	for (unsigned int i = 0; i < ARRAY_LENGTH(&profiles); i++) {
+		profile = ARRAY_ITEM(&profiles, i);
+
+		if (strcmp(profile->name, name) == 0) {
+			return profile;
+		}
+	}
+
+	return NULL;
+}
+
+
+/*
+ * Print a set of passwords from the profile definition.
+ */
+void
+profile_fprint_passwords(FILE *stream, struct profile *profile)
+{
+	for (unsigned int i = 0; i < profile->password_count; i++) {
+		char *password;
+		password = profile_generate_password(profile);
+		fprintf(stream, "%s\n", password);
+		xfree(password);
+	}
+}
+
+
+/*
+ * Generate and return a single password based on the profile definition.
+ *
+ * Callers are responsible for free'ing the memory.
+ */
+char *
+profile_generate_password(struct profile *profile)
+{
+	char *s = NULL;
+	(void)(profile);
+
+	s = strdup("DummyPassword");
+
+	return s;
 }
