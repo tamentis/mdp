@@ -34,5 +34,6 @@
 
 
 int		 generate_password(char *, int, char *);
+int		 generate_password_from_set(char *, int, char *);
 
 #endif

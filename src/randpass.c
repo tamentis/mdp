@@ -22,6 +22,7 @@
 
 #include <sys/types.h>
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,6 +32,7 @@
 
 #include "arc4random.h"
 #include "randpass.h"
+#include "xmalloc.h"
 
 
 struct zzsym {
@@ -160,3 +162,59 @@ generate_password(char *password_string, int length, char *mode)
 	return length;
 }
 
+
+/*
+ * Generate a password of the given length using the provided set of
+ * characters.
+ */
+int
+generate_password_from_set(char *password_string, int length, char *set)
+{
+	char *str_pointer;
+	int *random_weight;
+	int max_weight = 0;
+	int max_weight_element_number = 0;
+	size_t setlen;
+
+	setlen = strlen(set);
+
+	if (length > MAX_PASSWORD_LENGTH || length < 1) {
+		return -1;
+	}
+
+	random_weight = xcalloc(setlen, sizeof(int));
+
+	for (size_t i = 0; i < setlen; i++) {
+		random_weight[i] = 0;
+	}
+
+	str_pointer = password_string;
+
+	for (int i = 0; i < length; i++) {
+		/* Assign random weight in weight array if mode is present */
+		for (size_t j = 0; j < setlen ; j++) {
+			random_weight[j] = 1 + arc4random_uniform(20000);
+		}
+
+		/* Find an element with maximum weight */
+		for (size_t j = 0; j < setlen; j++) {
+			if (random_weight[j] > max_weight) {
+				max_weight = random_weight[j];
+				max_weight_element_number = j;
+			}
+		}
+
+		/* Get password symbol */
+		*str_pointer = set[max_weight_element_number];
+		str_pointer++;
+		max_weight = 0;
+		max_weight_element_number = 0;
+		for (size_t j = 0; j < setlen; j++) {
+			random_weight[j] = 0;
+		}
+	}
+
+	*str_pointer = '\0';
+
+	return 0;
+}

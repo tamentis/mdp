@@ -5,3 +5,5 @@ tests/regress/*/diff
 tests/regress/*/expected
 tests/regress/*/output
 tests/regress/*/stub
+tags
+cscope.out

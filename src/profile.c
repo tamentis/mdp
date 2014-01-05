@@ -20,13 +20,16 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <stdbool.h>
+#include <err.h>
 
-#include "xmalloc.h"
 #include "array.h"
-#include "profile.h"
 #include "cmd.h"
 #include "config.h"
+#include "profile.h"
+#include "randpass.h"
+#include "xmalloc.h"
 
 
 struct profile_list profiles = ARRAY_INITIALIZER;
@@ -95,10 +98,16 @@ profile_fprint_passwords(FILE *stream, struct profile *profile)
 char *
 profile_generate_password(struct profile *profile)
 {
-	char *s = NULL;
-	(void)(profile);
+	char *s;
+	int retcode;
 
-	s = strdup("DummyPassword");
+	s = xcalloc(profile->character_count + 1, sizeof(char));
+
+	retcode = generate_password_from_set(s, profile->character_count,
+			profile->character_set);
+	if (retcode != 0) {
+		errx(EXIT_FAILURE, "failed to generate password");
+	}
 
 	return s;
 }
