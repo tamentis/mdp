@@ -17,10 +17,14 @@
  * All the profile related variables and functions.
  */
 
+#include <sys/types.h>
+#include <sys/param.h>
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <inttypes.h>
 #include <stdbool.h>
 #include <err.h>
 
@@ -45,8 +49,8 @@ profile_new(char *name)
 
 	new = xcalloc(1, sizeof(struct profile));
 	new->name = strdup(name);
-	new->password_count = cfg_password_count;
-	new->character_count = cmd_password_length;
+	new->password_count = DEFAULT_PASSWORD_COUNT;
+	new->character_count = DEFAULT_CHARACTER_COUNT;
 	new->character_set = strdup(CHARSET_ALPHANUMERIC);
 
 	return new;
@@ -56,7 +60,9 @@ profile_new(char *name)
 /*
  * Return a profile from the global profile list.
  *
- * If the name is not found in the registry, this funtion returns NULL.
+ * If the name is not found in the registry, this funtion returns NULL. Calling
+ * this function with the default profile name as parameter will never return
+ * NULL as a default profile is generated.
  */
 struct profile *
 profile_get_from_name(char *name)
@@ -71,6 +77,16 @@ profile_get_from_name(char *name)
 		}
 	}
 
+	/*
+	 * User is looking for the default profile and it wasn't in the config,
+	 * make one up with the default settings.
+	 */
+	if (strcmp(name, DEFAULT_PROFILE_NAME) == 0) {
+		profile = profile_new(DEFAULT_PROFILE_NAME);
+		ARRAY_ADD(&profiles, profile);
+		return profile;
+	}
+
 	return NULL;
 }
 
@@ -81,7 +97,16 @@ profile_get_from_name(char *name)
 void
 profile_fprint_passwords(FILE *stream, struct profile *profile)
 {
-	for (unsigned int i = 0; i < profile->password_count; i++) {
+	unsigned int password_count;
+
+	/* A password count specified on the command line takes precedence. */
+	if (cmd_password_count > 0) {
+		password_count = cmd_password_count;
+	} else {
+		password_count = profile->password_count;
+	}
+
+	for (unsigned int i = 0; i < password_count; i++) {
 		char *password;
 		password = profile_generate_password(profile);
 		fprintf(stream, "%s\n", password);
@@ -100,10 +125,18 @@ profile_generate_password(struct profile *profile)
 {
 	char *s;
 	int retcode;
+	unsigned int character_count;
 
-	s = xcalloc(profile->character_count + 1, sizeof(char));
+	/* A character count specified on the command line takes precedence. */
+	if (cmd_character_count > 0) {
+		character_count = cmd_character_count;
+	} else {
+		character_count = profile->character_count;
+	}
 
-	retcode = generate_password_from_set(s, profile->character_count,
+	s = xcalloc(character_count + 1, sizeof(char));
+
+	retcode = generate_password_from_set(s, character_count,
 			profile->character_set);
 	if (retcode != 0) {
 		errx(EXIT_FAILURE, "failed to generate password");

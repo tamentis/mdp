@@ -49,7 +49,6 @@ char		*cfg_gpg_key_id = NULL;
 unsigned int	 cfg_gpg_timeout = 20;
 char		*cfg_editor;
 unsigned int	 cfg_timeout = 10;
-unsigned int	 cfg_password_count = 4;
 bool		 cfg_backup = true;
 
 
@@ -106,14 +105,6 @@ set_variable(char *name, char *value, int linenum)
 			conf_err("invalid value for gpg_timeout");
 		}
 		cfg_editor = strdup(value);
-
-	/* set password_count <integer> */
-	} else if (strcmp(name, "password_count") == 0) {
-		if (value == NULL || *value == '\0') {
-			conf_err("invalid value for password_count");
-		}
-
-		cfg_password_count = strtoull(value, NULL, 10);
 
 	/* set timeout <integer> */
 	} else if (strcmp(name, "timeout") == 0) {

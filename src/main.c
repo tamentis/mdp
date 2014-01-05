@@ -29,7 +29,6 @@
 #include "config.h"
 #include "debug.h"
 #include "editor.h"
-#include "generate.h"
 #include "gpg.h"
 #include "keywords.h"
 #include "lock.h"
@@ -46,8 +45,8 @@ char *home = NULL;
 static void
 usage(void)
 {
-	printf("usage: mdp [-eVh] [-c config] [-k key_id]\n");
-	printf("       mdp [-Vh] file ... -g length\n");
+	printf("usage: mdp -e [-Vh] [-c config] [-k key_id]\n");
+	printf("       mdp -g [-Vh] [-c config] [-p profile] [-n count] [-l length]\n");
 	printf("       mdp [-ErqVh] [-c config] [-k key_id] keyword ...\n");
 
 	exit(EXIT_FAILURE);
@@ -80,6 +79,8 @@ get_home(void)
 static void
 mdp(enum action_mode mode)
 {
+	struct profile *profile;
+
 	switch (mode) {
 	case MODE_VERSION:
 		debug("mode: VERSION");
@@ -152,22 +153,21 @@ mdp(enum action_mode mode)
 
 	case MODE_GENERATE:
 		debug("mode: GENERATE");
+
 		if (keywords_count() > 0) {
 			usage();
 		}
 
-		if (cmd_profile_name != NULL) {
-			struct profile *profile;
-			profile = profile_get_from_name(cmd_profile_name);
-			if (profile == NULL) {
-				errx(EXIT_FAILURE, "unknown profile");
-			}
-			profile_fprint_passwords(stdout, profile);
-			break;
+		if (cmd_profile_name == NULL) {
+			cmd_profile_name = strdup(DEFAULT_PROFILE_NAME);
 		}
 
-		generate_passwords(cmd_password_length,
-				cfg_password_count);
+		profile = profile_get_from_name(cmd_profile_name);
+		if (profile == NULL) {
+			errx(EXIT_FAILURE, "unknown profile");
+		}
+
+		profile_fprint_passwords(stdout, profile);
 		break;
 
 	default:

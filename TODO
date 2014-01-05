@@ -1,10 +1,11 @@
-BUGS
- - nope
+BUGS/IMMEDIATE
+ - document the new use of -g
+ - document -l, -n and -p.
+ - document the changelog
+ - document the lack of unicode suport for now.
 
 NEEDED FEATURES
- - Create "profiles" for password styles allowing the configuration of:
-   - number of chars (-g without parameter).
-   - character set used in the randomization.
+ - Have character_set use UTF characters properly.
 
  - '-a' will add a password, taking a number of strings in order of argv and
    using a format defined in the config file, this avoids opening the passwords

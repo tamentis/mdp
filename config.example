@@ -16,10 +16,18 @@ set editor "/usr/bin/vim"
 # Timeout in show mode in seconds (default: 10)
 set timeout 10
 
-profile chiffres
+# Define a profile to generate 7 digits passwords. It can be used with the
+# following command line:
+#
+#     mdp -g -p num7
+profile num7
 	set password_count 10
 	set character_count 7
 	set character_set 1234567890
 
+# Another profile defining only the character set.
 profile hex
 	set character_set ABCDEF1234567890
+
+profile default
+	set password_count 20

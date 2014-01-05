@@ -2,8 +2,8 @@
 
 use_config editor
 
-run_mdp -g 16 > test.output
+run_mdp -g -l 16 > test.stdout
 
-if [ "`get_lines_and_bytes test.output`" = "4 68" ]; then
+if [ "`get_lines_and_bytes test.stdout`" = "4 68" ]; then
 	echo pass
 fi

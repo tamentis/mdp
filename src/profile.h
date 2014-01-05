@@ -20,6 +20,9 @@
 #define CHARSET_ALPHANUMERIC "abcdefghijklmnopqrstuvwxyz" \
 			     "ABCDEFGHIJKLMNOPQRSTUVWXYZ" \
 			     "1234567890"
+#define DEFAULT_PROFILE_NAME "default"
+#define DEFAULT_CHARACTER_COUNT 16
+#define DEFAULT_PASSWORD_COUNT 4
 
 struct profile {
 	char *name;

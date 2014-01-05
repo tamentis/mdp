@@ -24,7 +24,7 @@ fi
 
 # Run mdp capturing stderr and using the test config file.
 run_mdp() {
-	$MDP -c test.config $@ 2>/dev/null
+	$MDP -c test.config $@ 2>test.stderr
 }
 run_mdp_capture_stderr() {
 	$MDP -c test.config $@ 2>&1
@@ -79,7 +79,7 @@ get_md5() {
 
 # Return number of lines and bytes separated by a space.
 get_lines_and_bytes() {
-	wc -cl test.output | awk '{print $1, $2}'
+	wc -cl test.stdout | awk '{print $1, $2}'
 }
 
 # Remove all the files that could have been created before. Files are
@@ -88,7 +88,8 @@ cleanup() {
 	# Test output
 	rm -f test.config
 	rm -f test_gpg.batch
-	rm -f test.output
+	rm -f test.stdout
+	rm -f test.stderr
 
 	# Fake mdp home.
 	rm -f fake_gpg_home/.mdp/passwords

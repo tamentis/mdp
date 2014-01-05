@@ -32,7 +32,8 @@ extern char		*cmd_config_path;
 extern char		*cmd_gpg_key_id;
 extern char		*cmd_profile_name;
 extern bool		 cmd_regex;
-extern unsigned int	 cmd_password_length;
+extern unsigned int	 cmd_character_count;
+extern unsigned int	 cmd_password_count;
 
 enum action_mode	 cmd_parse(int, char **);
 

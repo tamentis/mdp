@@ -20,7 +20,9 @@ fi
 
 run_test test_initial_setup
 run_test test_generate_default_count
-run_test test_generate_configured_count
+run_test test_password_count_config
+run_test test_password_count_cmdline
+run_test test_profile_charset
 run_test test_filter_standard_one_keyword
 run_test test_filter_standard_two_keywords
 run_test test_filter_regex_one_keyword

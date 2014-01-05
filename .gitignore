@@ -7,3 +7,5 @@ tests/regress/*/output
 tests/regress/*/stub
 tags
 cscope.out
+test.stdout
+test.stderr

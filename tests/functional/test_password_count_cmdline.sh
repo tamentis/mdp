@@ -2,9 +2,7 @@
 
 use_config editor
 
-echo "set password_count 16" >> test.config
-
-run_mdp -g 64 > test.output
+run_mdp -g -l 64 -n 16 > test.stdout
 
 if [ "`get_lines_and_bytes`" = "16 1040" ]; then
 	echo pass

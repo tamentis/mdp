@@ -2,9 +2,9 @@
 
 use_config editor
 
-run_mdp -r red > test.output
+run_mdp -r red > test.stdout
 
-if diff test.output - << EOF
+if diff test.stdout - << EOF
 strawberry red
 raspberry red
 EOF

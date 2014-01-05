@@ -32,7 +32,8 @@ char		*cmd_config_path = NULL;
 char		*cmd_gpg_key_id = NULL;
 char		*cmd_profile_name = NULL;
 bool		 cmd_regex = false;
-unsigned int	 cmd_password_length = 16;
+unsigned int	 cmd_character_count = 0;
+unsigned int	 cmd_password_count = 0;
 
 
 enum action_mode
@@ -45,29 +46,28 @@ cmd_parse(int ac, char **av)
 		return MODE_USAGE;
 	}
 
-	while ((opt = getopt(ac, av, "eErqVhdc:k:g:p:")) != -1) {
+	while ((opt = getopt(ac, av, "eErqgVhdc:k:p:l:n:")) != -1) {
 		switch (opt) {
-		case 'd':
-			debug_enabled = true;
+		case 'e':
+			mode = MODE_EDIT;
 			break;
 		case 'E':
 			cmd_regex = true;
 			break;
-		case 'V':
-			mode = MODE_VERSION;
+		case 'r':
+			mode = MODE_RAW;
 			break;
 		case 'q':
 			mode = MODE_QUERY;
 			break;
-		case 'e':
-			mode = MODE_EDIT;
-			break;
 		case 'g':
 			mode = MODE_GENERATE;
-			cmd_password_length = strtoumax(optarg, NULL, 10);
 			break;
-		case 'r':
-			mode = MODE_RAW;
+		case 'V':
+			mode = MODE_VERSION;
+			break;
+		case 'd':
+			debug_enabled = true;
 			break;
 		case 'c':
 			cmd_config_path = strdup(optarg);
@@ -77,6 +77,12 @@ cmd_parse(int ac, char **av)
 			break;
 		case 'p':
 			cmd_profile_name = strdup(optarg);
+			break;
+		case 'l':
+			cmd_character_count = strtoumax(optarg, NULL, 10);
+			break;
+		case 'n':
+			cmd_password_count = strtoumax(optarg, NULL, 10);
 			break;
 		default:
 			mode = MODE_USAGE;

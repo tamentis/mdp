@@ -5,7 +5,6 @@ OBJECTS= \
 	curses.o \
 	debug.o \
 	editor.o \
-	generate.o \
 	gpg.o \
 	keywords.o \
 	lock.o \
