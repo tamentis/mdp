@@ -9,6 +9,9 @@ NEEDED FEATURES
    using a format defined in the config file, this avoids opening the passwords
    on screen in the first place. document it.
 
+ - specify an alternate password file (e.g. work VS home) or add a file in the
+   profile?
+
 OTHER IDEAS
  - Automatically kill the editor if it lingers. Better lose one passwords than
    leak all of them.
