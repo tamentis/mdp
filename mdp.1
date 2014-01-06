@@ -22,16 +22,19 @@
 .Sh SYNOPSIS
 .Nm mdp
 .Bk -words
+.Fl e
 .Op Fl Vh
 .Op Fl c Ar config
 .Op Fl k Ar key_id
-.Fl e
 .Ek
 .Nm mdp
+.Fl g
 .Bk -words
 .Op Fl Vh
 .Op Fl c Ar config
-.Fl g Ar length
+.Op Fl p Ar profile
+.Op Fl n Ar count
+.Op Fl l Ar length
 .Ek
 .Nm mdp
 .Bk -words
@@ -41,8 +44,8 @@
 .Ek
 .Sh DESCRIPTION
 .Nm
-wraps GnuPG, your favorite editor and a custom temporary fullscreen pager to
-let you manage your password library.
+wraps GnuPG, your favorite editor, a password generator and a custom temporary
+fullscreen pager to let you manage your password library.
 .Pp
 Naturally edit your password file (create, sort, delete) with your editor, rely
 on GnuPG to do the right thing for crypto and let
@@ -57,11 +60,21 @@ The options are as follows:
 Use an alternate configuration file.
 .It Fl e
 Edit your password file (decrypt and re-encrypt after the fact).
+.It Fl g
+Generate password(s) according to your configuration or command-line arguments.
 .It Fl E
 Use regexes instead of plain text matches (e.g. ^.mail).
 .It Fl k Ar key_id
 GnuPG key id (8 alpha-numeric characters). This could be used to specify your
 GnuPG key id in case you did not define it in your configuration file.
+.It Fl p Ar profile
+Choose which profile to use among the ones defined in your configuration file.
+.It Fl n Ar count
+Number of passwords to generate. This command line parameter will override all
+other values of password_count (global and profile).
+.It Fl l Ar length
+Length of generated passwords (in bytes). This command line parameter will
+override all other values of password_count (global and profile).
 .It Fl q
 Start
 .Nm
@@ -70,8 +83,6 @@ from entering your GPG password multiple time. Query mode times out after
 a few seconds of inactivity.
 .It Fl r
 Displays the result without pager, plain terminal dump (not recommended).
-.It Fl g Ar length
-Generates 4 passwords of the given length.
 .It Fl V
 Print version.
 .It Fl h
@@ -82,11 +93,11 @@ Print usage.
 .It 1. Create your GPG key if you don't already have one.
 .It 2. Setup your EDITOR variable if it's not already done.
 .It 3. Create a .mdp/config file from the example (at least gpg_key_id).
-.It 4. Pick a password from randomly generated ones (e.g. 16 chars):
+.It 4. Pick a password from randomly generated ones, for example:
 .Bd -literal -offset indent
-mdp -g 16
+mdp -g
 .Ed
-.It 5. Run "mdp -e" and add a line like such:
+.It 5. Run "mdp -e" and add a line such as:
 .Bd -literal -offset indent
 twitter sponge@bob.com yHVHPnqXyx6qUuki
 .Ed
@@ -125,7 +136,14 @@ since
 will use your default editor (as defined by $EDITOR). 
 .Pp
 .It Ic set password_count Ar count
-Define how many password to show when using -g. Default: 4.
+Define how many password to show with using -g. Default: 4.
+.Pp
+.It Ic set character_count Ar count
+Define how many characters to randomize per password. Default: 16.
+.Pp
+.It Ic set character_set Ar characters
+Define all the characters to use in your passwords. Default: all alphanumeric
+(upper and lower case).
 .Pp
 .It Ic set backup Ar no
 Define whether we keep a backup every time we edit the password file. Default: yes.
@@ -135,6 +153,10 @@ This variable define how long the pager will display your passwords. The
 default value is 10 seconds.
 .Nm
 will use your default editor (as defined by $EDITOR). 
+.It Ic profile Ar name
+All the variables define below a profile header will be specific to this
+profile. For now only password_count, character_count and character_set are
+valid options.
 .El
 .Sh FAQ
 .Bl -tag -width Ds
@@ -173,7 +195,9 @@ of mdp to run at the same time for the same user.
 .Xr gpg 1 ,
 .Xr sh 1
 .Sh BUGS
-None so far.
+.Bl -tag -width Ds
+.It - Lack of unicode support in character sets.
+.El
 .Sh AUTHORS
 mdp was written by Bertrand Janin <b@janin.com> and is distributed under an ISC
 license (BSD, MIT and OSI compatible).

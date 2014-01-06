@@ -47,7 +47,7 @@ usage(void)
 {
 	printf("usage: mdp -e [-Vh] [-c config] [-k key_id]\n");
 	printf("       mdp -g [-Vh] [-c config] [-p profile] [-n count] [-l length]\n");
-	printf("       mdp [-ErqVh] [-c config] [-k key_id] keyword ...\n");
+	printf("       mdp [-ErqVh] [-c config] keyword ...\n");
 
 	exit(EXIT_FAILURE);
 }

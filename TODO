@@ -1,8 +1,4 @@
 BUGS/IMMEDIATE
- - document the new use of -g
- - document -l, -n and -p.
- - document the changelog
- - document the lack of unicode suport for now.
  - test weird characters in the character_set
  - add aliases to common character_sets.
 

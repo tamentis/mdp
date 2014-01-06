@@ -2,13 +2,13 @@ NAME
      mdp - minimalist password safe
 
 SYNOPSIS
-     mdp [-eVh] [-c config] [-k key_id]
-     mdp [-Vh] file ... -g length
-     mdp [-ErqVh] [-c config] [-k key_id] keyword ...
+     mdp -e [-Vh] [-c config] [-k key_id]
+     mdp -g [-Vh] [-c config] [-p profile] [-n count] [-l length]
+     mdp [-ErqVh] [-c config] keyword ...
 
 DESCRIPTION
-     mdp wraps GnuPG, your favorite editor and a custom temporary fullscreen
-     pager to let you manage your password library.
+     mdp wraps GnuPG, your favorite editor, a password generator and a custom
+     temporary fullscreen pager to let you manage your password library.
 
      Naturally edit your password file (create, sort, delete) with your
      editor, rely on GnuPG to do the right thing for crypto and let mdp do the
@@ -23,6 +23,9 @@ DESCRIPTION
 
      -e      Edit your password file (decrypt and re-encrypt after the fact).
 
+     -g      Generate password(s) according to your configuration or command-
+             line arguments.
+
      -E      Use regexes instead of plain text matches (e.g. ^.mail).
 
      -k key_id
@@ -30,15 +33,25 @@ DESCRIPTION
              specify your GnuPG key id in case you did not define it in your
              configuration file.
 
+     -p profile
+             Choose which profile to use among the ones defined in your
+             configuration file.
+
+     -n count
+             Number of passwords to generate. This command line parameter will
+             override all other values of password_count (global and profile).
+
+     -l length
+             Length of generated passwords (in bytes). This command line
+             parameter will override all other values of password_count
+             (global and profile).
+
      -q      Start mdp in query mode instead of displaying results directly.
              This will avoid you from entering your GPG password multiple
              time. Query mode times out after a few seconds of inactivity.
 
      -r      Displays the result without pager, plain terminal dump (not
              recommended).
-
-     -g length
-             Generates 4 passwords of the given length.
 
      -V      Print version.
 
@@ -51,11 +64,11 @@ USAGE
 
      3. Create a .mdp/config file from the example (at least gpg_key_id).
 
-     4. Pick a password from randomly generated ones (e.g. 16 chars):
+     4. Pick a password from randomly generated ones, for example:
 
-                   mdp -g 16
+                   mdp -g
 
-     5. Run mdp -e and add a line like such:
+     5. Run mdp -e and add a line such as:
 
                    twitter sponge@bob.com yHVHPnqXyx6qUuki
 
@@ -90,7 +103,15 @@ CONFIGURATION
              by $EDITOR).
 
      set password_count count
-             Define how many password to show when using -g. Default: 4.
+             Define how many password to show with using -g. Default: 4.
+
+     set character_count count
+             Define how many characters to randomize per password. Default:
+             16.
+
+     set character_set characters
+             Define all the characters to use in your passwords. Default: all
+             alphanumeric (upper and lower case).
 
      set backup no
              Define whether we keep a backup every time we edit the password
@@ -100,6 +121,11 @@ CONFIGURATION
              This variable define how long the pager will display your
              passwords. The default value is 10 seconds.  mdp will use your
              default editor (as defined by $EDITOR).
+
+     profile name
+             All the variables define below a profile header will be specific
+             to this profile. For now only password_count, character_count and
+             character_set are valid options.
 
 FAQ
      Why not 'shred' the temporary file?
@@ -142,7 +168,7 @@ SEE ALSO
      gpg(1), sh(1)
 
 BUGS
-     None so far.
+     - Lack of unicode support in character sets.
 
 AUTHORS
      mdp was written by Bertrand Janin <b@janin.com> and is distributed under
