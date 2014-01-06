@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -20,20 +20,11 @@
  *     Adel I. Mirzazhanov. All rights reserved
  */
 
-#ifndef MDP_RANDPASS_H
-#define MDP_RANDPASS_H  1
+#ifndef _MDP_RANDPASS_H
+#define _MDP_RANDPASS_H
 
 #define MAX_PASSWORD_LENGTH	255
-#define MAX_MODE_LENGTH		4
 
-#define S_NB	0x01 /* Numeric */
-#define S_SS	0x02 /* Special */
-#define S_CL	0x04 /* Capital */
-#define S_SL	0x08 /* Small   */
-#define S_RS    0x10 /* Restricted Symbol*/
-
-
-int		 generate_password(char *, int, char *);
 int		 generate_password_from_set(char *, int, char *);
 
-#endif
+#endif /* _MDP_RANDPASS_H_ */
