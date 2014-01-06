@@ -3,6 +3,8 @@ BUGS/IMMEDIATE
  - document -l, -n and -p.
  - document the changelog
  - document the lack of unicode suport for now.
+ - test weird characters in the character_set
+ - add aliases to common character_sets.
 
 NEEDED FEATURES
  - Have character_set use UTF characters properly.

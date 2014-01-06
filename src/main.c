@@ -90,7 +90,7 @@ mdp(enum action_mode mode)
 	case MODE_USAGE:
 		debug("mode: USAGE");
 		usage();
-		/* NOT REACHED */
+		/* NOTREACHED */
 		break;
 
 	case MODE_RAW:
@@ -159,10 +159,11 @@ mdp(enum action_mode mode)
 		}
 
 		if (cmd_profile_name == NULL) {
-			cmd_profile_name = strdup(DEFAULT_PROFILE_NAME);
+			profile = profile_new("default");
+		} else {
+			profile = profile_get_from_name(cmd_profile_name);
 		}
 
-		profile = profile_get_from_name(cmd_profile_name);
 		if (profile == NULL) {
 			errx(EXIT_FAILURE, "unknown profile");
 		}

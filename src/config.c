@@ -49,6 +49,9 @@ char		*cfg_gpg_key_id = NULL;
 unsigned int	 cfg_gpg_timeout = 20;
 char		*cfg_editor;
 unsigned int	 cfg_timeout = 10;
+unsigned int	 cfg_password_count = DEFAULT_PASSWORD_COUNT;
+unsigned int	 cfg_character_count = DEFAULT_CHARACTER_COUNT;
+char		*cfg_character_set = NULL;
 bool		 cfg_backup = true;
 
 
@@ -102,9 +105,36 @@ set_variable(char *name, char *value, int linenum)
 		}
 
 		if (value == NULL || *value == '\0') {
-			conf_err("invalid value for gpg_timeout");
+			conf_err("invalid value for editor");
 		}
 		cfg_editor = strdup(value);
+
+	/* set password_count <integer> */
+	} else if (strcmp(name, "password_count") == 0) {
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for password_count");
+		}
+
+		cfg_password_count = strtoull(value, NULL, 10);
+
+	/* set character_count <integer> */
+	} else if (strcmp(name, "character_count") == 0) {
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for character_count");
+		}
+
+		cfg_character_count = strtoull(value, NULL, 10);
+
+	/* set character_set <string> */
+	} else if (strcmp(name, "character_set") == 0) {
+		if (cfg_character_set != NULL) {
+			xfree(cfg_character_set);
+		}
+
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for character_set");
+		}
+		cfg_character_set = strdup(value);
 
 	/* set timeout <integer> */
 	} else if (strcmp(name, "timeout") == 0) {

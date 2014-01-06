@@ -1,5 +1,6 @@
 *.o
 mdp
+mdp.core
 Makefile
 tests/regress/*/diff
 tests/regress/*/expected

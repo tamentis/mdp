@@ -16,6 +16,11 @@ set editor "/usr/bin/vim"
 # Timeout in show mode in seconds (default: 10)
 set timeout 10
 
+# Re-define the default values (will be overridden by profiles).
+# set password_count 4
+# set character_count 16
+# set character_set 1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+
 # Define a profile to generate 7 digits passwords. It can be used with the
 # following command line:
 #
@@ -28,6 +33,3 @@ profile num7
 # Another profile defining only the character set.
 profile hex
 	set character_set ABCDEF1234567890
-
-profile default
-	set password_count 20

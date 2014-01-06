@@ -40,7 +40,7 @@ struct profile_list profiles = ARRAY_INITIALIZER;
 
 
 /*
- * Instantiate a new profile with default values.
+ * Instantiate a new profile with default values from the global scope.
  */
 struct profile *
 profile_new(char *name)
@@ -49,9 +49,14 @@ profile_new(char *name)
 
 	new = xcalloc(1, sizeof(struct profile));
 	new->name = strdup(name);
-	new->password_count = DEFAULT_PASSWORD_COUNT;
-	new->character_count = DEFAULT_CHARACTER_COUNT;
-	new->character_set = strdup(CHARSET_ALPHANUMERIC);
+	new->password_count = cfg_password_count;
+	new->character_count = cfg_character_count;
+
+	if (cfg_character_set != NULL) {
+		new->character_set = strdup(cfg_character_set);
+	} else {
+		new->character_set = strdup(CHARSET_ALPHANUMERIC);
+	}
 
 	return new;
 }
@@ -75,16 +80,6 @@ profile_get_from_name(char *name)
 		if (strcmp(profile->name, name) == 0) {
 			return profile;
 		}
-	}
-
-	/*
-	 * User is looking for the default profile and it wasn't in the config,
-	 * make one up with the default settings.
-	 */
-	if (strcmp(name, DEFAULT_PROFILE_NAME) == 0) {
-		profile = profile_new(DEFAULT_PROFILE_NAME);
-		ARRAY_ADD(&profiles, profile);
-		return profile;
 	}
 
 	return NULL;
