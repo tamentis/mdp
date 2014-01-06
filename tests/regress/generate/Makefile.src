@@ -2,8 +2,17 @@ PROG=stub
 SRC=../../../src
 OBJECTS= \
 	stub.o \
-	${SRC}/generate.o \
-	${SRC}/randpass.o
+	${SRC}/cmd.o \
+	${SRC}/config.o \
+	${SRC}/debug.o \
+	${SRC}/gpg.o \
+	${SRC}/keywords.o \
+	${SRC}/lock.o \
+	${SRC}/profile.o \
+	${SRC}/randpass.o \
+	${SRC}/strdelim.o \
+	${SRC}/utils.o \
+	${SRC}/xmalloc.o
 
 OBJECTS+=${EXTRA_OBJECTS}
 CFLAGS+=-I${SRC}/

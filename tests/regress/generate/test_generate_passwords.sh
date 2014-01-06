@@ -4,7 +4,7 @@
 
 announce "generate_passwords"
 rm -f fake_lock
-./stub 13 3 | sed 's/././g' > output
+./stub 13 3 qwerty | sed 's/[qwerty]/./g' > output
 echo "............." > expected
 echo "............." >> expected
 echo "............." >> expected
