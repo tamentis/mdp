@@ -56,7 +56,7 @@ usage() {
 	echo "usage: ./configure [-h] [-d] [platform]"
 	echo
 	echo "    -h   this help screen."
-	echo "    -d   configure for debug mode (-ggdb -O1)"
+	echo "    -d   configure for debug mode (-ggdb -O0)"
 	echo
 	echo "By default, this script will attempt to detect your OS and will guess the most"
 	echo "appropriate configuration. If it gets your system wrong, you can force it,"
@@ -121,27 +121,27 @@ echo $OS
 
 # Platform-specific configuration
 case $OS in
-	Linux|Unix|POSIX)
-		X_CFLAGS="-D_GNU_SOURCE"
-		X_OBJECTS="arc4random.o"
-		MANDEST="share/man"
-		;;
+Linux|Unix|POSIX)
+	X_CFLAGS="-D_GNU_SOURCE"
+	X_OBJECTS="arc4random.o"
+	MANDEST="share/man"
+	;;
 
-	*BSD)
-		;;
+*BSD)
+	;;
 
-	Darwin)
-		MANDEST="share/man"
-		CURSESLIB="-lncurses"
-		;;
+Darwin)
+	MANDEST="share/man"
+	CURSESLIB="-lncurses"
+	;;
 
-	*)
-		echo
-		echo "Sorry but '$OS' is currently unsupported, you can attemp 'bsd' or 'linux' as"
-		echo "target and cross your fingers. In order to do that you just need to give either"
-		echo "one as parameter to ./configure. You can get the official list of supported "
-		echo "platform with ./configure -l"
-		exit
+*)
+	echo
+	echo "Sorry but '$OS' is currently unsupported, you can attemp 'bsd' or 'linux' as"
+	echo "target and cross your fingers. In order to do that you just need to give either"
+	echo "one as parameter to ./configure. You can get the official list of supported "
+	echo "platform with ./configure -l"
+	exit
 esac
 
 

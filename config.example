@@ -6,8 +6,7 @@ set gpg_path "/usr/local/bin/gpg"
 # GnuPG key id (REQUIRED)
 set gpg_key_id "6453194A"
 
-# GnuPG timeout (how soon to kill gpg if nothing happens, e.g. user forgot or
-# stuck in a pipe)
+# GnuPG timeout (kill gpg if the user doesn't act fast enough)
 set gpg_timeout 5
 
 # Editor used in edit mode (defaults to $EDITOR or /usr/bin/vi)

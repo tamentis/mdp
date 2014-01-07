@@ -119,15 +119,13 @@ GnuPG key id (default: none). If no key is selected,
 will expect you to specify it on the command-line (-k). If no key was specified
 either way,
 .Nm
-will abort. This was made mandatory to avoid password loss. Note that this
-parameter is ignored during the decryption phase, GnuPG picks the key based on
-the content of the password file.
+will abort. That this parameter is ignored during the decryption phase, GnuPG
+picks the key based on the content of the password file.
 .Pp
 .It Ic set gpg_timeout Ar seconds
 Number of seconds to give GnuPG for password and pipe interaction. The
-default value is 10 seconds. This will kill GnuPG if you leave it on the
-password prompt or of anything blocks it while it communicates with the
-parent process.
+default value is 10 seconds. This will kill GnuPG if forgotten at the password
+prompt or if it cannot communicate with the parent process.
 .Pp
 .It Ic set editor Ar path
 Path to your favorite editor. You typically don't need to set this variable
@@ -136,17 +134,20 @@ since
 will use your default editor (as defined by $EDITOR). 
 .Pp
 .It Ic set password_count Ar count
-Define how many password to show with using -g. Default: 4.
+Define how many password to show with using -g. Default: 4 or as defined in the
+profile.
 .Pp
 .It Ic set character_count Ar count
-Define how many characters to randomize per password. Default: 16.
+Define how many characters to randomize per password. Default: 16 or as defined
+in the profile.
 .Pp
 .It Ic set character_set Ar characters
 Define all the characters to use in your passwords. Default: all alphanumeric
-(upper and lower case).
+(upper and lower case) or as define in the profile.
 .Pp
 .It Ic set backup Ar no
-Define whether we keep a backup every time we edit the password file. Default: yes.
+Define whether we keep a backup every time we edit the password file. Default:
+yes.
 .Pp
 .It Ic set timeout Ar seconds
 This variable define how long the pager will display your passwords. The
@@ -161,13 +162,13 @@ valid options.
 .Sh FAQ
 .Bl -tag -width Ds
 .It Why not 'shred' the temporary file?
-If you're afraid of getting your disk stolen, encrypt it. Shred only
-has limited use on most filesystems (due to journaling for example).
+If you are afraid of getting your disk stolen, encrypt it. Shred has limited
+use on most journaled filesystems.
 .It What if I don't trust 'root'?
 You're screwed, you can't trust this machine with your valuable information.
 .It What if my server is virtualized?
-Same answer as above, but I certainly hope you can trust your hosting
-or IaaS provider.
+Same answer as above, if you don't trust your hosting provider or IaaS, good
+luck.
 .El
 .Sh ENVIRONMENT
 .Bl -tag
@@ -180,12 +181,13 @@ configuration does not alter it.
 .It Pa $HOME/.mdp/config
 Main configuration file for
 .Nm .
-You should seriously consider putting at least your gpg_key_id in there.
+You need at least your gpg_key_id in there, without it you will be required to
+specify it every single time.
 .It Pa $HOME/.mdp/passwords
 Encrypted list of passwords.
 .It Pa $HOME/.mdp/passwords.bak
 This file is a copy of your password file, before the last edit. You can revert
-to the last file by simply replacing your password file. Generation of this file
+to the last file by simply replacing your password file. Creation of this file
 can be disabled (see "set backup").
 .It Pa $HOME/.mdp/lock
 This file is created while you edit your password list to avoid two copies
