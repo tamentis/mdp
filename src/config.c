@@ -248,7 +248,7 @@ process_config_line(char *line, int linenum)
 
 		/* Every set after that moment is to configure this profile. */
 		current_profile = profile_new(name);
-		ARRAY_ADD(&profiles, current_profile);
+		profile_register(current_profile);
 
 	/* Unknown operation... Code help us. */
 	} else {

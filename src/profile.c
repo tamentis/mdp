@@ -139,3 +139,17 @@ profile_generate_password(struct profile *profile)
 
 	return s;
 }
+
+
+/*
+ * Adds the provided profile to the global profile registry.
+ */
+void
+profile_register(struct profile *p)
+{
+	if (p == NULL) {
+		errx(EXIT_FAILURE, "profile_register(NULL)");
+	}
+
+	ARRAY_ADD(&profiles, p);
+}
