@@ -32,7 +32,8 @@ ${PROG}: ${OBJECTS}
 	${CC} ${LDFLAGS} -o ${PROG} ${OBJECTS} ${CURSESLIB} 
 
 test: ${PROG}
-	./test_generate_passwords.sh
+	./test_fprint_passwords.sh
+	./test_get_from_name.sh
 
 clean:
 	rm -f ${PROG} *.o *core expected output diff
