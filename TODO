@@ -16,6 +16,8 @@ NEEDED FEATURES
    profile?
 
 OTHER IDEAS
+ - Use the same technique as rm -P (BSD) instead of just unlink.
+
  - Automatically kill the editor if it lingers. Better lose one passwords than
    leak all of them.
 
