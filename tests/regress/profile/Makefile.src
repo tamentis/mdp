@@ -32,8 +32,7 @@ ${PROG}: ${OBJECTS}
 	${CC} ${LDFLAGS} -o ${PROG} ${OBJECTS} ${CURSESLIB} 
 
 test: ${PROG}
-	./test_fprint_passwords.sh
-	./test_get_from_name.sh
+	@find . -name "test_*.sh" | xargs -n 1 sh
 
 clean:
 	rm -f ${PROG} *.o *core expected output diff

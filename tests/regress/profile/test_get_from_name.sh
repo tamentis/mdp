@@ -2,7 +2,7 @@
 
 . ../_functions.sh
 
-announce "get_from_name"
+announce "profile.c:profile_get_from_name()"
 rm -f fake_lock
 
 if ./stub get_from_name papple; then

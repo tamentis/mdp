@@ -1,8 +1,8 @@
 all:
-	./_make_all.sh
+	@./_make_all.sh
 
 test:
-	./_make_all.sh test
+	@./_make_all.sh test
 
 clean:
-	./_make_all.sh clean
+	@./_make_all.sh clean
