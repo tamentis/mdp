@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -64,7 +64,7 @@ spawn_editor(char *path)
 {
 	char *cmd;
 
-	cmd = xprintf("%s \"%s\"", cfg_editor, path);
+	asprintf(&cmd, "%s \"%s\"", cfg_editor, path);
 
 	debug("spawn_editor: %s", cmd);
 

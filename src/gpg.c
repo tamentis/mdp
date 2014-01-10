@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -184,7 +184,7 @@ gpg_encrypt(char *tmp_path)
 {
 	char *cmd, *backup_path, *tmp_encrypted_path;
 
-	cmd = xprintf("%s -r %s -e %s", cfg_gpg_path, cfg_gpg_key_id,
+	asprintf(&cmd, "%s -r %s -e %s", cfg_gpg_path, cfg_gpg_key_id,
 			tmp_path);
 
 	debug("gpg_encrypt system(%s)", cmd);
@@ -193,7 +193,7 @@ gpg_encrypt(char *tmp_path)
 	}
 
 	/* Generate the backup filename. */
-	backup_path = xprintf("%s.bak", gpg_passwords_path);
+	asprintf(&backup_path, "%s.bak", gpg_passwords_path);
 
 	if (file_exists(gpg_passwords_path)) {
 		/* Backup the previous password file. */
@@ -221,7 +221,7 @@ gpg_encrypt(char *tmp_path)
 	}
 
 	/* Move the newly encrypted file to its new location. */
-	tmp_encrypted_path = xprintf("%s.gpg", tmp_path);
+	asprintf(&tmp_encrypted_path, "%s.gpg", tmp_path);
 	if (link(tmp_encrypted_path, gpg_passwords_path) != 0) {
 		err(EXIT_FAILURE, "gpg_encrypt link(tmp_encrypted_path, "
 				"gpg_passwords_path)");

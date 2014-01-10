@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -49,7 +49,11 @@ pid_t watcher_pid = 0;
 char *
 join(const char sep, const char *base, const char *suffix)
 {
-	return xprintf("%s%c%s", base, sep, suffix);
+	char *s;
+
+	asprintf(&s, "%s%c%s", base, sep, suffix);
+
+	return s;
 }
 
 
