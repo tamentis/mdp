@@ -239,7 +239,7 @@ set_pid_timeout(pid_t pid, int timeout)
  * Check if a file exists.
  */
 int
-file_exists(char *filepath)
+file_exists(const char *filepath)
 {
 	struct stat sb;
 
