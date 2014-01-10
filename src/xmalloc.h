@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,6 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifndef _XMALLOC_H_
+#define _XMALLOC_H_
+
 char 		*xstrdup(const char *);
 void 		*xcalloc(size_t, size_t);
 void 		*xmalloc(size_t);
@@ -24,3 +27,5 @@ int		 xvasprintf(char **, const char *, va_list);
 int		 xsnprintf(char *, size_t, const char *, ...);
 int		 xvsnprintf(char *, size_t, const char *, va_list);
 char		*xprintf(const char *, ...);
+
+#endif /* _XMALLOC_H_ */

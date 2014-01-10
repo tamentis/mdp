@@ -14,8 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef ARRAY_H
-#define ARRAY_H
+#ifndef _ARRAY_H_
+#define _ARRAY_H_
 
 #define ARRAY_INITIALIZER { NULL, 0, 0 }
 
@@ -116,4 +116,4 @@
 	xfree(a);							\
 } while (0)
 
-#endif
+#endif /* _ARRAY_H_ */

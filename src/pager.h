@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,9 +14,14 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifndef _PAGER_H_
+#define _PAGER_H_
+
 enum pager_start_mode {
 	START_WITH_PROMPT,
 	START_WITHOUT_PROMPT
 };
 
 void pager(enum pager_start_mode);
+
+#endif /* _PAGER_H_ */
