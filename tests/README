@@ -1,0 +1,20 @@
+mdp testing
+===========
+
+The goal of these two custom testing frameworks is to avoid changes to mdp to
+break existing functionality. We attempt to accomplish this goal by using two
+separate methodology, each in its own folder.
+
+    functional/
+
+        This is an attempt at some form of functional testing for mdp. These
+        tests run mdp in similar ways a user would. It tests flags, return
+        codes from the command, stderr, stdout, it also test timing,
+        interaction with the file system.
+
+    regress/
+
+	The regression tests are supposed to be one step away from unit tests
+	and a less high-level as functional tests. They test larger blocks of
+	abstractions that are not necessarily well tested in the functional
+	tests.
