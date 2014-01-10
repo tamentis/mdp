@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Configure script for 'mdp'
-# Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+# Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
 #
 #
 
@@ -26,7 +26,7 @@ generate_makefile() {
 	echo
 
 	echo "PROG=$PROG"
-	echo "CFLAGS+=$CFLAGS -std=c99"
+	echo "CFLAGS+=$CFLAGS -std=c99 -pedantic"
 	echo "CFLAGS+=-Wall -W -Wpointer-arith -Wbad-function-cast -Wcast-qual"
 	echo "CFLAGS+=-Wstrict-prototypes -Wmissing-prototypes"
 	echo "CFLAGS+=-Wmissing-declarations -Wnested-externs -Winline"
