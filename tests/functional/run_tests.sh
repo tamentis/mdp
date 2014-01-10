@@ -19,6 +19,8 @@ fi
 . ./bootstrap.sh
 
 run_test test_initial_setup
+run_test test_help
+run_test test_version
 run_test test_generate_default_count
 run_test test_password_count_config
 run_test test_password_count_cmdline
