@@ -33,3 +33,8 @@ OTHER IDEAS
  - If gpg times out while you're typing your password, it appears clear on
    screen, can we capture the keystrokes in a sub-process? Can we spawn a dummy
    prompt without echo after killing gpg?
+
+ - the first time you run mdp, a default configuration file is created with as
+   many defaults as possible:
+    * if the user has gpg installed with a valid private key, configure it with gpg
+    * if the user doesn't have gpg but has openssl, use aes-256.
