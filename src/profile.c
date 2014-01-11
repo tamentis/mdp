@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -43,7 +43,7 @@ struct profile_list profiles = ARRAY_INITIALIZER;
  * Instantiate a new profile with default values from the global scope.
  */
 struct profile *
-profile_new(char *name)
+profile_new(const char *name)
 {
 	struct profile *new;
 
@@ -70,7 +70,7 @@ profile_new(char *name)
  * NULL as a default profile is generated.
  */
 struct profile *
-profile_get_from_name(char *name)
+profile_get_from_name(const char *name)
 {
 	struct profile *profile;
 

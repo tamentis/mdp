@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -266,7 +266,7 @@ process_config_line(char *line, int linenum)
  * Exits program with error message if anything is wrong.
  */
 void
-config_check_directory(char *path)
+config_check_directory(const char *path)
 {
 	struct stat sb;
 
@@ -301,7 +301,7 @@ config_check_directory(char *path)
  * Exits program with error message if anything is wrong.
  */
 void
-config_check_file(char *path)
+config_check_file(const char *path)
 {
 	struct stat sb;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -40,7 +40,7 @@
  * characters.
  */
 int
-generate_password_from_set(char *password_string, int length, char *set)
+generate_password_from_set(char *password_string, int length, const char *set)
 {
 	char *str_pointer;
 	int *random_weight;

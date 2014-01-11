@@ -180,7 +180,7 @@ gpg_close(FILE *fp)
  * Saves the file back though GnuPG by saving to a temp file.
  */
 void
-gpg_encrypt(char *tmp_path)
+gpg_encrypt(const char *tmp_path)
 {
 	char *cmd, *backup_path, *tmp_encrypted_path;
 

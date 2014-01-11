@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -33,7 +33,7 @@ extern uint32_t result_size;
 
 ARRAY_DECL(wlist, struct result *);
 
-struct result	*result_new(wchar_t *);
+struct result	*result_new(const wchar_t *);
 void		 result_kill(struct result *);
 unsigned int	 results_visible_length(void);
 unsigned int	 get_max_length(void);

@@ -34,8 +34,8 @@ ARRAY_DECL(profile_list, struct profile *);
 
 extern struct profile_list profiles;
 
-struct profile	*profile_new(char *);
-struct profile	*profile_get_from_name(char *);
+struct profile	*profile_new(const char *);
+struct profile	*profile_get_from_name(const char *);
 void		 profile_fprint_passwords(FILE *, struct profile *);
 char		*profile_generate_password(struct profile *);
 void		 profile_register(struct profile *);

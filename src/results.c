@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -58,7 +58,7 @@ uint32_t result_size = 0, result_sum = 0;
  * password this shouldn't be much of a bottleneck.
  */
 struct result *
-result_new(wchar_t *value)
+result_new(const wchar_t *value)
 {
 	struct result *new;
 

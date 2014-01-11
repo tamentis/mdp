@@ -40,7 +40,7 @@ char *editor_tmp_path = NULL;
  * Return a copy of the $EDITOR environment variable or NULL if not found.
  */
 void
-editor_init(char *home)
+editor_init(const char *home)
 {
 	char *s;
 
