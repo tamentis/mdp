@@ -6,7 +6,7 @@
 #
 
 PROG="mdp"
-MDP_VERSION="0.6.0"
+MDP_VERSION="0.7.0"
 
 
 # Some shells have shitty echos
@@ -123,7 +123,6 @@ echo $OS
 case $OS in
 Linux|Unix|POSIX)
 	X_CFLAGS="-D_GNU_SOURCE"
-	X_OBJECTS="arc4random.o"
 	MANDEST="share/man"
 	;;
 
@@ -208,6 +207,22 @@ fi
 rm -f fake_wcslcpy*
 
 
+# Check for arc4random
+echo -n "arc4random... "
+cat <<EOF > fake_arc4random.c
+#include <stdlib.h>
+main() { arc4random(); }
+EOF
+if ! ${CC} fake_arc4random.c -o /dev/null 1>/dev/null 2>/dev/null; then
+	echo "not found (we'll use ours)"
+	X_OBJECTS="$X_OBJECTS arc4random.o"
+	CFLAGS="$CFLAGS -DHAS_NO_ARC4RANDOM"
+else
+	echo yes
+fi
+rm -f fake_arc4random*
+
+
 # Check for curses
 echo -n "curses... "
 cat <<EOF > fake_curses.c
@@ -220,12 +235,15 @@ fi
 echo "found (${CURSESLIB})"
 rm -f fake_curses*
 
+
+# Generate the Makefiles.
 echo
 find . -name "Makefile.src" | while read input; do
 	output=${input%%.src}
 	echo "generating $output"
 	generate_makefile $input > $output
 done
+
 
 echo
 echo "Configured for '$OS', run 'make' (or 'gmake') to compile."
