@@ -34,7 +34,7 @@ RELEASE
     2. Test every single flag documented in the man page.
     3. Test every single option in the config file.
     4. Change the version in ``configure``,
-    5. Set a date in the ChangeLog,
+    5. Set a date in the ChangeLog (then commit),
     6. Tag the new branch:
 
         git tag -a vX.Y.Z -m 'Releasing vX.Y.Z'
