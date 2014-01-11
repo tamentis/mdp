@@ -51,7 +51,7 @@ join(const char sep, const char *base, const char *suffix)
 {
 	char *s;
 
-	asprintf(&s, "%s%c%s", base, sep, suffix);
+	xasprintf(&s, "%s%c%s", base, sep, suffix);
 
 	return s;
 }

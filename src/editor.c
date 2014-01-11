@@ -64,7 +64,7 @@ spawn_editor(char *path)
 {
 	char *cmd;
 
-	asprintf(&cmd, "%s \"%s\"", cfg_editor, path);
+	xasprintf(&cmd, "%s \"%s\"", cfg_editor, path);
 
 	debug("spawn_editor: %s", cmd);
 

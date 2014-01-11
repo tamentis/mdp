@@ -57,7 +57,7 @@ debug(const char *fmt, ...)
 		errx(EXIT_FAILURE, "strftime failed");
 	}
 
-	asprintf(&pfmt, "[%s] [pid:%d] %s\n", tbuf, pid, fmt);
+	xasprintf(&pfmt, "[%s] [pid:%d] %s\n", tbuf, pid, fmt);
 
 	va_start(ap, fmt);
 	i = vfprintf(stderr, pfmt, ap);

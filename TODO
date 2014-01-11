@@ -2,8 +2,6 @@ BUGS/IMMEDIATE
  - None so far.
 
 NEEDED FEATURES
- - Make sure we test the returns of asprintf.
-
  - Add aliases to common character_sets (e.g. $ALPHANUMERIC, $DIGITS).
 
  - Have character_set use UTF characters properly (use wchar_t instead of char).
