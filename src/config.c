@@ -290,7 +290,7 @@ config_check_directory(const char *path)
 	if (sb.st_uid != 0 && sb.st_uid != getuid())
 		errx(EXIT_FAILURE, "bad owner on %s", path);
 
-	if ((sb.st_mode & 022) != 0)
+	if ((sb.st_mode & 0077) != 0)
 		errx(EXIT_FAILURE, "bad permissions on %s", path);
 }
 

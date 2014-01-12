@@ -1,8 +1,6 @@
 BUGS/IMMEDIATE
  - None so far.
 
- - Add functional tests for configuration directory checks.
-
 NEEDED FEATURES
  - Add aliases to common character_sets (e.g. $ALPHANUMERIC, $DIGITS).
 
