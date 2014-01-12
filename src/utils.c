@@ -151,6 +151,12 @@ wcs_duplicate_as_mbs(const wchar_t *str)
 		err(EXIT_FAILURE, "wcs_duplicate_as_mbs:wcstombs(NULL)");
 	}
 
+	/*
+	 * valgrind will complain about the memory allocated on platforms where
+	 * wcslen is optimized to scan by larger chunks (e.g. 8 bytes). You can
+	 * safely ignore it since the memory valgrind talks about is never
+	 * actually read by the optimized function.
+	 */
 	output = xmalloc(bytelen + 1);
 
 	bytelen = wcstombs(output, str, bytelen + 1);
