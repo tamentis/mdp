@@ -139,7 +139,7 @@ wcscasestr(const wchar_t *s, const wchar_t *find)
 char *
 wcs_duplicate_as_mbs(const wchar_t *str)
 {
-	size_t bytelen, clen;
+	size_t bytelen;
 	char *output;
 
 	/*
@@ -147,12 +147,15 @@ wcs_duplicate_as_mbs(const wchar_t *str)
 	 * (excluding the NUL-byte).
 	 */
 	bytelen = wcstombs(NULL, str, 0);
+	if (bytelen == (size_t)-1) {
+		err(EXIT_FAILURE, "wcs_duplicate_as_mbs:wcstombs(NULL)");
+	}
 
 	output = xmalloc(bytelen + 1);
 
-	clen = wcstombs(output, str, bytelen + 1);
-	if (clen == (size_t)-1) {
-		err(EXIT_FAILURE, "encoding error (invalid locale?)");
+	bytelen = wcstombs(output, str, bytelen + 1);
+	if (bytelen == (size_t)-1) {
+		err(EXIT_FAILURE, "wcs_duplicate_as_mbs:wcstombs(output)");
 	}
 
 	return output;
@@ -170,20 +173,23 @@ wcs_duplicate_as_mbs(const wchar_t *str)
 wchar_t *
 mbs_duplicate_as_wcs(const char *str)
 {
-	size_t bytelen, clen;
+	size_t bytelen;
 	wchar_t *output;
 
 	/*
-	 * Find out how much space we need to store the multi-byte string
+	 * Find out how much space we need to store the wide-char string
 	 * (excluding the NUL-byte).
 	 */
 	bytelen = mbstowcs(NULL, str, 0);
+	if (bytelen == (size_t)-1) {
+		err(EXIT_FAILURE, "mbs_duplicate_as_wcs:mbstowcs(NULL)");
+	}
 
-	output = xmalloc(bytelen + 1);
+	output = xcalloc(bytelen + 1, sizeof(wchar_t));
 
-	clen = mbstowcs(output, str, bytelen + 1);
-	if (clen == (size_t)-1) {
-		err(EXIT_FAILURE, "encoding error (invalid locale?)");
+	bytelen = mbstowcs(output, str, bytelen + 1);
+	if (bytelen == (size_t)-1) {
+		err(EXIT_FAILURE, "mbs_duplicate_as_wcs:mbstowcs(output)");
 	}
 
 	return output;

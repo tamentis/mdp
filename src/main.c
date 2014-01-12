@@ -22,6 +22,7 @@
 #include <signal.h>
 #include <inttypes.h>
 #include <stdbool.h>
+#include <locale.h>
 
 #include "array.h"
 #include "cleanup.h"
@@ -181,6 +182,8 @@ int
 main(int ac, char **av)
 {
 	enum action_mode mode;
+
+	setlocale(LC_ALL, "");
 
 	home = get_home();
 	editor_init(home);

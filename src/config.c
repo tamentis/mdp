@@ -348,6 +348,7 @@ config_check_paths(const char *home)
 
 	path = join_path(home, ".mdp/config");
 	config_check_file(path);
+	xfree(path);
 }
 
 
