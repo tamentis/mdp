@@ -10,7 +10,7 @@ assert_file_missing fake_lock && pass
 
 announce "lock.c:lock_unset() - present"
 touch fake_lock
-./stub fake_lock lock_unset 2>output
+./stub fake_lock lock_unset 2> test.stderr
 assert_retcode_success $?
 assert_file_missing fake_lock && pass
 

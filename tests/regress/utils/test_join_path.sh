@@ -4,8 +4,8 @@
 
 announce "utils.c:join_path()"
 
-./stub join_path /etc passwd > output
-echo "/etc/passwd" > expected
-assert_output && pass
+./stub join_path /etc passwd > test.stdout
+echo "/etc/passwd" > test.expected
+assert_stdout && pass
 
 exit 0

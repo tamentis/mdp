@@ -24,18 +24,27 @@ fail() {
 	exit 1
 }
 
-assert_output() {
-	if diff output expected > diff; then
+# $1 - file to test, typically test.stdout or test.stderr
+assert_generic() {
+	if diff $1 test.expected > test.diff; then
 		return 0
 	else
-		echo "fail - output is not as expected"
-		echo "--expected-----------"
-		cat expected
-		echo "--output-------------"
-		cat output
+		echo "fail - $1 is not as expected"
+		echo "--test.expected-----------"
+		cat test.expected
+		echo "--$1-------------"
+		cat test.stdout
 		echo "---------------------"
 		exit 1
 	fi
+}
+
+assert_stdout() {
+	assert_generic test.stdout
+}
+
+assert_stderr() {
+	assert_generic test.stderr
 }
 
 assert_file_exists() {

@@ -35,4 +35,4 @@ test: ${PROG}
 	@find . -name "test_*.sh" | xargs -n 1 sh
 
 clean:
-	rm -f ${PROG} *.o *core expected output diff
+	rm -f ${PROG} *.o *core test.expected test.stdout test.stderr test.diff
