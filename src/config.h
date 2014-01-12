@@ -25,7 +25,7 @@ extern char		*cfg_editor;
 extern unsigned int	 cfg_timeout;
 extern unsigned int	 cfg_password_count;
 unsigned int		 cfg_character_count;
-char			*cfg_character_set;
+wchar_t			*cfg_character_set;
 extern bool		 cfg_backup;
 
 void			 config_check_directory(const char *);

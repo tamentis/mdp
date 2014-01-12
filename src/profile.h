@@ -17,9 +17,9 @@
 #ifndef _PROFILE_H_
 #define _PROFILE_H_
 
-#define CHARSET_ALPHANUMERIC "abcdefghijklmnopqrstuvwxyz" \
-			     "ABCDEFGHIJKLMNOPQRSTUVWXYZ" \
-			     "1234567890"
+#define CHARSET_ALPHANUMERIC L"abcdefghijklmnopqrstuvwxyz" \
+			      "ABCDEFGHIJKLMNOPQRSTUVWXYZ" \
+			      "1234567890"
 #define DEFAULT_CHARACTER_COUNT 16
 #define DEFAULT_PASSWORD_COUNT 4
 
@@ -27,7 +27,7 @@ struct profile {
 	char *name;
 	unsigned int password_count;
 	unsigned int character_count;
-	char *character_set;
+	wchar_t *character_set;
 };
 
 ARRAY_DECL(profile_list, struct profile *);
@@ -37,7 +37,7 @@ extern struct profile_list profiles;
 struct profile	*profile_new(const char *);
 struct profile	*profile_get_from_name(const char *);
 void		 profile_fprint_passwords(FILE *, struct profile *);
-char		*profile_generate_password(struct profile *);
+wchar_t		*profile_generate_password(struct profile *);
 void		 profile_register(struct profile *);
 
 #endif /* _PROFILE_H_ */

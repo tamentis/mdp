@@ -51,7 +51,7 @@ char		*cfg_editor;
 unsigned int	 cfg_timeout = 10;
 unsigned int	 cfg_password_count = DEFAULT_PASSWORD_COUNT;
 unsigned int	 cfg_character_count = DEFAULT_CHARACTER_COUNT;
-char		*cfg_character_set = NULL;
+wchar_t		*cfg_character_set = NULL;
 bool		 cfg_backup = true;
 
 
@@ -134,7 +134,7 @@ set_variable(char *name, char *value, int linenum)
 		if (value == NULL || *value == '\0') {
 			conf_err("invalid value for character_set");
 		}
-		cfg_character_set = strdup(value);
+		cfg_character_set = mbs_duplicate_as_wcs(value);
 
 	/* set timeout <integer> */
 	} else if (strcmp(name, "timeout") == 0) {
@@ -188,7 +188,7 @@ set_profile_variable(struct profile *profile, char *name, char *value,
 		if (value == NULL || *value == '\0') {
 			conf_err("invalid value for character_set");
 		}
-		profile->character_set = strdup(value);
+		profile->character_set = mbs_duplicate_as_wcs(value);
 
 	/* ??? */
 	} else {

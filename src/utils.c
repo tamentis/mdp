@@ -160,6 +160,37 @@ wcs_duplicate_as_mbs(const wchar_t *str)
 
 
 /*
+ * Decode a multi-byte string as wide-char string.
+ *
+ * Wrapper around mbstowcs with proper memory allocation.  You are responsible
+ * for free'ing the returned pointer's data. Any encoding/decoding error will
+ * cause an immediate exit (e.g. one of the wide-char can't be converted
+ * according to the current locale).
+ */
+wchar_t *
+mbs_duplicate_as_wcs(const char *str)
+{
+	size_t bytelen, clen;
+	wchar_t *output;
+
+	/*
+	 * Find out how much space we need to store the multi-byte string
+	 * (excluding the NUL-byte).
+	 */
+	bytelen = mbstowcs(NULL, str, 0);
+
+	output = xmalloc(bytelen + 1);
+
+	clen = mbstowcs(output, str, bytelen + 1);
+	if (clen == (size_t)-1) {
+		err(EXIT_FAILURE, "encoding error (invalid locale?)");
+	}
+
+	return output;
+}
+
+
+/*
  * Stop the process watch timeout.
  */
 void

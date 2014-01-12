@@ -25,6 +25,6 @@
 
 #define MAX_PASSWORD_LENGTH	255
 
-int		 generate_password_from_set(char *, int, const char *);
+int		 generate_password_from_set(wchar_t *, int, const wchar_t *);
 
 #endif /* _MDP_RANDPASS_H_ */

@@ -27,6 +27,7 @@
 #include <inttypes.h>
 #include <stdbool.h>
 #include <err.h>
+#include <wchar.h>
 
 #include "array.h"
 #include "cmd.h"
@@ -53,9 +54,9 @@ profile_new(const char *name)
 	new->character_count = cfg_character_count;
 
 	if (cfg_character_set != NULL) {
-		new->character_set = strdup(cfg_character_set);
+		new->character_set = wcsdup(cfg_character_set);
 	} else {
-		new->character_set = strdup(CHARSET_ALPHANUMERIC);
+		new->character_set = wcsdup(CHARSET_ALPHANUMERIC);
 	}
 
 	return new;
@@ -102,9 +103,9 @@ profile_fprint_passwords(FILE *stream, struct profile *profile)
 	}
 
 	for (unsigned int i = 0; i < password_count; i++) {
-		char *password;
+		wchar_t *password;
 		password = profile_generate_password(profile);
-		fprintf(stream, "%s\n", password);
+		fprintf(stream, "%ls\n", password);
 		xfree(password);
 	}
 }
@@ -115,10 +116,10 @@ profile_fprint_passwords(FILE *stream, struct profile *profile)
  *
  * Callers are responsible for free'ing the memory.
  */
-char *
+wchar_t *
 profile_generate_password(struct profile *profile)
 {
-	char *s;
+	wchar_t *s;
 	int retcode;
 	unsigned int character_count;
 
@@ -129,7 +130,7 @@ profile_generate_password(struct profile *profile)
 		character_count = profile->character_count;
 	}
 
-	s = xcalloc(character_count + 1, sizeof(char));
+	s = xcalloc(character_count + 1, sizeof(wchar_t));
 
 	retcode = generate_password_from_set(s, character_count,
 			profile->character_set);
