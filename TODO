@@ -6,8 +6,6 @@ BUGS/IMMEDIATE
 NEEDED FEATURES
  - Add aliases to common character_sets (e.g. $ALPHANUMERIC, $DIGITS).
 
- - Have character_set use UTF characters properly (use wchar_t instead of char).
-
  - '-a' will add a password, taking a number of strings in order of argv and
    using a format defined in the config file, this avoids opening the passwords
    on screen in the first place. document it.

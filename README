@@ -168,7 +168,7 @@ SEE ALSO
      gpg(1), sh(1)
 
 BUGS
-     - Lack of unicode support in character sets.
+     - None that we know of.
 
 AUTHORS
      mdp was written by Bertrand Janin <b@janin.com> and is distributed under
