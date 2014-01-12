@@ -1,0 +1,38 @@
+PROG=stub
+SRC=../../../src
+OBJECTS= \
+	stub.o \
+	${SRC}/cmd.o \
+	${SRC}/config.o \
+	${SRC}/debug.o \
+	${SRC}/gpg.o \
+	${SRC}/keywords.o \
+	${SRC}/lock.o \
+	${SRC}/profile.o \
+	${SRC}/randpass.o \
+	${SRC}/strdelim.o \
+	${SRC}/utils.o \
+	${SRC}/xmalloc.o
+
+OBJECTS+=${EXTRA_OBJECTS}
+CFLAGS+=-I${SRC}/
+
+all: ${PROG}
+
+arc4random.o:
+	cp ${SRC}/arc4random.o .
+
+strlcpy.o:
+	cp ${SRC}/strlcpy.o .
+
+wcslcpy.o:
+	cp ${SRC}/wcslcpy.o .
+
+${PROG}: ${OBJECTS}
+	${CC} ${LDFLAGS} -o ${PROG} ${OBJECTS} ${CURSESLIB} 
+
+test: ${PROG}
+	@find . -name "test_*.sh" | xargs -n 1 sh
+
+clean:
+	rm -f ${PROG} *.o *core expected output diff

@@ -11,6 +11,10 @@ pass() {
 	echo pass
 }
 
+skip() {
+	echo skip
+}
+
 fail() {
 	if [ -z "$1" ]; then
 		echo fail
