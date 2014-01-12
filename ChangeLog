@@ -1,8 +1,4 @@
-0.7.0 Bertrand Janin <b@janin.com> (..........)
-
-	* 
-
-0.6.0 Bertrand Janin <b@janin.com> (2014-01-10)
+0.6.0 Bertrand Janin <b@janin.com> (..........)
 
 	* Add configurable profiles (-p) to the password generator (-g).
 	* Fix pager display bug on long lines.

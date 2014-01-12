@@ -2,7 +2,7 @@ BUGS/IMMEDIATE
  - None so far.
 
 NEEDED FEATURES
- - Make sure we test the returns of asprintf.
+ - Test for arc4random the same way we test for strlcpy.
 
  - Add aliases to common character_sets (e.g. $ALPHANUMERIC, $DIGITS).
 
