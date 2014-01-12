@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -20,6 +20,6 @@
 extern char	*editor_tmp_path;
 
 void		 edit_results(void);
-void		 editor_init(char *);
+void		 editor_init(const char *);
 
 #endif /* _EDITOR_H_ */

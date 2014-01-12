@@ -10,3 +10,5 @@ tags
 cscope.out
 test.stdout
 test.stderr
+test.diff
+test.expected

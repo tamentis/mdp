@@ -4,6 +4,7 @@
 #include <strings.h>
 
 #include "array.h"
+#include "utils.h"
 #include "profile.h"
 
 static int
@@ -14,7 +15,7 @@ fprint_passwords(char **av)
 	p = profile_new("wat");
 	p->character_count = atoi(av[2]);
 	p->password_count = atoi(av[3]);
-	p->character_set = av[4];
+	p->character_set = mbs_duplicate_as_wcs(av[4]);
 
 	profile_fprint_passwords(stdout, p);
 

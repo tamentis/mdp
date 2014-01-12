@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -27,6 +27,7 @@
 #include <inttypes.h>
 #include <stdbool.h>
 #include <err.h>
+#include <wchar.h>
 
 #include "array.h"
 #include "cmd.h"
@@ -43,7 +44,7 @@ struct profile_list profiles = ARRAY_INITIALIZER;
  * Instantiate a new profile with default values from the global scope.
  */
 struct profile *
-profile_new(char *name)
+profile_new(const char *name)
 {
 	struct profile *new;
 
@@ -53,9 +54,9 @@ profile_new(char *name)
 	new->character_count = cfg_character_count;
 
 	if (cfg_character_set != NULL) {
-		new->character_set = strdup(cfg_character_set);
+		new->character_set = wcsdup(cfg_character_set);
 	} else {
-		new->character_set = strdup(CHARSET_ALPHANUMERIC);
+		new->character_set = wcsdup(CHARSET_ALPHANUMERIC);
 	}
 
 	return new;
@@ -70,7 +71,7 @@ profile_new(char *name)
  * NULL as a default profile is generated.
  */
 struct profile *
-profile_get_from_name(char *name)
+profile_get_from_name(const char *name)
 {
 	struct profile *profile;
 
@@ -102,9 +103,9 @@ profile_fprint_passwords(FILE *stream, struct profile *profile)
 	}
 
 	for (unsigned int i = 0; i < password_count; i++) {
-		char *password;
+		wchar_t *password;
 		password = profile_generate_password(profile);
-		fprintf(stream, "%s\n", password);
+		fprintf(stream, "%ls\n", password);
 		xfree(password);
 	}
 }
@@ -115,10 +116,10 @@ profile_fprint_passwords(FILE *stream, struct profile *profile)
  *
  * Callers are responsible for free'ing the memory.
  */
-char *
+wchar_t *
 profile_generate_password(struct profile *profile)
 {
-	char *s;
+	wchar_t *s;
 	int retcode;
 	unsigned int character_count;
 
@@ -129,7 +130,7 @@ profile_generate_password(struct profile *profile)
 		character_count = profile->character_count;
 	}
 
-	s = xcalloc(character_count + 1, sizeof(char));
+	s = xcalloc(character_count + 1, sizeof(wchar_t));
 
 	retcode = generate_password_from_set(s, character_count,
 			profile->character_set);

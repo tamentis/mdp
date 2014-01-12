@@ -180,11 +180,11 @@ gpg_close(FILE *fp)
  * Saves the file back though GnuPG by saving to a temp file.
  */
 void
-gpg_encrypt(char *tmp_path)
+gpg_encrypt(const char *tmp_path)
 {
 	char *cmd, *backup_path, *tmp_encrypted_path;
 
-	asprintf(&cmd, "%s -r %s -e %s", cfg_gpg_path, cfg_gpg_key_id,
+	xasprintf(&cmd, "%s -r %s -e %s", cfg_gpg_path, cfg_gpg_key_id,
 			tmp_path);
 
 	debug("gpg_encrypt system(%s)", cmd);
@@ -193,7 +193,7 @@ gpg_encrypt(char *tmp_path)
 	}
 
 	/* Generate the backup filename. */
-	asprintf(&backup_path, "%s.bak", gpg_passwords_path);
+	xasprintf(&backup_path, "%s.bak", gpg_passwords_path);
 
 	if (file_exists(gpg_passwords_path)) {
 		/* Backup the previous password file. */
@@ -221,7 +221,7 @@ gpg_encrypt(char *tmp_path)
 	}
 
 	/* Move the newly encrypted file to its new location. */
-	asprintf(&tmp_encrypted_path, "%s.gpg", tmp_path);
+	xasprintf(&tmp_encrypted_path, "%s.gpg", tmp_path);
 	if (link(tmp_encrypted_path, gpg_passwords_path) != 0) {
 		err(EXIT_FAILURE, "gpg_encrypt link(tmp_encrypted_path, "
 				"gpg_passwords_path)");

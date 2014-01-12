@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -25,6 +25,6 @@
 
 #define MAX_PASSWORD_LENGTH	255
 
-int		 generate_password_from_set(char *, int, char *);
+int		 generate_password_from_set(wchar_t *, int, const wchar_t *);
 
 #endif /* _MDP_RANDPASS_H_ */

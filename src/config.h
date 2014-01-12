@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -25,11 +25,11 @@ extern char		*cfg_editor;
 extern unsigned int	 cfg_timeout;
 extern unsigned int	 cfg_password_count;
 unsigned int		 cfg_character_count;
-char			*cfg_character_set;
+wchar_t			*cfg_character_set;
 extern bool		 cfg_backup;
 
-void			 config_check_directory(char *);
-void			 config_check_file(char *);
+void			 config_check_directory(const char *);
+void			 config_check_file(const char *);
 void			 config_check_paths(const char *);
 void			 config_check_variables(void);
 void			 config_read(void);

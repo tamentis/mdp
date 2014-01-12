@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -29,6 +29,7 @@
 #include <time.h>
 #include <pwd.h>
 #include <unistd.h>
+#include <wchar.h>
 
 #include "arc4random.h"
 #include "randpass.h"
@@ -40,15 +41,16 @@
  * characters.
  */
 int
-generate_password_from_set(char *password_string, int length, char *set)
+generate_password_from_set(wchar_t *password_string, int length,
+		const wchar_t *set)
 {
-	char *str_pointer;
+	wchar_t *str_pointer;
 	int *random_weight;
 	int max_weight = 0;
 	int max_weight_element_number = 0;
 	size_t setlen;
 
-	setlen = strlen(set);
+	setlen = wcslen(set);
 
 	if (length > MAX_PASSWORD_LENGTH || length < 1) {
 		return -1;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -21,7 +21,7 @@ extern char	*gpg_passwords_path;
 
 FILE 		*gpg_open(void);
 int		 gpg_close(FILE *);
-void		 gpg_encrypt(char *);
+void		 gpg_encrypt(const char *);
 void		 gpg_check(void);
 
 #endif /* _GPG_H_ */

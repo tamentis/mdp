@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -89,7 +89,6 @@ cmd_parse(int ac, char **av)
 		}
 	}
 
-	ac -= optind;
 	av += optind;
 
 	keywords_load_from_argv(av);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -51,7 +51,7 @@ char		*cfg_editor;
 unsigned int	 cfg_timeout = 10;
 unsigned int	 cfg_password_count = DEFAULT_PASSWORD_COUNT;
 unsigned int	 cfg_character_count = DEFAULT_CHARACTER_COUNT;
-char		*cfg_character_set = NULL;
+wchar_t		*cfg_character_set = NULL;
 bool		 cfg_backup = true;
 
 
@@ -134,7 +134,7 @@ set_variable(char *name, char *value, int linenum)
 		if (value == NULL || *value == '\0') {
 			conf_err("invalid value for character_set");
 		}
-		cfg_character_set = strdup(value);
+		cfg_character_set = mbs_duplicate_as_wcs(value);
 
 	/* set timeout <integer> */
 	} else if (strcmp(name, "timeout") == 0) {
@@ -188,7 +188,7 @@ set_profile_variable(struct profile *profile, char *name, char *value,
 		if (value == NULL || *value == '\0') {
 			conf_err("invalid value for character_set");
 		}
-		profile->character_set = strdup(value);
+		profile->character_set = mbs_duplicate_as_wcs(value);
 
 	/* ??? */
 	} else {
@@ -266,7 +266,7 @@ process_config_line(char *line, int linenum)
  * Exits program with error message if anything is wrong.
  */
 void
-config_check_directory(char *path)
+config_check_directory(const char *path)
 {
 	struct stat sb;
 
@@ -290,7 +290,7 @@ config_check_directory(char *path)
 	if (sb.st_uid != 0 && sb.st_uid != getuid())
 		errx(EXIT_FAILURE, "bad owner on %s", path);
 
-	if ((sb.st_mode & 022) != 0)
+	if ((sb.st_mode & 0077) != 0)
 		errx(EXIT_FAILURE, "bad permissions on %s", path);
 }
 
@@ -301,7 +301,7 @@ config_check_directory(char *path)
  * Exits program with error message if anything is wrong.
  */
 void
-config_check_file(char *path)
+config_check_file(const char *path)
 {
 	struct stat sb;
 
@@ -348,6 +348,7 @@ config_check_paths(const char *home)
 
 	path = join_path(home, ".mdp/config");
 	config_check_file(path);
+	xfree(path);
 }
 
 

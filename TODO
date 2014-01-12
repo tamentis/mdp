@@ -2,11 +2,7 @@ BUGS/IMMEDIATE
  - None so far.
 
 NEEDED FEATURES
- - Test for arc4random the same way we test for strlcpy.
-
  - Add aliases to common character_sets (e.g. $ALPHANUMERIC, $DIGITS).
-
- - Have character_set use UTF characters properly (use wchar_t instead of char).
 
  - '-a' will add a password, taking a number of strings in order of argv and
    using a format defined in the config file, this avoids opening the passwords
@@ -35,3 +31,8 @@ OTHER IDEAS
  - If gpg times out while you're typing your password, it appears clear on
    screen, can we capture the keystrokes in a sub-process? Can we spawn a dummy
    prompt without echo after killing gpg?
+
+ - the first time you run mdp, a default configuration file is created with as
+   many defaults as possible:
+    * if the user has gpg installed with a valid private key, configure it with gpg
+    * if the user doesn't have gpg but has openssl, use aes-256.
