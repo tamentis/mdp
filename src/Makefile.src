@@ -13,6 +13,7 @@ OBJECTS= \
 	profile.o \
 	randpass.o \
 	results.o \
+	str.o \
 	strdelim.o \
 	utils.o \
 	xmalloc.o

@@ -31,14 +31,14 @@
 #include <regex.h>
 #include <stdbool.h>
 
-#include "xmalloc.h"
 #include "array.h"
-#include "results.h"
-#include "keywords.h"
-#include "utils.h"
-#include "gpg.h"
 #include "cmd.h"
+#include "gpg.h"
+#include "keywords.h"
 #include "mdp.h"
+#include "results.h"
+#include "str.h"
+#include "xmalloc.h"
 
 
 struct wlist results = ARRAY_INITIALIZER;

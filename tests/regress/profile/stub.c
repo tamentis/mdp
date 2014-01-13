@@ -4,7 +4,7 @@
 #include <strings.h>
 
 #include "array.h"
-#include "utils.h"
+#include "str.h"
 #include "profile.h"
 
 static int

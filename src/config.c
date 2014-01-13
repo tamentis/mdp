@@ -33,14 +33,15 @@
 #include <curses.h>
 
 #include "array.h"
-#include "mdp.h"
 #include "cmd.h"
+#include "config.h"
 #include "gpg.h"
 #include "lock.h"
-#include "utils.h"
-#include "config.h"
-#include "strdelim.h"
+#include "mdp.h"
 #include "profile.h"
+#include "str.h"
+#include "strdelim.h"
+#include "utils.h"
 #include "xmalloc.h"
 
 

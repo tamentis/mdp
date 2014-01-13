@@ -36,6 +36,7 @@
 #include "config.h"
 #include "debug.h"
 #include "utils.h"
+#include "str.h"
 #include "gpg.h"
 #include "xmalloc.h"
 

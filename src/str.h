@@ -14,12 +14,14 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#ifndef _STR_H_
+#define _STR_H_
 
-char		*join_path(const char *, const char *);
-void		 cancel_pid_timeout(void);
-void		 set_pid_timeout(pid_t, int);
-int		 file_exists(const char *);
+char 		*join(const char, const char *, const char *);
+void		 wcs_strip_trailing_whitespaces(wchar_t *);
+void		 strip_trailing_whitespaces(char *);
+wchar_t 	*wcscasestr(const wchar_t *, const wchar_t *);
+char 		*wcs_duplicate_as_mbs(const wchar_t *);
+wchar_t 	*mbs_duplicate_as_wcs(const char *);
 
-#endif /* _UTILS_H_ */
+#endif /* _STR_H_ */

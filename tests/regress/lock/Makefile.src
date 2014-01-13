@@ -4,6 +4,7 @@ OBJECTS= \
 	stub.o \
 	${SRC}/debug.o \
 	${SRC}/lock.o \
+	${SRC}/str.o \
 	${SRC}/utils.o \
 	${SRC}/xmalloc.o
 

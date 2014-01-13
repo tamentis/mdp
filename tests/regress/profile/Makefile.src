@@ -10,6 +10,7 @@ OBJECTS= \
 	${SRC}/lock.o \
 	${SRC}/profile.o \
 	${SRC}/randpass.o \
+	${SRC}/str.o \
 	${SRC}/strdelim.o \
 	${SRC}/utils.o \
 	${SRC}/xmalloc.o
