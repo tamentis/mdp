@@ -175,3 +175,20 @@ mbs_duplicate_as_wcs(const char *str)
 
 	return output;
 }
+
+
+/*
+ * Check if two strings are equal.
+ *
+ * Just a wrapper around strcmp with a smaller footprint and a boolean return
+ * value.
+ */
+bool
+streq(const char *a, const char *b)
+{
+	if (strcmp(a, b) == 0) {
+		return true;
+	}
+
+	return false;
+}

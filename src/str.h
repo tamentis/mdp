@@ -23,5 +23,6 @@ void		 strip_trailing_whitespaces(char *);
 wchar_t 	*wcscasestr(const wchar_t *, const wchar_t *);
 char 		*wcs_duplicate_as_mbs(const wchar_t *);
 wchar_t 	*mbs_duplicate_as_wcs(const char *);
+bool		 streq(const char *, const char *);
 
 #endif /* _STR_H_ */
