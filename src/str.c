@@ -18,6 +18,7 @@
 #include <err.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 
 #include "str.h"
