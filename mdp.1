@@ -143,7 +143,9 @@ in the profile.
 .Pp
 .It Ic set character_set Ar characters
 Define all the characters to use in your passwords. Default: all alphanumeric
-(upper and lower case) or as define in the profile.
+(upper and lower case) or as define in the profile. The following aliases are
+supported as shortcuts: $LOWERCASE, $UPPERCASE, $ALPHA, $DIGITS, $ALPHANUMERIC,
+$SYMBOLS, $PRINTABLE.
 .Pp
 .It Ic set backup Ar no
 Define whether we keep a backup every time we edit the password file. Default:

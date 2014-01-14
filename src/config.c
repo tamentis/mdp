@@ -31,6 +31,7 @@
 #include <locale.h>
 #include <inttypes.h>
 #include <curses.h>
+#include <wchar.h>
 
 #include "array.h"
 #include "cmd.h"
@@ -58,6 +59,41 @@ bool		 cfg_backup = true;
 
 #define parse_boolean(v) (v != NULL && *v == 'o') ? true : false
 #define conf_err(m) errx(EXIT_FAILURE, "config:%d: " m, linenum)
+
+
+/*
+ * Given a value fetched from the configuration file, return either the content
+ * of a pre-defined character set (start with '$') or the value itself.
+ */
+wchar_t *
+config_resolve_character_set(const char *value)
+{
+	wchar_t *character_set = NULL;
+
+	if (value[0] == '$') {
+		if (streq(value, "$DIGITS")) {
+			character_set = wcsdup(CHARSET_DIGITS);
+		} else if (streq(value, "$LOWERCASE")) {
+			character_set = wcsdup(CHARSET_LOWERCASE);
+		} else if (streq(value, "$UPPERCASE")) {
+			character_set = wcsdup(CHARSET_UPPERCASE);
+		} else if (streq(value, "$ALPHA")) {
+			character_set = wcsdup(CHARSET_ALPHA);
+		} else if (streq(value, "$ALPHANUMERIC")) {
+			character_set = wcsdup(CHARSET_ALPHANUMERIC);
+		} else if (streq(value, "$SYMBOLS")) {
+			character_set = wcsdup(CHARSET_SYMBOLS);
+		} else if (streq(value, "$PRINTABLE")) {
+			character_set = wcsdup(CHARSET_PRINTABLE);
+		}
+	}
+
+	if (character_set == NULL) {
+		character_set = mbs_duplicate_as_wcs(value);
+	}
+
+	return character_set;
+}
 
 
 /*
@@ -135,7 +171,7 @@ set_variable(char *name, char *value, int linenum)
 		if (value == NULL || *value == '\0') {
 			conf_err("invalid value for character_set");
 		}
-		cfg_character_set = mbs_duplicate_as_wcs(value);
+		cfg_character_set = config_resolve_character_set(value);
 
 	/* set timeout <integer> */
 	} else if (strcmp(name, "timeout") == 0) {
@@ -189,7 +225,7 @@ set_profile_variable(struct profile *profile, char *name, char *value,
 		if (value == NULL || *value == '\0') {
 			conf_err("invalid value for character_set");
 		}
-		profile->character_set = mbs_duplicate_as_wcs(value);
+		profile->character_set = config_resolve_character_set(value);
 
 	/* ??? */
 	} else {

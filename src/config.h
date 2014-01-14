@@ -34,5 +34,6 @@ void			 config_check_paths(const char *);
 void			 config_check_variables(void);
 void			 config_read(void);
 void			 config_set_defaults(const char *);
+wchar_t			*config_resolve_character_set(const char *);
 
 #endif /* _CONFIG_H_ */

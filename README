@@ -112,6 +112,8 @@ CONFIGURATION
      set character_set characters
              Define all the characters to use in your passwords. Default: all
              alphanumeric (upper and lower case) or as define in the profile.
+             The following aliases are supported as shortcuts: $LOWERCASE,
+             $UPPERCASE, $ALPHA, $DIGITS, $ALPHANUMERIC, $SYMBOLS, $PRINTABLE.
 
      set backup no
              Define whether we keep a backup every time we edit the password

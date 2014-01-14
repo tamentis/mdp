@@ -2,8 +2,6 @@ BUGS/IMMEDIATE
  - None so far.
 
 NEEDED FEATURES
- - Add aliases to common character_sets (e.g. $ALPHANUMERIC, $DIGITS).
-
  - '-a' will add a password, taking a number of strings in order of argv and
    using a format defined in the config file, this avoids opening the passwords
    on screen in the first place. document it.
