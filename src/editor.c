@@ -23,12 +23,13 @@
 #include <string.h>
 #include <inttypes.h>
 
-#include "debug.h"
-#include "config.h"
 #include "array.h"
+#include "config.h"
+#include "debug.h"
 #include "editor.h"
 #include "gpg.h"
 #include "results.h"
+#include "str.h"
 #include "utils.h"
 #include "xmalloc.h"
 
@@ -38,6 +39,10 @@ char *editor_tmp_path = NULL;
 
 /*
  * Return a copy of the $EDITOR environment variable or NULL if not found.
+ *
+ * If the chosen editor appears to be vim, we add '-n' to the command line
+ * arguments (unless already present), which disable the creation of a swap
+ * file.
  */
 void
 editor_init(const char *home)
@@ -45,7 +50,6 @@ editor_init(const char *home)
 	char *s;
 
 	s = getenv("EDITOR");
-
 	if (s == NULL) {
 		return;
 	}
@@ -57,14 +61,51 @@ editor_init(const char *home)
 
 
 /*
+ * Check if the given editor command is vim.
+ */
+bool
+editor_is_vim(const char *command)
+{
+	char *s;
+
+	/*
+	 * The command is either before a space (in case there are other
+	 * paramters) or at the end of the string.
+	 */
+	s = strpbrk(command, " \0\t");
+	if (s == NULL) {
+		s = (char *)command + strlen(command);
+	}
+
+	/* There aren't enough characters for 'vim' to fit. */
+	if (s - command < 3) {
+		return false;
+	}
+
+	if (strncmp(s - 3, "vim", 3) == 0) {
+		return true;
+	}
+
+	return false;
+}
+
+
+/*
  * Spawn the editor on a file.
  */
 static void
 spawn_editor(char *path)
 {
 	char *cmd;
+	char *editor;
 
-	xasprintf(&cmd, "%s \"%s\"", cfg_editor, path);
+	if (editor_is_vim(cfg_editor)) {
+		editor = join(' ', cfg_editor, "-n");
+	} else {
+		editor = strdup(cfg_editor);
+	}
+
+	xasprintf(&cmd, "%s \"%s\"", editor, path);
 
 	debug("spawn_editor: %s", cmd);
 
@@ -72,6 +113,7 @@ spawn_editor(char *path)
 		err(EXIT_FAILURE, "unable to spawn editor: %s", cmd);
 	}
 
+	xfree(editor);
 	xfree(cmd);
 }
 

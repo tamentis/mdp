@@ -21,5 +21,6 @@ extern char	*editor_tmp_path;
 
 void		 edit_results(void);
 void		 editor_init(const char *);
+bool		 editor_is_vim(const char *);
 
 #endif /* _EDITOR_H_ */

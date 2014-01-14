@@ -99,7 +99,8 @@ CONFIGURATION
      set editor path
              Path to your favorite editor. You typically don't need to set
              this variable since mdp will use your default editor (as defined
-             by $EDITOR).
+             by $EDITOR). If mdp detects vim, it will attempt to add the -n
+             parameter to avoid vim from creating swap files.
 
      set password_count count
              Define how many password to show with using -g. Default: 4 or as

@@ -1,8 +1,9 @@
 0.7.0 Bertrand Janin <b@janin.com> (..........)
 
 	* Passwords can now use character sets containing unicode.
-	* Fix a bug where mdp would not detect a wrong directory permission.
 	* Add aliases to common character_sets (e.g. $ALPHANUMERIC, $DIGITS).
+	* Detect vim and add '-n' to avoid swap file creation.
+	* Fix a bug where mdp would not detect a wrong directory permission.
 
 0.6.0 Bertrand Janin <b@janin.com> (2014-01-10)
 

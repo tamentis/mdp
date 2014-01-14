@@ -131,7 +131,10 @@ prompt or if it cannot communicate with the parent process.
 Path to your favorite editor. You typically don't need to set this variable
 since
 .Nm
-will use your default editor (as defined by $EDITOR). 
+will use your default editor (as defined by $EDITOR). If
+.Nm
+detects vim, it will attempt to add the -n parameter to avoid vim from creating
+swap files.
 .Pp
 .It Ic set password_count Ar count
 Define how many password to show with using -g. Default: 4 or as defined in the
