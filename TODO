@@ -11,6 +11,9 @@ NEEDED FEATURES
  - specify an alternate password file (e.g. work VS home) or add a file in the
    profile?
 
+ - Try to detect if the editor is vim, if yes, add "-n" to command line to
+   avoid a swap file to be created.
+
 OTHER IDEAS
  - Use the same technique as rm -P (BSD) instead of just unlink.
 
