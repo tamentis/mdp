@@ -6,8 +6,10 @@ NEEDED FEATURES
    using a format defined in the config file, this avoids opening the passwords
    on screen in the first place. document it.
 
- - specify an alternate password file (e.g. work VS home) or add a file in the
-   profile?
+ - specify an alternate password file (e.g. work VS home). That should be done
+   by adding a passwords_filename parameter in the config file. The user can
+   then specify an alternate configuration file and create an alias in its
+   shell. E.g. alias workmdp='mdp -c ~/.mdp/config.work'.
 
 OTHER IDEAS
  - Use the same technique as rm -P (BSD) instead of just unlink.
