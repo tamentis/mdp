@@ -1,6 +1,6 @@
 # Test generating 16 * 64 byte passwords
 
-use_config editor
+use_config simple
 
 run_mdp -g -l 64 -n 16 > test.stdout
 

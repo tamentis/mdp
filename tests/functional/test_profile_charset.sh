@@ -1,6 +1,6 @@
 # Test generating a password made of custom characters.
 
-use_config editor
+use_config simple
 
 echo "profile wat" >> test.config
 echo "	set character_set 01234" >> test.config

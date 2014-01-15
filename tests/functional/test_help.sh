@@ -1,6 +1,6 @@
 # Test -h works.
 
-use_config editor
+use_config simple
 
 if run_mdp -h > test.stdout; then
 	echo "fail (wrong return code on -h)"

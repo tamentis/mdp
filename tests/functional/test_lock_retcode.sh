@@ -1,6 +1,6 @@
 # Make sure the locks works properly (mdp returns non-0).
 
-use_config sloweditor
+use_config slow
 
 run_mdp -e > /dev/null &
 

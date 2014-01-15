@@ -1,6 +1,8 @@
 # Filter on two regex.
 
-use_config editor
+# Populate the password file.
+use_config simple
+run_mdp -e
 
 run_mdp -r -E berry 'red$' > test.stdout
 

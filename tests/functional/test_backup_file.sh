@@ -1,19 +1,23 @@
 # Test the backup file.
 
+# First run sets up a basic password file, then deletes the bak.
+use_config alt
+run_mdp -e > /dev/null
 rm -f $passfile.bak
 
-use_config editor
 
+# Second runs should create a bak file.
+use_config simple
 run_mdp -e > /dev/null
-
-before_md5=`get_md5 $passfile`
-
 if [ ! -f "$passfile.bak" ]; then
 	echo "bak file not found"
 	return
 fi
+before_md5=`get_md5 $passfile`
 
-use_config alt_editor
+
+# Now we compare.
+use_config alt
 
 run_mdp -e > /dev/null
 

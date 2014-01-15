@@ -2,7 +2,7 @@
 
 set +e
 
-use_config sloweditor
+use_config slow
 
 run_mdp -e > /dev/null &
 

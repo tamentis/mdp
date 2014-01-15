@@ -1,6 +1,6 @@
 # Filter on two keywords, test timeout setting (should pause for 3 seconds).
 
-use_config editor
+use_config simple
 
 start_ts=`date +%s`
 run_mdp red > /dev/null
