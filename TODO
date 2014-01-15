@@ -11,6 +11,8 @@ NEEDED FEATURES
    then specify an alternate configuration file and create an alias in its
    shell. E.g. alias workmdp='mdp -c ~/.mdp/config.work'.
 
+ - call usage() if unused flags are added to the command line.
+
 OTHER IDEAS
  - Use the same technique as rm -P (BSD) instead of just unlink.
 
