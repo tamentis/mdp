@@ -1,6 +1,6 @@
 # Test generating 16 * 64 byte passwords
 
-use_config editor
+use_config simple
 
 echo "set password_count 16" >> test.config
 

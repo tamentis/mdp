@@ -148,10 +148,16 @@ line_matches_regex(const wchar_t *line)
 
 /*
  * Check if the line matches all the keywords.
+ *
+ * Commented lines are excluded by default.
  */
 static bool
 line_matches(const wchar_t *line)
 {
+	if (line[0] == L'#') {
+		return false;
+	}
+
 	if (cmd_regex) {
 		return line_matches_regex(line);
 	} else {

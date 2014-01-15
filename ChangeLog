@@ -3,6 +3,7 @@
 	* Passwords can now use character sets containing unicode.
 	* Add aliases to common character_sets (e.g. $ALPHANUMERIC, $DIGITS).
 	* Detect vim and add '-n' to avoid swap file creation.
+	* Define a comment character for the password file (#).
 	* Fix a bug where mdp would not detect a wrong directory permission.
 
 0.6.0 Bertrand Janin <b@janin.com> (2014-01-10)

@@ -1,6 +1,8 @@
 # Filter on red and expect all the lines containing red in the output.
 
-use_config editor
+# Populate the password file.
+use_config simple
+run_mdp -e
 
 run_mdp -r red > test.stdout
 

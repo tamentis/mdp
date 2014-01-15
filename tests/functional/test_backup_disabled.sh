@@ -2,7 +2,7 @@
 
 rm -f $passfile.bak
 
-use_config editor
+use_config simple
 echo "set backup no" >> test.config
 
 run_mdp -e > /dev/null

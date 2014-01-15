@@ -1,6 +1,6 @@
 # Test -V works.
 
-use_config editor
+use_config simple
 
 if ! run_mdp -V > test.stdout; then
 	echo "fail (wrong return code on -V)"

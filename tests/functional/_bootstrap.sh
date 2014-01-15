@@ -34,8 +34,8 @@ run_mdp_capture_stderr() {
 # Run a test unit
 # $1 - testname
 run_test() {
-	testname=$1
-	filename=$testname.sh
+	filename=$1
+	testname=${filename%%sh}
 
 	echo -n "$testname ... "
 
@@ -112,38 +112,6 @@ print_summary() {
 }
 
 
-# Simulates an editor writing four passwords.
-if [ "$1" = "editor" ]; then
-cat > $2 << EOF
-strawberry red
-raspberry red
-blackberry black
-grapefruit yellow
-EOF
-exit
-fi
-
-# Writes four other passwords.
-if [ "$1" = "alt_editor" ]; then
-cat > $2 << EOF
-tiger feline with stripes
-cat black
-dog white
-rat grey
-EOF
-exit
-fi
-
-# Simulates an editor writing one password and taking 2 seconds to do so.
-if [ "$1" = "sloweditor" ]; then
-cat > $2 << EOF
-roses red
-EOF
-sleep 2
-exit
-fi
-
-
 # We're working in a fake GPG home
 export GNUPGHOME="fake_gpg_home"
 export HOME="fake_gpg_home"
@@ -172,11 +140,12 @@ $GPG --batch --no-options --quick-random --gen-key test_gpg.batch 2>/dev/null
 key_id=`$GPG --list-keys 2>/dev/null | grep ^pub | sed 's/.*1024D.//;s/ .*//'`
 
 # Create the config file with a fake editor
+# $1 - editor mode
 use_config() {
 cat > test.config <<EOF
 set gpg_path "$GPG"
 set gpg_key_id "${key_id}"
-set editor "$SELF $1"
+set editor "./_fake_editor.sh $1"
 set timeout 3
 EOF
 }

@@ -1,6 +1,6 @@
 # Test generating passwords with a default count (4)
 
-use_config editor
+use_config simple
 
 run_mdp -g -l 16 > test.stdout
 
