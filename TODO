@@ -2,8 +2,6 @@ BUGS/IMMEDIATE
  - None so far.
 
 NEEDED FEATURES
- - Document a typical way to structure your password file.
-
  - '-a' will add a password, taking a number of strings in order of argv and
    using a format defined in the config file, this avoids opening the passwords
    on screen in the first place. document it.
