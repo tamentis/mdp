@@ -45,7 +45,7 @@
 .Sh DESCRIPTION
 .Nm
 wraps GnuPG, your favorite editor, a password generator and a custom temporary
-fullscreen pager to let you manage your password library.
+full-screen pager to let you manage your password library.
 .Pp
 Naturally edit your password file (create, sort, delete) with your editor, rely
 on GnuPG to do the right thing for crypto and let
@@ -164,11 +164,47 @@ All the variables define below a profile header will be specific to this
 profile. For now only password_count, character_count and character_set are
 valid options.
 .El
+.Sh PASSWORD FILE
+Your password file should be structured to make it convenient for mdp to query
+it. Since mdp queries work similarly to grep, you want to use a line-based
+system with one line per password. The simplest line format is:
+.Bd -literal -offset indent
+nameOfServiceA   password1
+anotherService   password2
+.Ed
+.Pp
+You can separate your name/notes and your password with spaces, tabs or any
+character except new-line (\\n). This format allows you to find the services by name, e.g.:
+.Bd -literal -offset indent
+mdp serviceA
+.Ed
+.Pp
+You can use any number of namespacing hints if you need more structure, the
+following allow you to fetch all your email passwords at once:
+.Bd -literal -offset indent
+email     serviceA       password1
+email     serviceB       password2
+irc       serviceC       password3
+.Ed
+.Pp
+You can use '#' in the beginning of a line to avoid mdp from displaying a
+password. This is particularly useful to add meta data to your password file or
+keep track of previous password without adding noise to the output. For example:
+.Bd -literal -offset indent
+# email services
+serviceA     password1
+serviceB     password2
+
+# irc servers
+serviceC     password3
+.Ed
+.Pp
+Empty lines are naturally ignored.
 .Sh FAQ
 .Bl -tag -width Ds
 .It Why not 'shred' the temporary file?
 If you are afraid of getting your disk stolen, encrypt it. Shred has limited
-use on most journaled filesystems.
+use on most journaled file-systems.
 .It What if I don't trust 'root'?
 You're screwed, you can't trust this machine with your valuable information.
 .It What if my server is virtualized?

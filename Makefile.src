@@ -19,6 +19,9 @@ clean:
 test:
 	cd tests/ && make test
 
+test-all:
+	cd tests/ && make test-all
+
 README: ${PROG}.1
 	# On Linux
 	# nroff -c -man ${PROG}.1 | col -b > README
