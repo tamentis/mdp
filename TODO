@@ -2,8 +2,6 @@ BUGS/IMMEDIATE
  - None so far.
 
 NEEDED FEATURES
- - Document a typical way to structure your password file.
-
  - '-a' will add a password, taking a number of strings in order of argv and
    using a format defined in the config file, this avoids opening the passwords
    on screen in the first place. document it.
@@ -13,7 +11,15 @@ NEEDED FEATURES
    then specify an alternate configuration file and create an alias in its
    shell. E.g. alias workmdp='mdp -c ~/.mdp/config.work'.
 
- - call usage() if unused flags are added to the command line.
+ - convert all the modes to full commands, e.g.
+      mdp edit
+      mdp get [-r] something
+      mdp query
+      mdp gen[erate]
+      mdp -V
+   1. find the index of the command in the argv, parse all the arguments before it
+      as "global" arguments (-V, -h, -d, etc.).
+   2. send the rest to the command-specific argument parser (e.g. cmd_parse_edit).
 
 OTHER IDEAS
  - Use the same technique as rm -P (BSD) instead of just unlink.
