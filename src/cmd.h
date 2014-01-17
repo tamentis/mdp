@@ -18,7 +18,6 @@
 #define _CMD_H_
 
 enum command {
-	COMMAND_EXIT,
 	COMMAND_VERSION,
 	COMMAND_USAGE,
 	COMMAND_PAGER,
