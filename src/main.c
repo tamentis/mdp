@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -78,24 +78,24 @@ get_home(void)
 
 
 static void
-mdp(enum action_mode mode)
+mdp(enum command command)
 {
 	struct profile *profile;
 
-	switch (mode) {
-	case MODE_VERSION:
-		debug("mode: VERSION");
+	switch (command) {
+	case COMMAND_VERSION:
+		debug("command: VERSION");
 		printf("mdp-%s\n", MDP_VERSION);
 		break;
 
-	case MODE_USAGE:
-		debug("mode: USAGE");
+	case COMMAND_USAGE:
+		debug("command: USAGE");
 		usage();
 		/* NOTREACHED */
 		break;
 
-	case MODE_RAW:
-		debug("mode: RAW");
+	case COMMAND_RAW:
+		debug("command: RAW");
 		if (keywords_count() == 0) {
 			usage();
 		}
@@ -107,8 +107,8 @@ mdp(enum action_mode mode)
 		print_results();
 		break;
 
-	case MODE_PAGER:
-		debug("mode: PAGER");
+	case COMMAND_PAGER:
+		debug("command: PAGER");
 		if (keywords_count() == 0) {
 			usage();
 		}
@@ -120,16 +120,16 @@ mdp(enum action_mode mode)
 		pager(START_WITHOUT_PROMPT);
 		break;
 
-	case MODE_QUERY:
-		debug("mode: QUERY");
+	case COMMAND_QUERY:
+		debug("command: QUERY");
 		gpg_check();
 		if (load_results_gpg() == 0)
 			errx(EXIT_FAILURE, "no passwords");
 		pager(START_WITH_PROMPT);
 		break;
 
-	case MODE_EDIT:
-		debug("mode: EDIT");
+	case COMMAND_EDIT:
+		debug("command: EDIT");
 		if (keywords_count() > 0) {
 			usage();
 		}
@@ -152,8 +152,8 @@ mdp(enum action_mode mode)
 		edit_results();
 		break;
 
-	case MODE_GENERATE:
-		debug("mode: GENERATE");
+	case COMMAND_GENERATE:
+		debug("command: GENERATE");
 
 		if (keywords_count() > 0) {
 			usage();
@@ -173,7 +173,7 @@ mdp(enum action_mode mode)
 		break;
 
 	default:
-		errx(EXIT_FAILURE, "unknown mode");
+		errx(EXIT_FAILURE, "unknown command");
 		break;
 	}
 }
@@ -181,14 +181,14 @@ mdp(enum action_mode mode)
 int
 main(int ac, char **av)
 {
-	enum action_mode mode;
+	enum command command;
 
 	setlocale(LC_ALL, "");
 
 	home = get_home();
 	editor_init(home);
 
-	mode = cmd_parse(ac, av);
+	command = cmd_parse(ac, av);
 
 	if (cmd_config_path == NULL) {
 		cmd_config_path = join_path(home, ".mdp/config");
@@ -198,7 +198,7 @@ main(int ac, char **av)
 	config_read();
 	config_set_defaults(home);
 
-	mdp(mode);
+	mdp(command);
 
 	debug("normal shutdown");
 

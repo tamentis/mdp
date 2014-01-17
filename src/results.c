@@ -45,7 +45,7 @@ struct wlist results = ARRAY_INITIALIZER;
 
 /*
  * This holds a sum and size of all the characters in the result set. This is
- * used by the edit mode as a quick way to check of the file changed.
+ * used with the edit command as a quick way to check of the file changed.
  */
 uint32_t result_size = 0, result_sum = 0;
 
@@ -278,7 +278,7 @@ load_results_gpg()
 
 
 /*
- * Print the results to screen in "raw" mode (-r).
+ * Print the results to screen with the get command's "raw" mode (-r).
  */
 void
 print_results(void)

@@ -36,35 +36,35 @@ unsigned int	 cmd_character_count = 0;
 unsigned int	 cmd_password_count = 0;
 
 
-enum action_mode
+enum command
 cmd_parse(int ac, char **av)
 {
 	int opt;
-	enum action_mode mode = MODE_PAGER;
+	enum command command = COMMAND_PAGER;
 
 	if (ac < 2) {
-		return MODE_USAGE;
+		return COMMAND_USAGE;
 	}
 
 	while ((opt = getopt(ac, av, "eErqgVhdc:k:p:l:n:")) != -1) {
 		switch (opt) {
 		case 'e':
-			mode = MODE_EDIT;
+			command = COMMAND_EDIT;
 			break;
 		case 'E':
 			cmd_regex = true;
 			break;
 		case 'r':
-			mode = MODE_RAW;
+			command = COMMAND_RAW;
 			break;
 		case 'q':
-			mode = MODE_QUERY;
+			command = COMMAND_QUERY;
 			break;
 		case 'g':
-			mode = MODE_GENERATE;
+			command = COMMAND_GENERATE;
 			break;
 		case 'V':
-			mode = MODE_VERSION;
+			command = COMMAND_VERSION;
 			break;
 		case 'd':
 			debug_enabled = true;
@@ -85,7 +85,7 @@ cmd_parse(int ac, char **av)
 			cmd_password_count = strtoumax(optarg, NULL, 10);
 			break;
 		default:
-			mode = MODE_USAGE;
+			command = COMMAND_USAGE;
 		}
 	}
 
@@ -93,5 +93,5 @@ cmd_parse(int ac, char **av)
 
 	keywords_load_from_argv(av);
 
-	return mode;
+	return command;
 }

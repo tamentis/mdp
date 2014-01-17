@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,15 +17,15 @@
 #ifndef _CMD_H_
 #define _CMD_H_
 
-enum action_mode {
-	MODE_EXIT,
-	MODE_VERSION,
-	MODE_USAGE,
-	MODE_PAGER,
-	MODE_RAW,
-	MODE_EDIT,
-	MODE_GENERATE,
-	MODE_QUERY
+enum command {
+	COMMAND_EXIT,
+	COMMAND_VERSION,
+	COMMAND_USAGE,
+	COMMAND_PAGER,
+	COMMAND_RAW,
+	COMMAND_EDIT,
+	COMMAND_GENERATE,
+	COMMAND_QUERY
 };
 
 extern char		*cmd_config_path;
@@ -35,6 +35,6 @@ extern bool		 cmd_regex;
 extern unsigned int	 cmd_character_count;
 extern unsigned int	 cmd_password_count;
 
-enum action_mode	 cmd_parse(int, char **);
+enum command		 cmd_parse(int, char **);
 
 #endif /* _CMD_H_ */
