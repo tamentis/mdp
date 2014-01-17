@@ -38,16 +38,16 @@ unsigned int	 cmd_password_count = 0;
 
 
 enum command
-cmd_parse(int ac, char **av)
+cmd_parse(int argc, char **argv)
 {
 	int opt;
 	enum command command = COMMAND_GET;
 
-	if (ac < 2) {
+	if (argc < 2) {
 		return COMMAND_USAGE;
 	}
 
-	while ((opt = getopt(ac, av, "eErqgVhdc:k:p:l:n:")) != -1) {
+	while ((opt = getopt(argc, argv, "eErqgVhdc:k:p:l:n:")) != -1) {
 		switch (opt) {
 		case 'e':
 			command = COMMAND_EDIT;
@@ -90,9 +90,9 @@ cmd_parse(int ac, char **av)
 		}
 	}
 
-	av += optind;
+	argv += optind;
 
-	keywords_load_from_argv(av);
+	keywords_load_from_argv(argv);
 
 	return command;
 }

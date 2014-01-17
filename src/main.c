@@ -170,7 +170,7 @@ mdp(enum command command)
 }
 
 int
-main(int ac, char **av)
+main(int argc, char **argv)
 {
 	enum command command;
 
@@ -179,7 +179,7 @@ main(int ac, char **av)
 	home = get_home();
 	editor_init(home);
 
-	command = cmd_parse(ac, av);
+	command = cmd_parse(argc, argv);
 
 	if (cmd_config_path == NULL) {
 		cmd_config_path = join_path(home, ".mdp/config");
