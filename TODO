@@ -49,3 +49,5 @@ OTHER IDEAS
  - Add introns/exons style encoding to the password file to fill it with
    garbage transparently and keep the file size fixed. This would avoid a
    potential attacker from guessing if passwords were added or removed.
+
+ - Don't bother getting HOME or EDITOR unless we need them.
