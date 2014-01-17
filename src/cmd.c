@@ -32,6 +32,7 @@ char		*cmd_config_path = NULL;
 char		*cmd_gpg_key_id = NULL;
 char		*cmd_profile_name = NULL;
 bool		 cmd_regex = false;
+bool		 cmd_raw = false;
 unsigned int	 cmd_character_count = 0;
 unsigned int	 cmd_password_count = 0;
 
@@ -40,7 +41,7 @@ enum command
 cmd_parse(int ac, char **av)
 {
 	int opt;
-	enum command command = COMMAND_PAGER;
+	enum command command = COMMAND_GET;
 
 	if (ac < 2) {
 		return COMMAND_USAGE;
@@ -55,7 +56,7 @@ cmd_parse(int ac, char **av)
 			cmd_regex = true;
 			break;
 		case 'r':
-			command = COMMAND_RAW;
+			cmd_raw = true;
 			break;
 		case 'q':
 			command = COMMAND_QUERY;

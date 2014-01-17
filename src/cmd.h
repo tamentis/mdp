@@ -20,8 +20,7 @@
 enum command {
 	COMMAND_VERSION,
 	COMMAND_USAGE,
-	COMMAND_PAGER,
-	COMMAND_RAW,
+	COMMAND_GET,
 	COMMAND_EDIT,
 	COMMAND_GENERATE,
 	COMMAND_QUERY
@@ -31,6 +30,7 @@ extern char		*cmd_config_path;
 extern char		*cmd_gpg_key_id;
 extern char		*cmd_profile_name;
 extern bool		 cmd_regex;
+extern bool		 cmd_raw;
 extern unsigned int	 cmd_character_count;
 extern unsigned int	 cmd_password_count;
 

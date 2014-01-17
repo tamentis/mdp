@@ -94,8 +94,8 @@ mdp(enum command command)
 		/* NOTREACHED */
 		break;
 
-	case COMMAND_RAW:
-		debug("command: RAW");
+	case COMMAND_GET:
+		debug("command: GET");
 		if (keywords_count() == 0) {
 			usage();
 		}
@@ -104,20 +104,11 @@ mdp(enum command command)
 		if (load_results_gpg() == 0)
 			errx(EXIT_FAILURE, "no passwords");
 		filter_results();
-		print_results();
-		break;
-
-	case COMMAND_PAGER:
-		debug("command: PAGER");
-		if (keywords_count() == 0) {
-			usage();
+		if (cmd_raw) {
+			print_results();
+		} else {
+			pager(START_WITHOUT_PROMPT);
 		}
-
-		gpg_check();
-		if (load_results_gpg() == 0)
-			errx(EXIT_FAILURE, "no passwords");
-		filter_results();
-		pager(START_WITHOUT_PROMPT);
 		break;
 
 	case COMMAND_QUERY:
