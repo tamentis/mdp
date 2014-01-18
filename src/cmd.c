@@ -97,7 +97,7 @@ cmd_parse_core(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 
-	while ((opt = getopt(argc, argv, "hVdc:egrq")) != -1) {
+	while ((opt = getopt(argc, argv, "+hVdc:egrq")) != -1) {
 		switch (opt) {
 		case 'h':
 			cmd_usage_core_with_commands();
