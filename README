@@ -52,7 +52,7 @@ COMMANDS
            specified in the profile or top-level definitions. You can call
            this command with the 'gen' shortcut.
 
-           The options for the generate command is:
+           The options for the generate command are:
 
            -p profile
                    Choose which profile to use among the ones defined in your
@@ -77,7 +77,7 @@ COMMANDS
            Note that you can hit '/' on the result screen to start another
            search.
 
-           The options for the generate command is:
+           The options for the get command are:
 
            -E      Use regexes instead of plain text matches (e.g. ^.mail).
 
