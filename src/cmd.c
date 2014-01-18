@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <stdbool.h>
+#include <err.h>
 
 #include "array.h"
 #include "keywords.h"
@@ -37,35 +38,94 @@ unsigned int	 cmd_character_count = 0;
 unsigned int	 cmd_password_count = 0;
 
 
-enum command
-cmd_parse(int argc, char **argv)
+/*
+ * Test if a value starts like the given command. It will return true even if
+ * the given value is one character long, as long as this character is the
+ * same as the command.
+ */
+bool
+command_match(const char *s, const char *name, size_t min)
 {
-	int opt;
-	enum command command = COMMAND_GET;
+	size_t len = strlen(s);
 
-	if (argc < 2) {
-		return COMMAND_USAGE;
+	if (strncmp(s, name, len) == 0) {
+		if (len < min) {
+			errx(EXIT_FAILURE, "ambiguous command '%s'", s);
+		}
+		return true;
 	}
 
-	while ((opt = getopt(argc, argv, "eErqgVhdc:k:p:l:n:")) != -1) {
+	return false;
+}
+
+
+/*
+ * Return the index of the command or -1 if no command was found.
+ */
+int
+cmd_get_command_index(int argc, char **argv)
+{
+	int index = -1;
+
+	for (int i = 1; i < argc; i++) {
+		if (argv[i][0] == '-') {
+			continue;
+		}
+		index = i;
+		break;
+	}
+
+	return index;
+}
+
+
+/*
+ * Core usage and parse (everything before the command).
+ */
+
+void
+cmd_usage_core(void)
+{
+	printf("usage: mdp [-Vh] [-c config] command [command args ...]\n");
+}
+
+
+void
+cmd_usage_core_with_commands(void)
+{
+	cmd_usage_core();
+	printf("\n");
+	printf("The mdp commands are:\n");
+	// printf("   add        Add a new random password at the end of your file.\n");
+	printf("   edit       Edit your passwords.\n");
+	printf("   generate   Generate random passwords.\n");
+	printf("   get        Get passwords by keywords or regexes.\n");
+	printf("   prompt     Interactive prompt session.\n");
+	printf("\n");
+	printf("'mdp <command> -h' returns this command's usage.\n");
+}
+
+
+int
+cmd_parse_core(int argc, char **argv)
+{
+	int opt;
+	int command_index;
+
+	if (argc < 2) {
+		cmd_usage_core();
+		exit(EXIT_FAILURE);
+	}
+
+	while ((opt = getopt(argc, argv, "hVdc:egrq")) != -1) {
 		switch (opt) {
-		case 'e':
-			command = COMMAND_EDIT;
-			break;
-		case 'E':
-			cmd_regex = true;
-			break;
-		case 'r':
-			cmd_raw = true;
-			break;
-		case 'q':
-			command = COMMAND_QUERY;
-			break;
-		case 'g':
-			command = COMMAND_GENERATE;
+		case 'h':
+			cmd_usage_core_with_commands();
+			exit(EXIT_FAILURE);
 			break;
 		case 'V':
-			command = COMMAND_VERSION;
+			printf("mdp-%s\n", MDP_VERSION);
+			exit(EXIT_SUCCESS);
 			break;
 		case 'd':
 			debug_enabled = true;
@@ -73,9 +133,95 @@ cmd_parse(int argc, char **argv)
 		case 'c':
 			cmd_config_path = strdup(optarg);
 			break;
+		case 'e':
+			errx(EXIT_FAILURE, "this flag is deprecated, use "
+					"'mdp edit' instead");
+			break;
+		case 'g':
+			errx(EXIT_FAILURE, "this flag is deprecated, use "
+					"'mdp gen' instead");
+			break;
+		case 'r':
+			errx(EXIT_FAILURE, "this flag is deprecated, use "
+					"'mdp get -r' instead");
+			break;
+		case 'q':
+			errx(EXIT_FAILURE, "this flag is deprecated, use "
+					"'mdp prompt' instead");
+			break;
+		default:
+			break;
+		}
+	}
+
+	/* Reset optind for other parsers to work properly. */
+	command_index = optind;
+	optind = 1;
+
+	return command_index;
+}
+
+
+/*
+ * mdp edit usage and parse
+ */
+
+static void
+cmd_usage_edit(void)
+{
+	printf("usage: mdp [core args ...] edit [-h] [-k key_id]\n");
+}
+
+
+void
+cmd_parse_edit(int argc, char **argv)
+{
+	int opt;
+
+	while ((opt = getopt(argc, argv, "hk:")) != -1) {
+		switch (opt) {
+		case 'h':
+			cmd_usage_edit();
+			exit(EXIT_FAILURE);
 		case 'k':
 			cmd_gpg_key_id = strdup(optarg);
 			break;
+		default:
+			break;
+		}
+	}
+
+	argc -= optind;
+	argv += optind;
+
+	if (argc > 0) {
+		cmd_usage_edit();
+		exit(EXIT_FAILURE);
+	}
+}
+
+
+/*
+ * mdp generate usage and parse
+ */
+
+static void
+cmd_usage_generate(void)
+{
+	printf("usage: mdp [core args ...] gen[erate] [-h] [-p profile] "
+			"[-n count] [-l length]\n");
+}
+
+void
+cmd_parse_generate(int argc, char **argv)
+{
+	int opt;
+
+	while ((opt = getopt(argc, argv, "hp:l:n:")) != -1) {
+		switch (opt) {
+		case 'h':
+			cmd_usage_generate();
+			exit(EXIT_FAILURE);
 		case 'p':
 			cmd_profile_name = strdup(optarg);
 			break;
@@ -86,13 +232,95 @@ cmd_parse(int argc, char **argv)
 			cmd_password_count = strtoumax(optarg, NULL, 10);
 			break;
 		default:
-			command = COMMAND_USAGE;
+			break;
 		}
 	}
 
+	argc -= optind;
 	argv += optind;
 
-	keywords_load_from_argv(argv);
+	if (argc > 0) {
+		cmd_usage_generate();
+		exit(EXIT_FAILURE);
+	}
+}
 
-	return command;
+
+/*
+ * mdp get usage and parse
+ */
+
+static void
+cmd_usage_get(void)
+{
+	printf("usage: mdp [core args ...] get [-hrE] keyword ...\n");
+}
+
+void
+cmd_parse_get(int argc, char **argv)
+{
+	int opt;
+
+	fprintf(stderr, "argc: %d, argv[0]: %s\n", argc, argv[0]);
+
+	while ((opt = getopt(argc, argv, "hrE")) != -1) {
+		switch (opt) {
+		case 'h':
+			cmd_usage_get();
+			exit(EXIT_FAILURE);
+		case 'r':
+			cmd_raw = true;
+			break;
+		case 'E':
+			cmd_regex = true;
+			break;
+		default:
+			break;
+		}
+	}
+
+	argc -= optind;
+	argv += optind;
+
+	if (argc == 0) {
+		cmd_usage_get();
+		exit(EXIT_FAILURE);
+	}
+
+	keywords_load_from_argv(argv);
+}
+
+
+/*
+ * mdp prompt usage and parse
+ */
+
+static void
+cmd_usage_prompt(void)
+{
+	printf("usage: mdp [core args ...] prompt [-h]\n");
+}
+
+void
+cmd_parse_prompt(int argc, char **argv)
+{
+	int opt;
+
+	while ((opt = getopt(argc, argv, "h")) != -1) {
+		switch (opt) {
+		case 'h':
+			cmd_usage_get();
+			exit(EXIT_FAILURE);
+		default:
+			break;
+		}
+	}
+
+	argc -= optind;
+	argv += optind;
+
+	if (argc > 0) {
+		cmd_usage_prompt();
+		exit(EXIT_FAILURE);
+	}
 }

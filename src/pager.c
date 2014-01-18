@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -123,15 +123,15 @@ keyword_prompt(void)
  * display a prompt to refine the keywords.
  */
 void
-pager(enum pager_start_mode mode)
+_pager(bool start_with_prompt)
 {
 	init_curses();
 
 	for (;;) {
 		clear();
 
-		if (mode == START_WITH_PROMPT) {
-			mode = START_WITHOUT_PROMPT;
+		if (start_with_prompt) {
+			start_with_prompt = false;
 			keyword_prompt();
 			filter_results();
 			continue;

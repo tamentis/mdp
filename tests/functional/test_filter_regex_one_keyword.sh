@@ -2,9 +2,9 @@
 
 # Populate the password file.
 use_config simple
-run_mdp -e
+run_mdp edit
 
-run_mdp -r -E ^.....berry > test.stdout
+run_mdp get -r -E ^.....berry > test.stdout
 
 if diff test.stdout - << EOF
 strawberry red

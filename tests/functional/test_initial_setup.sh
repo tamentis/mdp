@@ -3,6 +3,6 @@
 
 use_config simple
 
-if run_mdp -e; then
+if run_mdp edit; then
 	echo pass
 fi

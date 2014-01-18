@@ -2,11 +2,11 @@
 
 use_config slow
 
-run_mdp -e > /dev/null &
+run_mdp edit > /dev/null &
 
 sleep 0.1
 
-if ! run_mdp -e > /dev/null; then
+if ! run_mdp edit > /dev/null; then
 	echo pass
 fi
 

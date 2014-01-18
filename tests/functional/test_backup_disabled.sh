@@ -2,10 +2,10 @@
 
 rm -f $passfile.bak
 
+# Create a default password file.
 use_config simple
 echo "set backup no" >> test.config
-
-run_mdp -e > /dev/null
+run_mdp edit
 
 before_md5=`get_md5 $passfile`
 

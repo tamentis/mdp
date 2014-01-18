@@ -3,7 +3,7 @@
 use_config simple
 
 start_ts=`date +%s`
-run_mdp red > /dev/null
+run_mdp get red > /dev/null
 stop_ts=`date +%s`
 
 delta=$((stop_ts - start_ts))

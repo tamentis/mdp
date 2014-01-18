@@ -6,7 +6,7 @@ echo "profile wat" >> test.config
 echo "	set character_set 01234" >> test.config
 echo "	set character_count 10" >> test.config
 
-run_mdp -g -p wat -l 10 > test.tmp
+run_mdp generate -p wat -l 10 > test.tmp
 
 grep '^[01234]\{10\}$' test.tmp > test.stdout
 rm -f test.tmp

@@ -13,7 +13,7 @@
 .\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 .\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 .\"
-.Dd $Mdocdate: July 15 2013 $
+.Dd $Mdocdate: January 18 2014 $
 .Dt MDP 1
 .Os
 .Sh NAME
@@ -22,25 +22,11 @@
 .Sh SYNOPSIS
 .Nm mdp
 .Bk -words
-.Fl e
 .Op Fl Vh
 .Op Fl c Ar config
-.Op Fl k Ar key_id
-.Ek
-.Nm mdp
-.Fl g
-.Bk -words
-.Op Fl Vh
-.Op Fl c Ar config
-.Op Fl p Ar profile
-.Op Fl n Ar count
-.Op Fl l Ar length
-.Ek
-.Nm mdp
-.Bk -words
-.Op Fl ErqVh
-.Op Fl c Ar config
-.Ar keyword ...
+.\" .Op Fl k Ar key_id
+.Ar command
+.Op Ar arguments ...
 .Ek
 .Sh DESCRIPTION
 .Nm
@@ -54,19 +40,57 @@ do the rest. In order to avoid passwords to linger on your screen, results
 from your queries are displayed through a custom pager that gets cleared after
 a customizable timeout (default 10 seconds).
 .Pp
-The options are as follows:
+The following options are global and apply to all the subsequent commands:
 .Bl -tag -width Ds
 .It Fl c Ar config
 Use an alternate configuration file.
-.It Fl e
-Edit your password file (decrypt and re-encrypt after the fact).
-.It Fl g
-Generate password(s) according to your configuration or command-line arguments.
-.It Fl E
-Use regexes instead of plain text matches (e.g. ^.mail).
+.It Fl V
+Print version.
+.It Fl h
+Print general usage. If you wish to get the usage for a specic command, you can
+place this flag after the command name. For example 'mdp edit -h'.
+.El
+.Sh COMMANDS
+.\" mdp edit
+.Nm mdp
+.Bk -words
+.Ar edit
+.Op Fl h
+.Op Fl k Ar keyid
+.Ek
+.Bd -ragged -offset indent
+Edit your password file (decrypt and re-encrypt after the fact). This command
+creates a temporary file in mdp's configuration folder and starts your editor
+on it, the file is fed to GnuPG when your editor quits and if the file has
+changed in any way. The -k option is used in case you haven't specified a
+default key in your configuration file.
+.Pp
+The only option for edit command is:
+.Bl -tag -width Ds
 .It Fl k Ar key_id
 GnuPG key id (8 alpha-numeric characters). This could be used to specify your
 GnuPG key id in case you did not define it in your configuration file.
+.El
+.Ed
+.\" mdp generate
+.Pp
+.Nm mdp
+.Bk -words
+.Ar generate
+.Op Fl h
+.Op Fl p Ar profile
+.Op Fl n Ar count
+.Op Fl l Ar length
+.Ek
+.Bd -ragged -offset indent
+Generate password(s) according to your configuration or command-line arguments.
+Without profile specified, this will use the top-level definitions for the character
+set, password length and count. All the flags specified on the command-line will
+override the ones specified in the profile or top-level definitions. You can call
+this command with the 'gen' shortcut.
+.Pp
+The options for the generate command is:
+.Bl -tag -width Ds
 .It Fl p Ar profile
 Choose which profile to use among the ones defined in your configuration file.
 .It Fl n Ar count
@@ -75,29 +99,57 @@ other values of password_count (global and profile).
 .It Fl l Ar length
 Length of generated passwords (in bytes). This command line parameter will
 override all other values of password_count (global and profile).
-.It Fl q
-Start
-.Nm
-in query mode instead of displaying results directly. This will avoid you
-from entering your GPG password multiple time. Query mode times out after
-a few seconds of inactivity.
-.It Fl r
-Displays the result without pager, plain terminal dump (not recommended).
-.It Fl V
-Print version.
-.It Fl h
-Print usage.
 .El
-.Sh USAGE
+.Ed
+.\" mdp get
+.Pp
+.Nm mdp
+.Bk -words
+.Ar get
+.Op Fl hEr
+.Ar keywords ...
+.Ek
+.Bd -ragged -offset indent
+Return all the password entries matching the given keywords or regexs (if using
+-E). By default, this command will open a full-screen pager to display the result
+of your search, the time the pager remains on screen is adjustable in the
+configuration file. Note that you can hit '/' on the result screen to start
+another search.
+.Pp
+The options for the generate command is:
+.Bl -tag -width Ds
+.It Fl E
+Use regexes instead of plain text matches (e.g. ^.mail).
+.It Fl r
+Displays the result without pager, plain terminal dump to stdout. This option
+should be used sparingly since the password will linger on screen and in your
+terminal buffer/history.
+.El
+.Ed
+.\" mdp prompt
+.Pp
+.Nm mdp
+.Bk -words
+.Ar prompt
+.Op Fl h
+.Ek
+.Bd -ragged -offset indent -compact
+Enter a full-screen pager/search prompt system. This command is useful to avoid
+passing the search keywords in the command line (and allowing all users in the
+system to see what passwords you are requesting). Secondly, since this uses the
+default pager, you can run multiple search using the '/' key. Any other key will
+exit the pager, it will also exit after a configurable timer.
+.Ed
+.Sh QUICK WALKTHROUGH
 .Bl -tag -width Ds
 .It 1. Create your GPG key if you don't already have one.
 .It 2. Setup your EDITOR variable if it's not already done.
 .It 3. Create a .mdp/config file from the example (at least gpg_key_id).
 .It 4. Pick a password from randomly generated ones, for example:
 .Bd -literal -offset indent
-mdp -g
+mdp gen
 .Ed
-.It 5. Run "mdp -e" and add a line such as:
+.It 5. Run "mdp edit" and add a line such as:
 .Bd -literal -offset indent
 twitter sponge@bob.com yHVHPnqXyx6qUuki
 .Ed
@@ -137,8 +189,8 @@ detects vim, it will attempt to add the -n parameter to avoid vim from creating
 swap files.
 .Pp
 .It Ic set password_count Ar count
-Define how many password to show with using -g. Default: 4 or as defined in the
-profile.
+Define how many password to show with using 'mdp gen'. Default: 4 or as defined
+in the profile.
 .Pp
 .It Ic set character_count Ar count
 Define how many characters to randomize per password. Default: 16 or as defined

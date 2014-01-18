@@ -43,17 +43,6 @@
 char *home = NULL;
 
 
-static void
-usage(void)
-{
-	printf("usage: mdp -e [-Vh] [-c config] [-k key_id]\n");
-	printf("       mdp -g [-Vh] [-c config] [-p profile] [-n count] [-l length]\n");
-	printf("       mdp [-ErqVh] [-c config] keyword ...\n");
-
-	exit(EXIT_FAILURE);
-}
-
-
 /*
  * Return a copy of the $HOME environment variable. Be generous in flaming the
  * user if their environment is in poor condition.
@@ -78,108 +67,90 @@ get_home(void)
 
 
 static void
-mdp(enum command command)
+mdp_edit()
 {
-	struct profile *profile;
+	debug("mdp_edit()");
 
-	switch (command) {
-	case COMMAND_VERSION:
-		debug("command: VERSION");
-		printf("mdp-%s\n", MDP_VERSION);
-		break;
+	gpg_check();
+	lock_set();
 
-	case COMMAND_USAGE:
-		debug("command: USAGE");
-		usage();
-		/* NOTREACHED */
-		break;
+	/*
+	 * Since we set the lock, configure atexit and signals right away in
+	 * case something fail before a normal exit.
+	 */
+	if (atexit(atexit_cleanup) != 0) {
+		err(EXIT_FAILURE, "get_results atexit");
+	}
 
-	case COMMAND_GET:
-		debug("command: GET");
-		if (keywords_count() == 0) {
-			usage();
-		}
+	signal(SIGINT, sig_cleanup);
+	signal(SIGKILL, sig_cleanup);
 
-		gpg_check();
-		if (load_results_gpg() == 0)
-			errx(EXIT_FAILURE, "no passwords");
-		filter_results();
-		if (cmd_raw) {
-			print_results();
-		} else {
-			pager(START_WITHOUT_PROMPT);
-		}
-		break;
+	load_results_gpg();
+	edit_results();
+}
 
-	case COMMAND_QUERY:
-		debug("command: QUERY");
-		gpg_check();
-		if (load_results_gpg() == 0)
-			errx(EXIT_FAILURE, "no passwords");
-		pager(START_WITH_PROMPT);
-		break;
 
-	case COMMAND_EDIT:
-		debug("command: EDIT");
-		if (keywords_count() > 0) {
-			usage();
-		}
+static void
+mdp_generate()
+{
+	struct profile *profile = NULL;
 
-		gpg_check();
-		lock_set();
+	debug("mdp_generate()");
 
-		/*
-		 * Since we set the lock, configure atexit and signals right
-		 * away in case something fail before a normal exit.
-		 */
-		if (atexit(atexit_cleanup) != 0) {
-			err(EXIT_FAILURE, "get_results atexit");
-		}
+	if (cmd_profile_name == NULL) {
+		profile = profile_new("default");
+	} else {
+		profile = profile_get_from_name(cmd_profile_name);
+	}
 
-		signal(SIGINT, sig_cleanup);
-		signal(SIGKILL, sig_cleanup);
+	if (profile == NULL) {
+		errx(EXIT_FAILURE, "unknown profile");
+	}
 
-		load_results_gpg();
-		edit_results();
-		break;
+	profile_fprint_passwords(stdout, profile);
+}
 
-	case COMMAND_GENERATE:
-		debug("command: GENERATE");
 
-		if (keywords_count() > 0) {
-			usage();
-		}
+static void
+mdp_get()
+{
+	debug("mdp_get()");
 
-		if (cmd_profile_name == NULL) {
-			profile = profile_new("default");
-		} else {
-			profile = profile_get_from_name(cmd_profile_name);
-		}
+	gpg_check();
 
-		if (profile == NULL) {
-			errx(EXIT_FAILURE, "unknown profile");
-		}
+	if (load_results_gpg() == 0)
+		errx(EXIT_FAILURE, "no passwords");
 
-		profile_fprint_passwords(stdout, profile);
-		break;
+	filter_results();
 
-	default:
-		errx(EXIT_FAILURE, "unknown command");
-		break;
+	if (cmd_raw) {
+		print_results();
+	} else {
+		pager();
 	}
 }
 
-int
-main(int argc, char **argv)
+
+static void
+mdp_prompt()
 {
-	enum command command;
+	debug("mdp_prompt()");
 
-	setlocale(LC_ALL, "");
+	gpg_check();
 
+	if (load_results_gpg() == 0)
+		errx(EXIT_FAILURE, "no passwords");
+
+	pager_with_prompt();
+}
+
+
+static void
+read_config()
+{
+	/* Parse the config file and set defaults. */
 	home = get_home();
 	editor_init(home);
-
-	command = cmd_parse(argc, argv);
 
 	if (cmd_config_path == NULL) {
 		cmd_config_path = join_path(home, ".mdp/config");
@@ -188,10 +159,48 @@ main(int argc, char **argv)
 	config_check_paths(home);
 	config_read();
 	config_set_defaults(home);
+}
 
-	mdp(command);
+
+int
+main(int argc, char **argv)
+{
+	int command_index;
+
+	setlocale(LC_ALL, "");
+
+	/*
+	 * Anything before the command is considered core argument (not
+	 * related to any command). If we didn't find a command, parse all the
+	 * arguments as core.
+	 */
+	command_index = cmd_get_command_index(argc, argv);
+	command_index = cmd_parse_core(argc, argv);
+
+	if (command_index < 1) {
+		cmd_usage_core();
+		exit(EXIT_FAILURE);
+	}
+
+	argc -= command_index;
+	argv += command_index;
+
+	read_config();
+
+	if (command_match(argv[0], "edit", 1)) {
+		cmd_parse_edit(argc, argv);
+		mdp_edit();
+	} else if (command_match(argv[0], "generate", 3)) {
+		cmd_parse_generate(argc, argv);
+		mdp_generate();
+	} else if (command_match(argv[0], "get", 3)) {
+		cmd_parse_get(argc, argv);
+		mdp_get();
+	} else if (command_match(argv[0], "prompt", 1)) {
+		cmd_parse_prompt(argc, argv);
+		mdp_prompt();
+	}
 
 	debug("normal shutdown");
-
 	return EXIT_SUCCESS;
 }

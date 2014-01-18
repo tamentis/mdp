@@ -17,11 +17,9 @@
 #ifndef _PAGER_H_
 #define _PAGER_H_
 
-enum pager_start_mode {
-	START_WITH_PROMPT,
-	START_WITHOUT_PROMPT
-};
+#define pager()			_pager(false)
+#define pager_with_prompt()	_pager(true)
 
-void pager(enum pager_start_mode);
+void _pager(bool);
 
 #endif /* _PAGER_H_ */
