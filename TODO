@@ -11,8 +11,6 @@ SHORT TERM DEV
    then specify an alternate configuration file and create an alias in its
    shell. E.g. alias workmdp='mdp -c ~/.mdp/config.work'.
 
- - If there are no results, don't bother with the pager.
-
  - Move get_home to utils.
 
 MEDIUM TERM DEV
