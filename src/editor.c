@@ -66,7 +66,7 @@ editor_init(const char *home)
 bool
 editor_is_vim(const char *command)
 {
-	char *s;
+	const char *s;
 
 	/*
 	 * The command is either before a space (in case there are other
@@ -74,7 +74,7 @@ editor_is_vim(const char *command)
 	 */
 	s = strpbrk(command, " \0\t");
 	if (s == NULL) {
-		s = (char *)command + strlen(command);
+		s = command + strlen(command);
 	}
 
 	/* There aren't enough characters for 'vim' to fit. */

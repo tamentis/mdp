@@ -89,7 +89,7 @@ set, password length and count. All the flags specified on the command-line will
 override the ones specified in the profile or top-level definitions. You can call
 this command with the 'gen' shortcut.
 .Pp
-The options for the generate command is:
+The options for the generate command are:
 .Bl -tag -width Ds
 .It Fl p Ar profile
 Choose which profile to use among the ones defined in your configuration file.
@@ -116,7 +116,7 @@ of your search, the time the pager remains on screen is adjustable in the
 configuration file. Note that you can hit '/' on the result screen to start
 another search.
 .Pp
-The options for the generate command is:
+The options for the get command are:
 .Bl -tag -width Ds
 .It Fl E
 Use regexes instead of plain text matches (e.g. ^.mail).
@@ -155,7 +155,7 @@ twitter sponge@bob.com yHVHPnqXyx6qUuki
 .Ed
 .It 6. Now when you need your Twitter password, you can just type:
 .Bd -literal -offset indent
-mdp twitter
+mdp get twitter
 .Ed
 .El
 .Sh CONFIGURATION
