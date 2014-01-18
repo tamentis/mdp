@@ -111,7 +111,7 @@ QUICK WALKTHROUGH
 
      6. Now when you need your Twitter password, you can just type:
 
-                   mdp twitter
+                   mdp get twitter
 
 CONFIGURATION
      This is a summary of all the available configuration variables and
