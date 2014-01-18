@@ -130,6 +130,7 @@ cmd_parse_core(int argc, char **argv)
 					"'mdp prompt' instead");
 			break;
 		default:
+			exit(EXIT_FAILURE);
 			break;
 		}
 	}
@@ -149,7 +150,7 @@ cmd_parse_core(int argc, char **argv)
 static void
 cmd_usage_edit(void)
 {
-	printf("usage: mdp [core args ...] edit [-h] [-k key_id]\n");
+	printf("usage: mdp [core_opts ...] edit [-h] [-k key_id]\n");
 }
 
 
@@ -167,6 +168,7 @@ cmd_parse_edit(int argc, char **argv)
 			cmd_gpg_key_id = strdup(optarg);
 			break;
 		default:
+			exit(EXIT_FAILURE);
 			break;
 		}
 	}
@@ -188,7 +190,7 @@ cmd_parse_edit(int argc, char **argv)
 static void
 cmd_usage_generate(void)
 {
-	printf("usage: mdp [core args ...] gen[erate] [-h] [-p profile] "
+	printf("usage: mdp [core_opts ...] gen[erate] [-h] [-p profile] "
 			"[-n count] [-l length]\n");
 }
 
@@ -212,6 +214,7 @@ cmd_parse_generate(int argc, char **argv)
 			cmd_password_count = strtoumax(optarg, NULL, 10);
 			break;
 		default:
+			exit(EXIT_FAILURE);
 			break;
 		}
 	}
@@ -233,7 +236,7 @@ cmd_parse_generate(int argc, char **argv)
 static void
 cmd_usage_get(void)
 {
-	printf("usage: mdp [core args ...] get [-hrE] keyword ...\n");
+	printf("usage: mdp [core_opts ...] get [-hrE] keyword ...\n");
 }
 
 void
@@ -253,6 +256,7 @@ cmd_parse_get(int argc, char **argv)
 			cmd_regex = true;
 			break;
 		default:
+			exit(EXIT_FAILURE);
 			break;
 		}
 	}
@@ -276,7 +280,7 @@ cmd_parse_get(int argc, char **argv)
 static void
 cmd_usage_prompt(void)
 {
-	printf("usage: mdp [core args ...] prompt [-h]\n");
+	printf("usage: mdp [core_opts ...] prompt [-h]\n");
 }
 
 void
@@ -290,6 +294,7 @@ cmd_parse_prompt(int argc, char **argv)
 			cmd_usage_get();
 			exit(EXIT_FAILURE);
 		default:
+			exit(EXIT_FAILURE);
 			break;
 		}
 	}
