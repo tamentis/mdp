@@ -17,9 +17,10 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
+char		*get_home(void);
 char		*join_path(const char *, const char *);
+int		 file_exists(const char *);
 void		 cancel_pid_timeout(void);
 void		 set_pid_timeout(pid_t, int);
-int		 file_exists(const char *);
 
 #endif /* _UTILS_H_ */

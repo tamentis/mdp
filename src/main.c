@@ -40,32 +40,6 @@
 #include "utils.h"
 
 
-char *home = NULL;
-
-
-/*
- * Return a copy of the $HOME environment variable. Be generous in flaming the
- * user if their environment is in poor condition.
- */
-static char *
-get_home(void)
-{
-	char *s;
-
-	s = getenv("HOME");
-
-	if (s == NULL) {
-		errx(EXIT_FAILURE, "unknown variable '$HOME'");
-	}
-
-	if (!file_exists(s)) {
-		errx(EXIT_FAILURE, "your $HOME does not exist");
-	}
-
-	return strdup(s);
-}
-
-
 static void
 mdp_edit(void)
 {
@@ -148,6 +122,8 @@ mdp_prompt(void)
 static void
 read_config(void)
 {
+	char *home;
+
 	/* Parse the config file and set defaults. */
 	home = get_home();
 	editor_init(home);

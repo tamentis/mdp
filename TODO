@@ -11,8 +11,6 @@ SHORT TERM DEV
    then specify an alternate configuration file and create an alias in its
    shell. E.g. alias workmdp='mdp -c ~/.mdp/config.work'.
 
- - Move get_home to utils.
-
 MEDIUM TERM DEV
  - Use the same technique as rm -P (BSD) instead of just unlink.
 
