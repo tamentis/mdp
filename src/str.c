@@ -15,6 +15,7 @@
  */
 
 #include <wchar.h>
+#include <wctype.h>
 #include <err.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -78,7 +79,7 @@ strip_trailing_whitespaces(char *s)
 /*
  * Same as wcsstr but case-insensitive.
  */
-wchar_t *
+const wchar_t *
 wcscasestr(const wchar_t *s, const wchar_t *find)
 {
 	wchar_t c, sc;
@@ -96,11 +97,7 @@ wcscasestr(const wchar_t *s, const wchar_t *find)
 		s--;
 	}
 
-	/*
-	 * Ignore the warning for this, it's better to accept const explicitly
-	 * and have a warning than removing const everywhere.
-	 */
-	return ((wchar_t *)s);
+	return s;
 }
 
 

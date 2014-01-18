@@ -67,7 +67,7 @@ get_home(void)
 
 
 static void
-mdp_edit()
+mdp_edit(void)
 {
 	debug("mdp_edit()");
 
@@ -91,7 +91,7 @@ mdp_edit()
 
 
 static void
-mdp_generate()
+mdp_generate(void)
 {
 	struct profile *profile = NULL;
 
@@ -112,7 +112,7 @@ mdp_generate()
 
 
 static void
-mdp_get()
+mdp_get(void)
 {
 	debug("mdp_get()");
 
@@ -132,7 +132,7 @@ mdp_get()
 
 
 static void
-mdp_prompt()
+mdp_prompt(void)
 {
 	debug("mdp_prompt()");
 
@@ -146,7 +146,7 @@ mdp_prompt()
 
 
 static void
-read_config()
+read_config(void)
 {
 	/* Parse the config file and set defaults. */
 	home = get_home();
