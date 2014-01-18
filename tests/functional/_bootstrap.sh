@@ -35,9 +35,9 @@ run_mdp_capture_stderr() {
 # $1 - testname
 run_test() {
 	filename=$1
-	testname=${filename%%sh}
+	testname=${filename%%.sh}
 
-	echo -n "$testname ... "
+	echo -n "$testname... "
 
 	test_unit() {
 		. ./$filename
@@ -106,9 +106,16 @@ cleanup() {
 	rmdir fake_gpg_home
 }
 
+# Makes sure an output from stdout matches expectations.
+assert_stdout() {
+	if diff test.stdout test.expected > test.diff; then
+		echo pass
+	fi
+}
+
 print_summary() {
 	echo
-	echo "pass: $test_count_passed ($test_count_failed failed)"
+	echo "passed: $test_count_passed ($test_count_failed failed)"
 }
 
 

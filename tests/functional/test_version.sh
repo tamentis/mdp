@@ -1,4 +1,4 @@
-# Test -V works.
+# Make sure -V works.
 
 use_config simple
 
@@ -7,7 +7,7 @@ if ! run_mdp -V > test.stdout; then
 	exit 1
 fi
 
-if ! grep '^mdp-\d\.\d\.\d$' test.stdout > /dev/null; then
+if ! grep '^mdp-[0-9]\{1,2\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}$' test.stdout > /dev/null; then
 	echo "fail (help does not contain version string)"
 	exit 1
 fi
