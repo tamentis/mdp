@@ -174,7 +174,6 @@ main(int argc, char **argv)
 	 * related to any command). If we didn't find a command, parse all the
 	 * arguments as core.
 	 */
-	command_index = cmd_get_command_index(argc, argv);
 	command_index = cmd_parse_core(argc, argv);
 
 	if (command_index < 1) {

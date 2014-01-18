@@ -60,26 +60,6 @@ command_match(const char *s, const char *name, size_t min)
 
 
 /*
- * Return the index of the command or -1 if no command was found.
- */
-int
-cmd_get_command_index(int argc, char **argv)
-{
-	int index = -1;
-
-	for (int i = 1; i < argc; i++) {
-		if (argv[i][0] == '-') {
-			continue;
-		}
-		index = i;
-		break;
-	}
-
-	return index;
-}
-
-
-/*
  * Core usage and parse (everything before the command).
  */
 
@@ -260,8 +240,6 @@ void
 cmd_parse_get(int argc, char **argv)
 {
 	int opt;
-
-	fprintf(stderr, "argc: %d, argv[0]: %s\n", argc, argv[0]);
 
 	while ((opt = getopt(argc, argv, "hrE")) != -1) {
 		switch (opt) {

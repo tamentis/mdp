@@ -34,7 +34,6 @@ extern bool		 cmd_raw;
 extern unsigned int	 cmd_character_count;
 extern unsigned int	 cmd_password_count;
 
-int			 cmd_get_command_index(int, char **);
 enum command		 cmd_parse(int, char **);
 int			 cmd_parse_core(int, char **);
 void			 cmd_parse_edit(int, char **);
