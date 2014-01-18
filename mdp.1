@@ -62,14 +62,14 @@ place this flag after the command name. For example 'mdp edit -h'.
 Edit your password file (decrypt and re-encrypt after the fact). This command
 creates a temporary file in mdp's configuration folder and starts your editor
 on it, the file is fed to GnuPG when your editor quits and if the file has
-changed in any way. The -k option is used in case you haven't specified a
-default key in your configuration file.
+changed in any way.
 .Pp
 The only option for edit command is:
 .Bl -tag -width Ds
 .It Fl k Ar key_id
-GnuPG key id (8 alpha-numeric characters). This could be used to specify your
-GnuPG key id in case you did not define it in your configuration file.
+The argument is a GnuPG key id (8 alpha-numeric characters), it could be used
+to specify your key id in case you did not define it in your configuration
+file.
 .El
 .Ed
 .\" mdp generate
@@ -85,9 +85,9 @@ GnuPG key id in case you did not define it in your configuration file.
 .Bd -ragged -offset indent
 Generate password(s) according to your configuration or command-line arguments.
 Without profile specified, this will use the top-level definitions for the character
-set, password length and count. All the flags specified on the command-line will
-override the ones specified in the profile or top-level definitions. You can call
-this command with the 'gen' shortcut.
+set, password length and count (see CONFIGURATION below). All the flags
+specified on the command-line will override the ones specified in the profile
+or top-level definitions. You can call this command with the 'gen' shortcut.
 .Pp
 The options for the generate command are:
 .Bl -tag -width Ds
