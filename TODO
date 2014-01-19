@@ -1,5 +1,6 @@
 BUGS/IMMEDIATE
- - None so far.
+ - Should not be checking for file permissions until we have defined where
+   these files should be.
 
 SHORT TERM DEV
  - '-a' will add a password, taking a number of strings in order of argv and

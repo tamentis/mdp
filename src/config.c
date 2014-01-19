@@ -46,15 +46,16 @@
 #include "xmalloc.h"
 
 
+bool		 cfg_backup = true;
+unsigned int	 cfg_character_count = DEFAULT_CHARACTER_COUNT;
+wchar_t		*cfg_character_set = NULL;
+char		*cfg_editor;
 char		*cfg_gpg_path = NULL;
 char		*cfg_gpg_key_id = NULL;
 unsigned int	 cfg_gpg_timeout = 20;
-char		*cfg_editor;
-unsigned int	 cfg_timeout = 10;
 unsigned int	 cfg_password_count = DEFAULT_PASSWORD_COUNT;
-unsigned int	 cfg_character_count = DEFAULT_CHARACTER_COUNT;
-wchar_t		*cfg_character_set = NULL;
-bool		 cfg_backup = true;
+char		*cfg_password_file = NULL;
+unsigned int	 cfg_timeout = 10;
 
 
 #define parse_boolean(v) (v != NULL && *v == 'o') ? true : false
@@ -176,6 +177,18 @@ set_variable(char *name, char *value, int linenum)
 		}
 
 		cfg_password_count = strtoull(value, NULL, 10);
+
+	/* set password_file <string> */
+	} else if (strcmp(name, "password_file") == 0) {
+		if (cfg_gpg_path != NULL) {
+			conf_err("password_file defined multiple times");
+		}
+
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for password_file");
+		}
+
+		cfg_password_file = strdup(value);
 
 	/* set timeout <integer> */
 	} else if (strcmp(name, "timeout") == 0) {
@@ -401,6 +414,10 @@ config_set_defaults(const char *home)
 			xfree(cfg_gpg_key_id);
 		}
 		cfg_gpg_key_id = cmd_gpg_key_id;
+	}
+
+	if (cfg_password_file == NULL) {
+		cfg_password_file = strdup("passwords");
 	}
 
 	lock_path = join_path(home, ".mdp/lock");
