@@ -174,6 +174,8 @@ main(int argc, char **argv)
 	} else if (command_match(argv[0], "prompt", 1)) {
 		cmd_parse_prompt(argc, argv);
 		mdp_prompt();
+	} else {
+		errx(EXIT_FAILURE, "unknown command '%s' (try mdp -h)", argv[0]);
 	}
 
 	debug("normal shutdown");
