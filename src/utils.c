@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <signal.h>
+#include <string.h>
 
 #include "debug.h"
 #include "str.h"
@@ -33,12 +34,54 @@ pid_t watcher_pid = 0;
 
 
 /*
+ * Return a copy of the $HOME environment variable. Be generous in flaming the
+ * user if their environment is in poor condition.
+ */
+char *
+get_home(void)
+{
+	char *s;
+
+	s = getenv("HOME");
+
+	if (s == NULL) {
+		errx(EXIT_FAILURE, "unknown variable '$HOME'");
+	}
+
+	if (!file_exists(s)) {
+		errx(EXIT_FAILURE, "your $HOME does not exist");
+	}
+
+	return strdup(s);
+}
+
+
+/*
  * Create a new path with the two parts given as parameter.
  */
 char *
 join_path(const char *base, const char *suffix)
 {
 	return join('/', base, suffix);
+}
+
+
+/*
+ * Check if a file exists.
+ */
+int
+file_exists(const char *filepath)
+{
+	struct stat sb;
+
+	if (stat(filepath, &sb) != 0) {
+		if (errno == ENOENT) {
+			return 0;
+		}
+		err(EXIT_FAILURE, "file_exists stat()");
+	}
+
+	return 1;
 }
 
 
@@ -115,23 +158,4 @@ set_pid_timeout(pid_t pid, int timeout)
 
 	debug("set_pid_timeout parent pid=%d, watcher pid=%d", getpid(),
 			watcher_pid);
-}
-
-
-/*
- * Check if a file exists.
- */
-int
-file_exists(const char *filepath)
-{
-	struct stat sb;
-
-	if (stat(filepath, &sb) != 0) {
-		if (errno == ENOENT) {
-			return 0;
-		}
-		err(EXIT_FAILURE, "file_exists stat()");
-	}
-
-	return 1;
 }

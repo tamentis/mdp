@@ -46,15 +46,16 @@
 #include "xmalloc.h"
 
 
+bool		 cfg_backup = true;
+unsigned int	 cfg_character_count = DEFAULT_CHARACTER_COUNT;
+wchar_t		*cfg_character_set = NULL;
+char		*cfg_editor;
 char		*cfg_gpg_path = NULL;
 char		*cfg_gpg_key_id = NULL;
 unsigned int	 cfg_gpg_timeout = 20;
-char		*cfg_editor;
-unsigned int	 cfg_timeout = 10;
 unsigned int	 cfg_password_count = DEFAULT_PASSWORD_COUNT;
-unsigned int	 cfg_character_count = DEFAULT_CHARACTER_COUNT;
-wchar_t		*cfg_character_set = NULL;
-bool		 cfg_backup = true;
+char		*cfg_password_file = NULL;
+unsigned int	 cfg_timeout = 10;
 
 
 #define parse_boolean(v) (v != NULL && *v == 'o') ? true : false
@@ -103,56 +104,9 @@ config_resolve_character_set(const char *value)
 static void
 set_variable(char *name, char *value, int linenum)
 {
-	/* set gpg_path <string> */
-	if (strcmp(name, "gpg_path") == 0) {
-		if (cfg_gpg_path != NULL) {
-			conf_err("gpg_path defined multiple times");
-		}
-
-		if (value == NULL || *value == '\0') {
-			conf_err("invalid value for gpg_path");
-		}
-
-		cfg_gpg_path = strdup(value);
-
-	/* set gpg_key_id <string> */
-	} else if (strcmp(name, "gpg_key_id") == 0) {
-		if (cfg_gpg_key_id != NULL) {
-			conf_err("gpg_key_id defined multiple times");
-		}
-
-		if (value == NULL || *value == '\0') {
-			conf_err("invalid value for gpg_key_id");
-		}
-
-		cfg_gpg_key_id = strdup(value);
-
-	/* set gpg_timeout <integer> */
-	} else if (strcmp(name, "gpg_timeout") == 0) {
-		if (value == NULL || *value == '\0') {
-			conf_err("invalid value for gpg_timeout");
-		}
-
-		cfg_gpg_timeout = strtoull(value, NULL, 10);
-
-	/* set editor <string> */
-	} else if (strcmp(name, "editor") == 0) {
-		if (cfg_editor != NULL) {
-			xfree(cfg_editor);
-		}
-
-		if (value == NULL || *value == '\0') {
-			conf_err("invalid value for editor");
-		}
-		cfg_editor = strdup(value);
-
-	/* set password_count <integer> */
-	} else if (strcmp(name, "password_count") == 0) {
-		if (value == NULL || *value == '\0') {
-			conf_err("invalid value for password_count");
-		}
-
-		cfg_password_count = strtoull(value, NULL, 10);
+	/* set backup <bool> */
+	if (strcmp(name, "backup") == 0) {
+		cfg_backup = parse_boolean(value);
 
 	/* set character_count <integer> */
 	} else if (strcmp(name, "character_count") == 0) {
@@ -173,6 +127,69 @@ set_variable(char *name, char *value, int linenum)
 		}
 		cfg_character_set = config_resolve_character_set(value);
 
+	/* set editor <string> */
+	} else if (strcmp(name, "editor") == 0) {
+		if (cfg_editor != NULL) {
+			xfree(cfg_editor);
+		}
+
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for editor");
+		}
+		cfg_editor = strdup(value);
+
+	/* set gpg_key_id <string> */
+	} else if (strcmp(name, "gpg_key_id") == 0) {
+		if (cfg_gpg_key_id != NULL) {
+			conf_err("gpg_key_id defined multiple times");
+		}
+
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for gpg_key_id");
+		}
+
+		cfg_gpg_key_id = strdup(value);
+
+	/* set gpg_path <string> */
+	} else if (strcmp(name, "gpg_path") == 0) {
+		if (cfg_gpg_path != NULL) {
+			conf_err("gpg_path defined multiple times");
+		}
+
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for gpg_path");
+		}
+
+		cfg_gpg_path = strdup(value);
+
+	/* set gpg_timeout <integer> */
+	} else if (strcmp(name, "gpg_timeout") == 0) {
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for gpg_timeout");
+		}
+
+		cfg_gpg_timeout = strtoull(value, NULL, 10);
+
+	/* set password_count <integer> */
+	} else if (strcmp(name, "password_count") == 0) {
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for password_count");
+		}
+
+		cfg_password_count = strtoull(value, NULL, 10);
+
+	/* set password_file <string> */
+	} else if (strcmp(name, "password_file") == 0) {
+		if (cfg_gpg_path != NULL) {
+			conf_err("password_file defined multiple times");
+		}
+
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for password_file");
+		}
+
+		cfg_password_file = strdup(value);
+
 	/* set timeout <integer> */
 	} else if (strcmp(name, "timeout") == 0) {
 		if (value == NULL || *value == '\0') {
@@ -180,10 +197,6 @@ set_variable(char *name, char *value, int linenum)
 		}
 
 		cfg_timeout = strtoull(value, NULL, 10);
-
-	/* set backup <bool> */
-	} else if (strcmp(name, "backup") == 0) {
-		cfg_backup = parse_boolean(value);
 
 	/* ??? */
 	} else {
@@ -200,16 +213,8 @@ static void
 set_profile_variable(struct profile *profile, char *name, char *value,
 		int linenum)
 {
-	/* set password_count <unsigned integer> */
-	if (strcmp(name, "password_count") == 0) {
-		if (value == NULL || *value == '\0') {
-			conf_err("invalid value for password_count");
-		}
-
-		profile->password_count = strtoull(value, NULL, 10);
-
 	/* set timeout <unsigned integer> */
-	} else if (strcmp(name, "character_count") == 0) {
+	if (strcmp(name, "character_count") == 0) {
 		if (value == NULL || *value == '\0') {
 			conf_err("invalid value for character_count");
 		}
@@ -226,6 +231,14 @@ set_profile_variable(struct profile *profile, char *name, char *value,
 			conf_err("invalid value for character_set");
 		}
 		profile->character_set = config_resolve_character_set(value);
+
+	/* set password_count <unsigned integer> */
+	} else if (strcmp(name, "password_count") == 0) {
+		if (value == NULL || *value == '\0') {
+			conf_err("invalid value for password_count");
+		}
+
+		profile->password_count = strtoull(value, NULL, 10);
 
 	/* ??? */
 	} else {
@@ -401,6 +414,10 @@ config_set_defaults(const char *home)
 			xfree(cfg_gpg_key_id);
 		}
 		cfg_gpg_key_id = cmd_gpg_key_id;
+	}
+
+	if (cfg_password_file == NULL) {
+		cfg_password_file = strdup("passwords");
 	}
 
 	lock_path = join_path(home, ".mdp/lock");

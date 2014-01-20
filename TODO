@@ -1,5 +1,6 @@
 BUGS/IMMEDIATE
- - None so far.
+ - Should not be checking for file permissions until we have defined where
+   these files should be.
 
 SHORT TERM DEV
  - '-a' will add a password, taking a number of strings in order of argv and
@@ -10,10 +11,6 @@ SHORT TERM DEV
    by adding a passwords_filename parameter in the config file. The user can
    then specify an alternate configuration file and create an alias in its
    shell. E.g. alias workmdp='mdp -c ~/.mdp/config.work'.
-
- - If there are no results, don't bother with the pager.
-
- - Move get_home to utils.
 
 MEDIUM TERM DEV
  - Use the same technique as rm -P (BSD) instead of just unlink.
