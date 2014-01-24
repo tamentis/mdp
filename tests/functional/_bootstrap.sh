@@ -94,6 +94,8 @@ cleanup() {
 	# Fake mdp home.
 	rm -f fake_gpg_home/.mdp/passwords
 	rm -f fake_gpg_home/.mdp/passwords.bak
+	rm -f fake_gpg_home/.mdp/alternative
+	rm -f fake_gpg_home/.mdp/alternative.bak
 	rmdir fake_gpg_home/.mdp
 
 	# GnuPG stuff, hopefully it doesn't vary by OS too much.
@@ -109,6 +111,14 @@ cleanup() {
 # Makes sure an output from stdout matches expectations.
 assert_stdout() {
 	if diff test.stdout test.expected > test.diff; then
+		echo pass
+	fi
+}
+
+# Ensures a given file exists.
+# $1 - filepath
+assert_file_exists() {
+	if [ -f "$1" ]; then
 		echo pass
 	fi
 }

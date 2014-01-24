@@ -17,20 +17,21 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
+extern bool		 cfg_backup;
+unsigned int		 cfg_character_count;
+wchar_t			*cfg_character_set;
 extern char		*cfg_config_path;
+extern char		*cfg_editor;
 extern char		*cfg_gpg_path;
 extern char		*cfg_gpg_key_id;
 extern unsigned int	 cfg_gpg_timeout;
-extern char		*cfg_editor;
-extern unsigned int	 cfg_timeout;
 extern unsigned int	 cfg_password_count;
-unsigned int		 cfg_character_count;
-wchar_t			*cfg_character_set;
-extern bool		 cfg_backup;
+extern char		*cfg_password_file;
+extern unsigned int	 cfg_timeout;
 
-void			 config_check_directory(const char *);
+void			 config_ensure_directory(const char *);
 void			 config_check_file(const char *);
-void			 config_check_paths(const char *);
+void			 config_check_password_file(const char *);
 void			 config_check_variables(void);
 void			 config_read(void);
 void			 config_set_defaults(const char *);

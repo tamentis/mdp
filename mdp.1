@@ -13,21 +13,22 @@
 .\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 .\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 .\"
-.Dd $Mdocdate: January 18 2014 $
+.Dd $Mdocdate: January 24 2014 $
 .Dt MDP 1
 .Os
 .Sh NAME
 .Nm mdp
 .Nd minimalist password safe
+.\" SYNOPSIS
 .Sh SYNOPSIS
 .Nm mdp
 .Bk -words
 .Op Fl Vh
 .Op Fl c Ar config
-.\" .Op Fl k Ar key_id
 .Ar command
 .Op Ar arguments ...
 .Ek
+.\" DESCRIPTION
 .Sh DESCRIPTION
 .Nm
 wraps GnuPG, your favorite editor, a password generator and a custom temporary
@@ -50,6 +51,7 @@ Print version.
 Print general usage. If you wish to get the usage for a specic command, you can
 place this flag after the command name. For example 'mdp edit -h'.
 .El
+.\" COMMANDS
 .Sh COMMANDS
 .\" mdp edit
 .Nm mdp
@@ -140,6 +142,7 @@ system to see what passwords you are requesting). Secondly, since this uses the
 default pager, you can run multiple search using the '/' key. Any other key will
 exit the pager, it will also exit after a configurable timer.
 .Ed
+.\" QUICK WALKTHROUGH
 .Sh QUICK WALKTHROUGH
 .Bl -tag -width Ds
 .It 1. Create your GPG key if you don't already have one.
@@ -158,39 +161,14 @@ twitter sponge@bob.com yHVHPnqXyx6qUuki
 mdp get twitter
 .Ed
 .El
+.\" CONFIGURATION
 .Sh CONFIGURATION
-This is a summary of all the available configuration variables and options:
+This is an alphabetically sorted summary of all the available configuration
+variables and options:
 .Bl -tag -width Ds
-.It Xo Ic set gpg_path Ar path
-.Xc
-GnuPG absolute path (default: /usr/bin/gpg)
-.Pp
-.It Ic set gpg_key_id Ar key_id
-GnuPG key id (default: none). If no key is selected,
-.Nm
-will expect you to specify it on the command-line (-k). If no key was specified
-either way,
-.Nm
-will abort. That this parameter is ignored during the decryption phase, GnuPG
-picks the key based on the content of the password file.
-.Pp
-.It Ic set gpg_timeout Ar seconds
-Number of seconds to give GnuPG for password and pipe interaction. The
-default value is 10 seconds. This will kill GnuPG if forgotten at the password
-prompt or if it cannot communicate with the parent process.
-.Pp
-.It Ic set editor Ar path
-Path to your favorite editor. You typically don't need to set this variable
-since
-.Nm
-will use your default editor (as defined by $EDITOR). If
-.Nm
-detects vim, it will attempt to add the -n parameter to avoid vim from creating
-swap files.
-.Pp
-.It Ic set password_count Ar count
-Define how many password to show with using 'mdp gen'. Default: 4 or as defined
-in the profile.
+.It Ic set backup Ar no
+Define whether we keep a backup every time we edit the password file. Default:
+yes.
 .Pp
 .It Ic set character_count Ar count
 Define how many characters to randomize per password. Default: 16 or as defined
@@ -202,9 +180,41 @@ Define all the characters to use in your passwords. Default: all alphanumeric
 supported as shortcuts: $LOWERCASE, $UPPERCASE, $ALPHA, $DIGITS, $ALPHANUMERIC,
 $SYMBOLS, $PRINTABLE.
 .Pp
-.It Ic set backup Ar no
-Define whether we keep a backup every time we edit the password file. Default:
-yes.
+.It Ic set editor Ar path
+Path to your favorite editor. You typically don't need to set this variable
+since
+.Nm
+will use your default editor (as defined by $EDITOR). If
+.Nm
+detects vim, it will attempt to add the -n parameter to avoid vim from creating
+swap files.
+.Pp
+.It Ic set gpg_key_id Ar key_id
+GnuPG key id (default: none). If no key is selected,
+.Nm
+will expect you to specify it on the command-line (-k). If no key was specified
+either way,
+.Nm
+will abort. That this parameter is ignored during the decryption phase, GnuPG
+picks the key based on the content of the password file.
+.Pp
+.It Xo Ic set gpg_path Ar path
+.Xc
+GnuPG absolute path (default: /usr/bin/gpg)
+.Pp
+.It Ic set gpg_timeout Ar seconds
+Number of seconds to give GnuPG for password and pipe interaction. The
+default value is 10 seconds. This will kill GnuPG if forgotten at the password
+prompt or if it cannot communicate with the parent process.
+.Pp
+.It Ic set password_count Ar count
+Define how many password to show with using 'mdp gen'. Default: 4 or as defined
+in the profile.
+.Pp
+.It Ic set password_file Ar filepath
+Sets the location of the password file. mdp will refuse to use a password file
+with permissions other than 0600. The default value for this is
+~/.mdp/passwords.
 .Pp
 .It Ic set timeout Ar seconds
 This variable define how long the pager will display your passwords. The
@@ -216,6 +226,7 @@ All the variables define below a profile header will be specific to this
 profile. For now only password_count, character_count and character_set are
 valid options.
 .El
+.\" PASSWORD FILE
 .Sh PASSWORD FILE
 Your password file should be structured to make it convenient for mdp to query
 it. Since mdp queries work similarly to grep, you want to use a line-based
@@ -263,12 +274,14 @@ You're screwed, you can't trust this machine with your valuable information.
 Same answer as above, if you don't trust your hosting provider or IaaS, good
 luck.
 .El
+.\" ENVIRONMENT
 .Sh ENVIRONMENT
 .Bl -tag
 .It Ev EDITOR
 The content of this variable will be used as default editor if the
 configuration does not alter it.
 .El
+.\" FILES
 .Sh FILES
 .Bl -tag
 .It Pa $HOME/.mdp/config
@@ -286,13 +299,16 @@ can be disabled (see "set backup").
 This file is created while you edit your password list to avoid two copies
 of mdp to run at the same time for the same user.
 .El
+.\" SEE ALSO
 .Sh SEE ALSO
 .Xr gpg 1 ,
 .Xr sh 1
+.\" BUGS
 .Sh BUGS
 .Bl -tag -width Ds
 .It - None that we know of.
 .El
+.\" AUTHORS
 .Sh AUTHORS
 mdp was written by Bertrand Janin <b@janin.com> and is distributed under an ISC
 license (BSD, MIT and OSI compatible).

@@ -3,6 +3,7 @@
 	* Switch to git-style command line with a command (e.g. mdp edit).
 	* Passwords can now use character sets containing unicode.
 	* Add aliases to common character_sets (e.g. $ALPHANUMERIC, $DIGITS).
+	* Allow user to set password_file in the config.
 	* Detect vim and add '-n' to avoid swap file creation.
 	* Define a comment character for the password file (#).
 	* Renamed query-mode to the prompt command.

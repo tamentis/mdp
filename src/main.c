@@ -38,6 +38,7 @@
 #include "profile.h"
 #include "results.h"
 #include "utils.h"
+#include "xmalloc.h"
 
 
 static void
@@ -123,18 +124,27 @@ static void
 read_config(void)
 {
 	char *home;
+	char *config_dir;
 
-	/* Parse the config file and set defaults. */
 	home = get_home();
+
 	editor_init(home);
 
+	config_dir = join_path(home, ".mdp");
+	config_ensure_directory(config_dir);
+
 	if (cmd_config_path == NULL) {
-		cmd_config_path = join_path(home, ".mdp/config");
+		cmd_config_path = join_path(config_dir, "config");
 	}
-	debug("read config (%s)", cmd_config_path);
-	config_check_paths(home);
+	config_check_file(cmd_config_path);
+
 	config_read();
-	config_set_defaults(home);
+	config_set_defaults(config_dir);
+
+	config_check_password_file(cfg_password_file);
+
+	xfree(config_dir);
+	xfree(home);
 }
 
 

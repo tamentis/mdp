@@ -180,7 +180,7 @@ set_variable(char *name, char *value, int linenum)
 
 	/* set password_file <string> */
 	} else if (strcmp(name, "password_file") == 0) {
-		if (cfg_gpg_path != NULL) {
+		if (cfg_password_file != NULL) {
 			conf_err("password_file defined multiple times");
 		}
 
@@ -316,7 +316,7 @@ process_config_line(char *line, int linenum)
  * Exits program with error message if anything is wrong.
  */
 void
-config_check_directory(const char *path)
+config_ensure_directory(const char *path)
 {
 	struct stat sb;
 
@@ -371,6 +371,35 @@ config_check_file(const char *path)
 	if (sb.st_uid != 0 && sb.st_uid != getuid()) {
 		errx(EXIT_FAILURE, "bad owner on %s", path);
 	}
+}
+
+
+/*
+ * Check the password file.
+ *
+ * Exits program with error message if anything is wrong.
+ */
+void
+config_check_password_file(const char *path)
+{
+	struct stat sb;
+
+	if (stat(path, &sb) != 0) {
+		if (errno == ENOENT) {
+			/* User hasn't created a password file, that's ok. */
+			return;
+		} else {
+			err(EXIT_FAILURE, "can't access %s", path);
+		}
+	}
+
+	if (!S_ISREG(sb.st_mode)) {
+		errx(EXIT_FAILURE, "%s is not a regular file", path);
+	}
+
+	if (sb.st_uid != 0 && sb.st_uid != getuid()) {
+		errx(EXIT_FAILURE, "bad owner on %s", path);
+	}
 
 	if ((sb.st_mode & 022) != 0) {
 		errx(EXIT_FAILURE, "bad permissions on %s", path);
@@ -378,32 +407,8 @@ config_check_file(const char *path)
 }
 
 
-/*
- * Prepare and check the configuration paths.
- *
- * Create the ~/.mdp/ directory if it doesn't exist yet, then make sure it has
- * the right permissions, including all the relevant files within.
- */
 void
-config_check_paths(const char *home)
-{
-	char *path;
-
-	path = join_path(home, ".mdp");
-	config_check_directory(path);
-	xfree(path);
-
-	gpg_passwords_path = join_path(home, ".mdp/passwords");
-	config_check_file(gpg_passwords_path);
-
-	path = join_path(home, ".mdp/config");
-	config_check_file(path);
-	xfree(path);
-}
-
-
-void
-config_set_defaults(const char *home)
+config_set_defaults(const char *config_dir)
 {
 	if (cfg_gpg_path == NULL) {
 		cfg_gpg_path = strdup("/usr/bin/gpg");
@@ -417,10 +422,10 @@ config_set_defaults(const char *home)
 	}
 
 	if (cfg_password_file == NULL) {
-		cfg_password_file = strdup("passwords");
+		cfg_password_file = join_path(config_dir, "passwords");
 	}
 
-	lock_path = join_path(home, ".mdp/lock");
+	lock_path = join_path(config_dir, "lock");
 }
 
 
