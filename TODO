@@ -1,5 +1,4 @@
 BUGS/IMMEDIATE
- - Make the functional test suite behave a little more like the regress set.
 
 SHORT TERM DEV
  - '-a' will add a password, taking a number of strings in order of argv and

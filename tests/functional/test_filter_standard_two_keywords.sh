@@ -6,9 +6,8 @@ run_mdp edit
 
 run_mdp get -r berry black > test.stdout
 
-if diff test.stdout - << EOF
+cat > test.expected << EOF
 blackberry black
 EOF
-then
-	echo pass
-fi
+
+assert_stdout

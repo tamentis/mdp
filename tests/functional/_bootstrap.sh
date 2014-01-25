@@ -124,6 +124,24 @@ assert_stderr() {
 	fi
 }
 
+assert_exit_success() {
+	if $@; then
+		pass
+	fi
+}
+
+# Make sure the given file is absent.
+# $1 - filename
+assert_file_absent() {
+	if [ ! -f "$1" ]; then
+		echo pass
+	fi
+}
+
+pass() {
+	echo pass
+}
+
 # Ensures a given file exists.
 # $1 - filepath
 assert_file_exists() {

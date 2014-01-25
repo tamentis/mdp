@@ -6,10 +6,9 @@ run_mdp edit
 
 run_mdp get -r red > test.stdout
 
-if diff test.stdout - << EOF
+cat > test.expected << EOF
 strawberry red
 raspberry red
 EOF
-then
-	echo pass
-fi
+
+assert_stdout

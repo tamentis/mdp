@@ -3,6 +3,4 @@
 
 use_config simple
 
-if run_mdp edit; then
-	echo pass
-fi
+assert_exit_success run_mdp edit

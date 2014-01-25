@@ -5,10 +5,14 @@ set -e
 
 . ./_bootstrap.sh
 
-for each in test_*.sh; do
-	run_test ${each}
-done
+if [ -n "$1" ]; then
+	run_test $1
+else
+	for each in test_*.sh; do
+		run_test ${each}
+	done
 
-print_summary
+	print_summary
+fi
 
 cleanup

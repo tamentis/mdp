@@ -8,10 +8,10 @@ run_mdp edit > /dev/null &
 
 sleep 0.1
 
-OUTPUT=`run_mdp_capture_stderr edit`
+run_mdp edit
 
-if [ "$OUTPUT" = "mdp: locked (fake_gpg_home/.mdp/lock)" ]; then
-	echo pass
-fi
+echo "mdp: locked (fake_gpg_home/.mdp/lock)" > test.expected
+
+assert_stderr
 
 wait

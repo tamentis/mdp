@@ -6,8 +6,7 @@ run_mdp edit
 
 run_mdp get -r pass > test.stdout
 
-if diff test.stdout - << EOF
+cat > test.expected << EOF
 EOF
-then
-	echo pass
-fi
+
+assert_stdout
