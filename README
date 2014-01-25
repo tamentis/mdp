@@ -32,25 +32,23 @@ COMMANDS
            Edit your password file (decrypt and re-encrypt after the fact).
            This command creates a temporary file in mdp's configuration folder
            and starts your editor on it, the file is fed to GnuPG when your
-           editor quits and if the file has changed in any way. The -k option
-           is used in case you haven't specified a default key in your
-           configuration file.
+           editor quits and if the file has changed in any way.
 
            The only option for edit command is:
 
            -k key_id
-                   GnuPG key id (8 alpha-numeric characters). This could be
-                   used to specify your GnuPG key id in case you did not
-                   define it in your configuration file.
+                   The argument is a GnuPG key id (8 alpha-numeric
+                   characters), it could be used to specify your key id in
+                   case you did not define it in your configuration file.
 
      mdp generate [-h] [-p profile] [-n count] [-l length]
 
            Generate password(s) according to your configuration or command-
            line arguments.  Without profile specified, this will use the top-
-           level definitions for the character set, password length and count.
-           All the flags specified on the command-line will override the ones
-           specified in the profile or top-level definitions. You can call
-           this command with the 'gen' shortcut.
+           level definitions for the character set, password length and count
+           (see CONFIGURATION below). All the flags specified on the command-
+           line will override the ones specified in the profile or top-level
+           definitions. You can call this command with the 'gen' shortcut.
 
            The options for the generate command are:
 
@@ -114,34 +112,12 @@ QUICK WALKTHROUGH
                    mdp get twitter
 
 CONFIGURATION
-     This is a summary of all the available configuration variables and
-     options:
+     This is an alphabetically sorted summary of all the available
+     configuration variables and options:
 
-     set gpg_path path
-             GnuPG absolute path (default: /usr/bin/gpg)
-
-     set gpg_key_id key_id
-             GnuPG key id (default: none). If no key is selected, mdp will
-             expect you to specify it on the command-line (-k). If no key was
-             specified either way, mdp will abort. That this parameter is
-             ignored during the decryption phase, GnuPG picks the key based on
-             the content of the password file.
-
-     set gpg_timeout seconds
-             Number of seconds to give GnuPG for password and pipe
-             interaction. The default value is 10 seconds. This will kill
-             GnuPG if forgotten at the password prompt or if it cannot
-             communicate with the parent process.
-
-     set editor path
-             Path to your favorite editor. You typically don't need to set
-             this variable since mdp will use your default editor (as defined
-             by $EDITOR). If mdp detects vim, it will attempt to add the -n
-             parameter to avoid vim from creating swap files.
-
-     set password_count count
-             Define how many password to show with using 'mdp gen'. Default: 4
-             or as defined in the profile.
+     set backup no
+             Define whether we keep a backup every time we edit the password
+             file. Default: yes.
 
      set character_count count
              Define how many characters to randomize per password. Default: 16
@@ -153,9 +129,36 @@ CONFIGURATION
              The following aliases are supported as shortcuts: $LOWERCASE,
              $UPPERCASE, $ALPHA, $DIGITS, $ALPHANUMERIC, $SYMBOLS, $PRINTABLE.
 
-     set backup no
-             Define whether we keep a backup every time we edit the password
-             file. Default: yes.
+     set editor path
+             Path to your favorite editor. You typically don't need to set
+             this variable since mdp will use your default editor (as defined
+             by $EDITOR). If mdp detects vim, it will attempt to add the -n
+             parameter to avoid vim from creating swap files.
+
+     set gpg_key_id key_id
+             GnuPG key id (default: none). If no key is selected, mdp will
+             expect you to specify it on the command-line (-k). If no key was
+             specified either way, mdp will abort. That this parameter is
+             ignored during the decryption phase, GnuPG picks the key based on
+             the content of the password file.
+
+     set gpg_path path
+             GnuPG absolute path (default: /usr/bin/gpg)
+
+     set gpg_timeout seconds
+             Number of seconds to give GnuPG for password and pipe
+             interaction. The default value is 10 seconds. This will kill
+             GnuPG if forgotten at the password prompt or if it cannot
+             communicate with the parent process.
+
+     set password_count count
+             Define how many password to show with using 'mdp gen'. Default: 4
+             or as defined in the profile.
+
+     set password_file filepath
+             Sets the location of the password file. mdp will refuse to use a
+             password file with permissions other than 0600. The default value
+             for this is ~/.mdp/passwords.
 
      set timeout seconds
              This variable define how long the pager will display your
