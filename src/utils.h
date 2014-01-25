@@ -17,6 +17,7 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
+char		*xdirname(const char *);
 char		*get_home(void);
 char		*join_path(const char *, const char *);
 int		 file_exists(const char *);

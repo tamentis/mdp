@@ -90,6 +90,8 @@ cleanup() {
 	rm -f test_gpg.batch
 	rm -f test.stdout
 	rm -f test.stderr
+	rm -f test.diff
+	rm -f test.expected
 
 	# Fake mdp home.
 	rm -f fake_gpg_home/.mdp/passwords
@@ -111,6 +113,13 @@ cleanup() {
 # Makes sure an output from stdout matches expectations.
 assert_stdout() {
 	if diff test.stdout test.expected > test.diff; then
+		echo pass
+	fi
+}
+
+# Makes sure an output from stderr matches expectations.
+assert_stderr() {
+	if diff test.stderr test.expected > test.diff; then
 		echo pass
 	fi
 }

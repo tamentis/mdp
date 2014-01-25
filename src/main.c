@@ -125,6 +125,7 @@ read_config(void)
 {
 	char *home;
 	char *config_dir;
+	char *password_dir;
 
 	home = get_home();
 
@@ -141,6 +142,8 @@ read_config(void)
 	config_read();
 	config_set_defaults(config_dir);
 
+	password_dir = xdirname(cfg_password_file);
+	config_ensure_directory(password_dir);
 	config_check_password_file(cfg_password_file);
 
 	xfree(config_dir);

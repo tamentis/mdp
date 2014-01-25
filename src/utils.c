@@ -18,9 +18,10 @@
 
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <err.h>
-#include <stdlib.h>
+#include <libgen.h>
 #include <stdbool.h>
 #include <signal.h>
 #include <string.h>
@@ -28,9 +29,32 @@
 #include "debug.h"
 #include "str.h"
 #include "utils.h"
+#include "xmalloc.h"
 
 
 pid_t watcher_pid = 0;
+
+
+/*
+ * Portable dirname wrapper.
+ *
+ * Since some dirname implementation happen to alter the provided path, we
+ * create a copy of the source path. We also create a copy of the result since
+ * depending on the implementation that coult be located in internal storage.
+ */
+char *
+xdirname(const char *path)
+{
+	char *path_copy = strdup(path);
+	char *dir = dirname(path_copy);
+	if (dir == NULL) {
+		err(EXIT_FAILURE, "xdirname");
+	}
+
+	xfree(path_copy);
+
+	return strdup(dir);
+}
 
 
 /*
