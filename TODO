@@ -1,14 +1,9 @@
 BUGS/IMMEDIATE
 
 SHORT TERM DEV
- - '-a' will add a password, taking a number of strings in order of argv and
-   using a format defined in the config file, this avoids opening the passwords
-   on screen in the first place. document it.
-
- - specify an alternate password file (e.g. work VS home). That should be done
-   by adding a passwords_filename parameter in the config file. The user can
-   then specify an alternate configuration file and create an alias in its
-   shell. E.g. alias workmdp='mdp -c ~/.mdp/config.work'.
+ - The 'add' command will add a password, taking a number of strings in order
+   of argv and using a format defined in the config file, this avoids opening
+   the passwords on screen in the first place. document it.
 
 MEDIUM TERM DEV
  - Use the same technique as rm -P (BSD) instead of just unlink.
