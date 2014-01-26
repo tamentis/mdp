@@ -144,13 +144,62 @@ cmd_parse_core(int argc, char **argv)
 
 
 /*
+ * 'mdp add' - usage and parse
+ */
+
+static void
+cmd_usage_add(void)
+{
+	printf("usage: mdp a[dd] [-h] [-p profile] [-n count] [-l length]\n");
+	printf("                 [-k key_id] [keywords ...]\n");
+}
+
+void
+cmd_parse_add(int argc, char **argv)
+{
+	int opt;
+
+	while ((opt = getopt(argc, argv, "hp:l:n:k:")) != -1) {
+		switch (opt) {
+		case 'h':
+			cmd_usage_add();
+			exit(EXIT_FAILURE);
+		case 'p':
+			cmd_profile_name = strdup(optarg);
+			break;
+		case 'l':
+			cmd_character_count = strtoumax(optarg, NULL, 10);
+			break;
+		case 'n':
+			cmd_password_count = strtoumax(optarg, NULL, 10);
+			break;
+		case 'k':
+			cmd_gpg_key_id = strdup(optarg);
+			break;
+		default:
+			exit(EXIT_FAILURE);
+			break;
+		}
+	}
+
+	argc -= optind;
+	argv += optind;
+
+	if (argc > 0) {
+		cmd_usage_add();
+		exit(EXIT_FAILURE);
+	}
+}
+
+
+/*
  * mdp edit usage and parse
  */
 
 static void
 cmd_usage_edit(void)
 {
-	printf("usage: mdp [core_opts ...] edit [-h] [-k key_id]\n");
+	printf("usage: mdp edit [-h] [-k key_id]\n");
 }
 
 
@@ -190,8 +239,8 @@ cmd_parse_edit(int argc, char **argv)
 static void
 cmd_usage_generate(void)
 {
-	printf("usage: mdp [core_opts ...] gen[erate] [-h] [-p profile] "
-			"[-n count] [-l length]\n");
+	printf("usage: mdp gen[erate] [-h] [-p profile] [-n count] "
+			"[-l length]\n");
 }
 
 void
@@ -236,7 +285,7 @@ cmd_parse_generate(int argc, char **argv)
 static void
 cmd_usage_get(void)
 {
-	printf("usage: mdp [core_opts ...] get [-hrE] keyword ...\n");
+	printf("usage: mdp get [-hrE] keyword ...\n");
 }
 
 void
@@ -280,7 +329,7 @@ cmd_parse_get(int argc, char **argv)
 static void
 cmd_usage_prompt(void)
 {
-	printf("usage: mdp [core_opts ...] prompt [-h]\n");
+	printf("usage: mdp prompt [-h]\n");
 }
 
 void
