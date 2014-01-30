@@ -36,7 +36,6 @@
 #include "gpg.h"
 #include "keywords.h"
 #include "mdp.h"
-#include "profile.h"
 #include "results.h"
 #include "str.h"
 #include "xmalloc.h"
@@ -275,18 +274,6 @@ load_results_gpg()
 	}
 
 	return length;
-}
-
-
-/*
- * Populate the results array with passwords generated according to the
- * provided profile.
- */
-void
-load_results_profile(struct profile *profile)
-{
-	// wchar_t *
-	// profile_generate_password(struct profile *profile)
 }
 
 

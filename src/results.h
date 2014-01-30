@@ -40,7 +40,6 @@ unsigned int	 get_max_length(void);
 void		 filter_results(void);
 int		 load_results_gpg(void);
 int		 load_results_fp(FILE *);
-void		 load_results_profile(struct profile *);
 void		 print_results(void);
 
 #endif /* _RESULTS_H_ */

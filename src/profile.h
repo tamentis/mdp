@@ -42,6 +42,7 @@ extern struct profile_list profiles;
 struct profile	*profile_new(const char *);
 struct profile	*profile_get_from_name(const char *);
 void		 profile_fprint_passwords(FILE *, struct profile *);
+void		 profile_passwords_to_results(struct profile *, wchar_t *);
 wchar_t		*profile_generate_password(struct profile *);
 void		 profile_register(struct profile *);
 

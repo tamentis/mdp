@@ -45,6 +45,28 @@ join(const char sep, const char *base, const char *suffix)
 
 
 /*
+ * Join two wide-char strings with the given separator.
+ */
+wchar_t *
+wcsjoin(const wchar_t sep, const wchar_t *base, const wchar_t *suffix)
+{
+	wchar_t *s;
+	int i;
+
+	i = wcslen(base) + wcslen(suffix) + 1;
+
+	s = calloc(i + 1, sizeof(wchar_t));
+
+	i = swprintf(s, i + 1, L"%ls%lc%ls", base, sep, suffix);
+	if (i < 0) {
+		err(EXIT_FAILURE, "wsprintf failed");
+	}
+
+	return s;
+}
+
+
+/*
  * Strip trailing whitespace.
  */
 void
