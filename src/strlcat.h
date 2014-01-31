@@ -14,11 +14,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _STRLCPY_H_
-#define _STRLCPY_H_
+#ifndef _STRLCAT_H_
+#define _STRLCAT_H_
 
-#ifdef HAS_NO_STRLCPY
-size_t	 strlcpy(char *, const char *, size_t);
-#endif /* HAS_NO_STRLCPY */
+#ifdef HAS_NO_STRLCAT
+size_t		 strlcat(char *, const char *, size_t);
+#endif /* HAS_NO_STRLCAT */
 
-#endif /* _STRLCPY_H_ */
+#endif /* _STRLCAT_H_ */

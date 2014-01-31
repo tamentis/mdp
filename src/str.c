@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "str.h"
+#include "strlcat.h"
 #include "xmalloc.h"
 
 

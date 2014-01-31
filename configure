@@ -192,6 +192,21 @@ fi
 rm -f fake_strlcpy*
 
 
+# Check if we have strlcat
+echo -n "strlcat... "
+cat <<EOF > fake_strlcat.c
+main() { char buf[32]; buf[0] = '\0'; strlcat(buf, "woot", sizeof(buf)); }
+EOF
+if ! ${CC} fake_strlcat.c -o /dev/null 1>/dev/null 2>/dev/null; then
+	echo "not found (we'll use ours)"
+	X_OBJECTS="$X_OBJECTS strlcat.o"
+	CFLAGS="$CFLAGS -DHAS_NO_STRLCAT"
+else
+	echo yes
+fi
+rm -f fake_strlcat*
+
+
 # Check if we have wcslcpy
 echo -n "wcslcpy... "
 cat <<EOF > fake_wcslcpy.c
