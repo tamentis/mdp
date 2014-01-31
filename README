@@ -27,6 +27,17 @@ DESCRIPTION
              example 'mdp edit -h'.
 
 COMMANDS
+     mdp add [-h] [-k keyid] [-p profile] [-n count] [-l length] keywords ...
+
+           Add passwords to the end of your password file. This command is
+           essentially a blend of 'generate' and 'edit' with the added advan-
+           tage that it avoids copy-paste. All the arguments to this command
+           will be used as prefix in your password file (with the exception of
+           the options starting with '-').
+
+           The options for the 'add' command are the same as the 'edit' and
+           the 'generate' command.
+
      mdp edit [-h] [-k keyid]
 
            Edit your password file (decrypt and re-encrypt after the fact).
@@ -34,7 +45,7 @@ COMMANDS
            and starts your editor on it, the file is fed to GnuPG when your
            editor quits and if the file has changed in any way.
 
-           The only option for edit command is:
+           The only option for the 'edit' command is:
 
            -k key_id
                    The argument is a GnuPG key id (8 alpha-numeric

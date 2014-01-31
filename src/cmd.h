@@ -26,6 +26,7 @@ enum command {
 	COMMAND_QUERY
 };
 
+extern wchar_t		*cmd_add_prefix;
 extern char		*cmd_config_path;
 extern char		*cmd_gpg_key_id;
 extern char		*cmd_profile_name;

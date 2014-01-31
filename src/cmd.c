@@ -24,11 +24,14 @@
 #include <err.h>
 
 #include "array.h"
-#include "keywords.h"
-#include "debug.h"
 #include "cmd.h"
+#include "debug.h"
+#include "keywords.h"
+#include "str.h"
+#include "xmalloc.h"
 
 
+wchar_t		*cmd_add_prefix = NULL;
 char		*cmd_config_path = NULL;
 char		*cmd_gpg_key_id = NULL;
 char		*cmd_profile_name = NULL;
@@ -186,8 +189,9 @@ cmd_parse_add(int argc, char **argv)
 	argv += optind;
 
 	if (argc > 0) {
-		cmd_usage_add();
-		exit(EXIT_FAILURE);
+		char *s = join_list(' ', argc, argv);
+		cmd_add_prefix = mbs_duplicate_as_wcs(s);
+		xfree(s);
 	}
 }
 

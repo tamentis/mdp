@@ -1,6 +1,7 @@
 0.7.0 Bertrand Janin <b@janin.com> (..........)
 
 	* Switch to git-style command line with a command (e.g. mdp edit).
+	* New 'add' command to avoid copy-pastes on creation.
 	* Passwords can now use character sets containing unicode.
 	* Add aliases to common character_sets (e.g. $ALPHANUMERIC, $DIGITS).
 	* Allow user to set password_file in the config.

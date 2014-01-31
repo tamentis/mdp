@@ -81,7 +81,7 @@ mdp_add(void)
 	setup_signals_and_atexit();
 
 	load_results_gpg();
-	profile_passwords_to_results(profile, L"temp made-up prefix");
+	profile_passwords_to_results(profile, cmd_add_prefix);
 	edit_results();
 }
 
