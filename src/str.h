@@ -17,7 +17,9 @@
 #ifndef _STR_H_
 #define _STR_H_
 
-char 		*join(const char, const char *, const char *);
+char 		*join_list(char, int, char **);
+char 		*join(char, const char *, const char *);
+wchar_t		*wcsjoin(wchar_t, const wchar_t *, const wchar_t *);
 void		 wcs_strip_trailing_whitespaces(wchar_t *);
 void		 strip_trailing_whitespaces(char *);
 const wchar_t 	*wcscasestr(const wchar_t *, const wchar_t *);

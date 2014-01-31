@@ -18,6 +18,7 @@
 #include <string.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <err.h>
 #include <signal.h>
 #include <inttypes.h>
@@ -41,6 +42,50 @@
 #include "xmalloc.h"
 
 
+/*
+ * Since we set the lock, configure atexit and signals right away in case
+ * something fail before a normal exit.
+ */
+static void
+setup_signals_and_atexit(void)
+{
+	if (atexit(atexit_cleanup) != 0) {
+		err(EXIT_FAILURE, "get_results atexit");
+	}
+
+	signal(SIGINT, sig_cleanup);
+	signal(SIGKILL, sig_cleanup);
+}
+
+
+static void
+mdp_add(void)
+{
+	struct profile *profile = NULL;
+
+	debug("mdp_add()");
+
+	if (cmd_profile_name == NULL) {
+		profile = profile_new("default");
+	} else {
+		profile = profile_get_from_name(cmd_profile_name);
+	}
+
+	if (profile == NULL) {
+		errx(EXIT_FAILURE, "unknown profile");
+	}
+
+	gpg_check();
+	lock_set();
+
+	setup_signals_and_atexit();
+
+	load_results_gpg();
+	profile_passwords_to_results(profile, cmd_add_prefix);
+	edit_results();
+}
+
+
 static void
 mdp_edit(void)
 {
@@ -49,16 +94,7 @@ mdp_edit(void)
 	gpg_check();
 	lock_set();
 
-	/*
-	 * Since we set the lock, configure atexit and signals right away in
-	 * case something fail before a normal exit.
-	 */
-	if (atexit(atexit_cleanup) != 0) {
-		err(EXIT_FAILURE, "get_results atexit");
-	}
-
-	signal(SIGINT, sig_cleanup);
-	signal(SIGKILL, sig_cleanup);
+	setup_signals_and_atexit();
 
 	load_results_gpg();
 	edit_results();
@@ -181,6 +217,9 @@ main(int argc, char **argv)
 	} else if (command_match(argv[0], "generate", 3)) {
 		cmd_parse_generate(argc, argv);
 		mdp_generate();
+	} else if (command_match(argv[0], "add", 1)) {
+		cmd_parse_add(argc, argv);
+		mdp_add();
 	} else if (command_match(argv[0], "get", 3)) {
 		cmd_parse_get(argc, argv);
 		mdp_get();

@@ -150,6 +150,11 @@ assert_file_exists() {
 	fi
 }
 
+# Dump the password file to stdout.
+dump_password_file() {
+	$GPG -q -d fake_gpg_home/.mdp/passwords
+}
+
 print_summary() {
 	echo
 	echo "passed: $test_count_passed ($test_count_failed failed)"

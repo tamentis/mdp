@@ -53,7 +53,28 @@ place this flag after the command name. For example 'mdp edit -h'.
 .El
 .\" COMMANDS
 .Sh COMMANDS
+.\" mdp add
+.Nm mdp
+.Bk -words
+.Ar add
+.Op Fl h
+.Op Fl k Ar keyid
+.Op Fl p Ar profile
+.Op Fl n Ar count
+.Op Fl l Ar length
+.Ar keywords ...
+.Ek
+.Bd -ragged -offset indent
+Add passwords to the end of your password file. This command is essentially a
+blend of 'generate' and 'edit' with the added advantage that it avoids
+copy-paste. All the arguments to this command will be used as prefix in your
+password file (with the exception of the options starting with '-').
+.Pp
+The options for the 'add' command are the same as the 'edit' and the 'generate'
+command.
+.Ed
 .\" mdp edit
+.Pp
 .Nm mdp
 .Bk -words
 .Ar edit
@@ -66,7 +87,7 @@ creates a temporary file in mdp's configuration folder and starts your editor
 on it, the file is fed to GnuPG when your editor quits and if the file has
 changed in any way.
 .Pp
-The only option for edit command is:
+The only option for the 'edit' command is:
 .Bl -tag -width Ds
 .It Fl k Ar key_id
 The argument is a GnuPG key id (8 alpha-numeric characters), it could be used

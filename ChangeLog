@@ -1,13 +1,14 @@
 0.7.0 Bertrand Janin <b@janin.com> (..........)
 
 	* Switch to git-style command line with a command (e.g. mdp edit).
+	* New 'add' command to avoid copy-pastes on creation.
 	* Passwords can now use character sets containing unicode.
 	* Add aliases to common character_sets (e.g. $ALPHANUMERIC, $DIGITS).
 	* Allow user to set password_file in the config.
 	* Detect vim and add '-n' to avoid swap file creation.
 	* Define a comment character for the password file (#).
 	* Renamed query-mode to the prompt command.
-	* Fix a bug where mdp would not detect a wrong directory permission.
+	* Fix a bug where mdp would not detect a bad directory permission.
 
 0.6.0 Bertrand Janin <b@janin.com> (2014-01-10)
 

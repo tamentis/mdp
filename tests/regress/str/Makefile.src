@@ -2,17 +2,8 @@ PROG=stub
 SRC=../../../src
 OBJECTS= \
 	stub.o \
-	${SRC}/cmd.o \
-	${SRC}/config.o \
 	${SRC}/debug.o \
-	${SRC}/gpg.o \
-	${SRC}/keywords.o \
-	${SRC}/lock.o \
-	${SRC}/profile.o \
-	${SRC}/randpass.o \
-	${SRC}/results.o \
 	${SRC}/str.o \
-	${SRC}/strdelim.o \
 	${SRC}/utils.o \
 	${SRC}/xmalloc.o
 

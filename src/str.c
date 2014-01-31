@@ -17,7 +17,6 @@
 #include <wchar.h>
 #include <wctype.h>
 #include <err.h>
-#include <stdarg.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -31,14 +30,73 @@
 
 
 /*
+ * Join an arbitrary number of strings together using a separator.
+ */
+char *
+join_list(char sep, int count, char **tokens)
+{
+	char *c;
+	char *o = NULL;
+	size_t len = 0;
+	int separator_count;
+	bool first = true;
+	char csep[] = { sep, '\0' };
+	int i;
+
+	/* Allocate at least for each separator and the NUL byte. */
+	separator_count = count - 1;
+	len += separator_count + 1;
+
+	for (i = 0; i < count; i++) {
+		c = tokens[i];
+		len += strlen(c);
+		if (first) {
+			first = false;
+			o = xmalloc(len * sizeof(char));
+			o[0] = '\0';
+		} else {
+			len += sizeof(char);
+			o = xrealloc(o, len, sizeof(char));
+			strlcat(o, csep, len);
+		}
+		strlcat(o, c, len);
+	}
+
+	return o;
+}
+
+
+/*
  * Join two strings with the given separator.
  */
 char *
-join(const char sep, const char *base, const char *suffix)
+join(char sep, const char *base, const char *suffix)
 {
 	char *s;
 
 	xasprintf(&s, "%s%c%s", base, sep, suffix);
+
+	return s;
+}
+
+
+/*
+ * Join two wide-char strings with the given separator.
+ */
+wchar_t *
+wcsjoin(wchar_t sep, const wchar_t *base, const wchar_t *suffix)
+{
+	wchar_t *s;
+	int i;
+
+	i = wcslen(base) + wcslen(suffix) + 1;
+
+	s = calloc(i + 1, sizeof(wchar_t));
+
+	i = swprintf(s, i + 1, L"%ls%lc%ls", base, sep, suffix);
+	if (i < 0) {
+		err(EXIT_FAILURE, "wsprintf failed");
+	}
 
 	return s;
 }

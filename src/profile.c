@@ -34,6 +34,8 @@
 #include "config.h"
 #include "profile.h"
 #include "randpass.h"
+#include "results.h"
+#include "str.h"
 #include "xmalloc.h"
 
 
@@ -88,19 +90,52 @@ profile_get_from_name(const char *name)
 
 
 /*
+ * A password count specified on the command line takes precedence.
+ */
+static unsigned int
+profile_get_password_count(struct profile *profile)
+{
+	if (cmd_password_count > 0) {
+		return cmd_password_count;
+	} else {
+		return profile->password_count;
+	}
+}
+
+
+/*
+ * Call a function for each password generated.
+ */
+void
+profile_passwords_to_results(struct profile *profile, wchar_t *prefix)
+{
+	unsigned int password_count = profile_get_password_count(profile);
+	wchar_t *line;
+
+	for (unsigned int i = 0; i < password_count; i++) {
+		wchar_t *password;
+		password = profile_generate_password(profile);
+
+		if (prefix == NULL) {
+			line = password;
+		} else {
+			line = wcsjoin(L'\t', prefix, password);
+		}
+		xfree(password);
+
+		ARRAY_ADD(&results, result_new(line));
+		xfree(line);
+	}
+}
+
+
+/*
  * Print a set of passwords from the profile definition.
  */
 void
 profile_fprint_passwords(FILE *stream, struct profile *profile)
 {
-	unsigned int password_count;
-
-	/* A password count specified on the command line takes precedence. */
-	if (cmd_password_count > 0) {
-		password_count = cmd_password_count;
-	} else {
-		password_count = profile->password_count;
-	}
+	unsigned int password_count = profile_get_password_count(profile);
 
 	for (unsigned int i = 0; i < password_count; i++) {
 		wchar_t *password;

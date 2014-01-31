@@ -23,6 +23,7 @@
 #include <err.h>
 #include <libgen.h>
 #include <stdbool.h>
+#include <stdarg.h>
 #include <signal.h>
 #include <string.h>
 

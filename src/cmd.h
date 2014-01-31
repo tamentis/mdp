@@ -26,6 +26,7 @@ enum command {
 	COMMAND_QUERY
 };
 
+extern wchar_t		*cmd_add_prefix;
 extern char		*cmd_config_path;
 extern char		*cmd_gpg_key_id;
 extern char		*cmd_profile_name;
@@ -36,6 +37,7 @@ extern unsigned int	 cmd_password_count;
 
 enum command		 cmd_parse(int, char **);
 int			 cmd_parse_core(int, char **);
+void			 cmd_parse_add(int, char **);
 void			 cmd_parse_edit(int, char **);
 void			 cmd_parse_generate(int, char **);
 void			 cmd_parse_get(int, char **);

@@ -28,6 +28,7 @@
 #include "debug.h"
 #include "editor.h"
 #include "gpg.h"
+#include "profile.h"
 #include "results.h"
 #include "str.h"
 #include "utils.h"
