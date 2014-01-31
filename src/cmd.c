@@ -334,7 +334,7 @@ cmd_parse_get(int argc, char **argv)
 static void
 cmd_usage_prompt(void)
 {
-	printf("usage: mdp prompt [-h]\n");
+	printf("usage: mdp prompt [-hE]\n");
 }
 
 void
@@ -342,11 +342,14 @@ cmd_parse_prompt(int argc, char **argv)
 {
 	int opt;
 
-	while ((opt = getopt(argc, argv, "h")) != -1) {
+	while ((opt = getopt(argc, argv, "hE")) != -1) {
 		switch (opt) {
 		case 'h':
 			cmd_usage_get();
 			exit(EXIT_FAILURE);
+		case 'E':
+			cmd_regex = true;
+			break;
 		default:
 			exit(EXIT_FAILURE);
 			break;

@@ -154,14 +154,15 @@ terminal buffer/history.
 .Nm mdp
 .Bk -words
 .Ar prompt
-.Op Fl h
+.Op Fl hE
 .Ek
 .Bd -ragged -offset indent -compact
 Enter a full-screen pager/search prompt system. This command is useful to avoid
 passing the search keywords in the command line (and allowing all users in the
 system to see what passwords you are requesting). Secondly, since this uses the
 default pager, you can run multiple search using the '/' key. Any other key will
-exit the pager, it will also exit after a configurable timer.
+exit the pager, it will also exit after a configurable timer. The search
+keywords will be interpreted as regexes if you pass the -E option (see mdp get).
 .Ed
 .\" QUICK WALKTHROUGH
 .Sh QUICK WALKTHROUGH

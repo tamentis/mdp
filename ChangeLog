@@ -6,6 +6,7 @@
 	* Add aliases to common character_sets (e.g. $ALPHANUMERIC, $DIGITS).
 	* Allow user to set password_file in the config.
 	* Detect vim and add '-n' to avoid swap file creation.
+	* Add '-E' option to 'prompt' mode (regex).
 	* Define a comment character for the password file (#).
 	* Renamed query-mode to the prompt command.
 	* Fix a bug where mdp would not detect a bad directory permission.

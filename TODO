@@ -1,5 +1,4 @@
 BUGS/IMMEDIATE
- - Add '-E' option to 'prompt' mode.
 
 SHORT TERM DEV
  - The 'add' command will add a password, taking a number of strings in order
