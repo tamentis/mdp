@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <stdbool.h>
+#include <stdarg.h>
 #include <err.h>
 
 #include "array.h"

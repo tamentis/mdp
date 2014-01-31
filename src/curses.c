@@ -24,6 +24,7 @@
 #include <err.h>
 #include <signal.h>
 #include <curses.h>
+#include <stdarg.h>
 
 #include "config.h"
 #include "curses.h"
