@@ -32,12 +32,20 @@ EOF
 sleep 2
 }
 
+# Simulate an editor doing nothing from the given results.
+nop() {
+	true
+}
+
 case $mode in
 	alt)
 		alt
 		;;
 	slow)
 		slow
+		;;
+	nop)
+		nop
 		;;
 	*)
 		simple

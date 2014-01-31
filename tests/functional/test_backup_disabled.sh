@@ -1,10 +1,10 @@
 # Test the lack backup file if disabled.
 
-rm -f "$passfile.bak"
-
 # Create a default password file.
 use_config simple
 run_mdp edit
+
+rm -f "$passfile.bak"
 
 # Edit the password file.
 use_config alt
