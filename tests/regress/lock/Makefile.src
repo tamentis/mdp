@@ -19,6 +19,9 @@ arc4random.o:
 strlcpy.o:
 	cp ${SRC}/strlcpy.o .
 
+strlcat.o:
+	cp ${SRC}/strlcat.o .
+
 wcslcpy.o:
 	cp ${SRC}/wcslcpy.o .
 
