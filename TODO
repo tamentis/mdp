@@ -1,5 +1,7 @@
 BUGS/IMMEDIATE
- nothing
+ - document the ways 'mdp add' can be used:
+    - generate one at a time.
+    - create a bunch of passwords and always use edit.
 
 SHORT TERM DEV
  nothing
@@ -7,7 +9,17 @@ SHORT TERM DEV
 MEDIUM TERM DEV
  - Use the same technique as rm -P (BSD) instead of just unlink.
 
- - Document the security measures.
+ - Document the security measures:
+    - GnuPG for encryption
+    - full screen pager with a timeout
+    - enforcing permissions on password file
+    - enforcing permissions on the parent directory
+    - overwrite the plain file after edit with random
+    - 'prompt' command to avoid passing keywords on the command line
+    - 'add' command to add files without copy-paste
+    - timeouts on most fork'd programs.
+    - random password generator with custom profiles (mdp gen).
+    - process name override (tbd)
 
  - Automatically kill the editor if it lingers. Better lose one passwords than
    leak all of them.
