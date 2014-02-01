@@ -14,7 +14,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/param.h>
+#include <sys/mount.h>
+#include <sys/fcntl.h>
 
 #include <unistd.h>
 #include <stdio.h>
@@ -183,4 +187,84 @@ set_pid_timeout(pid_t pid, int timeout)
 
 	debug("set_pid_timeout parent pid=%d, watcher pid=%d", getpid(),
 			watcher_pid);
+}
+
+
+int
+pass(int fd, off_t len, char *buf, size_t bsize)
+{
+	size_t wlen;
+
+	for (; len > 0; len -= wlen) {
+		wlen = len < bsize ? len : bsize;
+		arc4random_buf(buf, wlen);
+		if (write(fd, buf, wlen) != wlen)
+			return (0);
+	}
+	return (1);
+}
+
+
+/*
+ * rm_overwrite --
+ *	Overwrite the file with varying bit patterns.
+ *
+ * XXX
+ * This is a cheap way to *really* delete files.  Note that only regular
+ * files are deleted, directories (and therefore names) will remain.
+ * Also, this assumes a fixed-block file system (like FFS, or a V7 or a
+ * System V file system).  In a logging file system, you'll have to have
+ * kernel support.
+ * Returns 1 for success.
+ */
+int
+rm_overwrite(char *file, struct stat *sbp)
+{
+	struct stat sb, sb2;
+	struct statfs fsb;
+	size_t bsize;
+	int fd;
+	char *buf = NULL;
+
+	fd = -1;
+	if (sbp == NULL) {
+		if (lstat(file, &sb))
+			goto err;
+		sbp = &sb;
+	}
+	if (!S_ISREG(sbp->st_mode))
+		return (1);
+	if (sbp->st_nlink > 1) {
+		warnx("%s (inode %u): not overwritten due to multiple links",
+		    file, sbp->st_ino);
+		return (0);
+	}
+	if ((fd = open(file, O_WRONLY|O_NONBLOCK|O_NOFOLLOW, 0)) == -1)
+		goto err;
+	if (fstat(fd, &sb2))
+		goto err;
+	if (sb2.st_dev != sbp->st_dev || sb2.st_ino != sbp->st_ino ||
+	    !S_ISREG(sb2.st_mode)) {
+		errno = EPERM;
+		goto err;
+	}
+	if (fstatfs(fd, &fsb) == -1)
+		goto err;
+	bsize = MAX(fsb.f_iosize, 1024U);
+	if ((buf = malloc(bsize)) == NULL)
+		err(1, "%s: malloc", file);
+
+	if (!pass(fd, sbp->st_size, buf, bsize))
+		goto err;
+	if (fsync(fd))
+		goto err;
+	close(fd);
+	free(buf);
+	return (1);
+
+err:
+	warn("%s", file);
+	close(fd);
+	free(buf);
+	return (0);
 }
