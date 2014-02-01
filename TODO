@@ -1,9 +1,8 @@
 BUGS/IMMEDIATE
+ nothing
 
 SHORT TERM DEV
- - The 'add' command will add a password, taking a number of strings in order
-   of argv and using a format defined in the config file, this avoids opening
-   the passwords on screen in the first place. document it.
+ nothing
 
 MEDIUM TERM DEV
  - Use the same technique as rm -P (BSD) instead of just unlink.
