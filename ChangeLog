@@ -1,3 +1,7 @@
+0.8.0 Bertrand Janin <b@janin.com> (..........)
+
+	* Add overwrite of the temporary plain-text file (shred-style).
+
 0.7.0 Bertrand Janin <b@janin.com> (..........)
 
 	* Switch to git-style command line with a command (e.g. mdp edit).
