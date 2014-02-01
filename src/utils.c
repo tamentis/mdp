@@ -260,8 +260,8 @@ rm_overwrite(char *file, struct stat *sbp)
 		struct statfs fsb;
 		if (fstatfs(fd, &fsb) == -1)
 			goto err;
+		bsize = MAX(fsb.f_iosize, 1024U);
 	}
-	bsize = MAX(fsb.f_iosize, 1024U);
 #endif
 
 	if ((buf = malloc(bsize)) == NULL)
