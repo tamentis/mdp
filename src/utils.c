@@ -16,7 +16,6 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/statfs.h>
 #include <sys/param.h>
 #include <sys/mount.h>
 #include <sys/fcntl.h>
@@ -222,7 +221,6 @@ int
 rm_overwrite(char *file, struct stat *sbp)
 {
 	struct stat sb, sb2;
-	struct statfs fsb;
 	size_t bsize;
 	int fd;
 	char *buf = NULL;
@@ -249,8 +247,7 @@ rm_overwrite(char *file, struct stat *sbp)
 		errno = EPERM;
 		goto err;
 	}
-	if (fstatfs(fd, &fsb) == -1)
-		goto err;
+
 	/*
 	 * This practical structure member allows us to find the most optimal
 	 * IO buffer size on BSDs and OS X. Linux however does not have this
@@ -259,8 +256,14 @@ rm_overwrite(char *file, struct stat *sbp)
 #ifdef HAS_NO_F_IOSIZE
 	bsize = 1024U;
 #else
+	{
+		struct statfs fsb;
+		if (fstatfs(fd, &fsb) == -1)
+			goto err;
+	}
 	bsize = MAX(fsb.f_iosize, 1024U);
 #endif
+
 	if ((buf = malloc(bsize)) == NULL)
 		err(1, "%s: malloc", file);
 

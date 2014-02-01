@@ -210,8 +210,8 @@ rm -f fake_strlcat*
 # Check if we have statfs.f_iosize
 echo -n "statfs.f_iosize... "
 cat <<EOF > fake_statfs_f_iosize.c
-#include <sys/stat.h>
-#include <sys/statfs.h>
+#include <sys/param.h>
+#include <sys/mount.h>
 main() { struct statfs fsb; int x = fsb.f_iosize; }
 EOF
 if ! ${CC} fake_statfs_f_iosize.c -o /dev/null 1>/dev/null 2>/dev/null; then
