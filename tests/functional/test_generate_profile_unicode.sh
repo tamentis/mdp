@@ -8,10 +8,20 @@ profile digits
   set password_count 4
 EOF
 
-run_mdp generate -p digits \
-	| iconv -f utf-8 -t ascii --unicode-subst=. \
-	| sed 's/[a-z]/./g' \
-	> test.stdout
+# Technically this is more a problem with the version of iconv than the
+# operating system, but iconv --version is not exactly consistent so that will
+# have to do for now.
+if [ `uname` = "Linux" ]; then
+	run_mdp generate -p digits \
+		| iconv -f utf-8 -t ascii//TRANSLIT \
+		| sed 's/[a-z?]/./g' \
+		> test.stdout
+else
+	run_mdp generate -p digits \
+		| iconv -f utf-8 -t ascii --unicode-subst=. \
+		| sed 's/[a-z]/./g' \
+		> test.stdout
+fi
 
 cat > test.expected << EOF
 ..........
