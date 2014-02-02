@@ -50,15 +50,20 @@ pid_t watcher_pid = 0;
 char *
 xdirname(const char *path)
 {
-	char *path_copy = strdup(path);
-	char *dir = dirname(path_copy);
+	char *path_copy, *dir, *s;
+
+	path_copy = strdup(path);
+
+	dir = dirname(path_copy);
 	if (dir == NULL) {
 		err(EXIT_FAILURE, "xdirname");
 	}
 
+	s = strdup(dir);
+
 	xfree(path_copy);
 
-	return strdup(dir);
+	return s;
 }
 
 
