@@ -8,6 +8,6 @@ stop_ts=`date +%s`
 
 delta=$((stop_ts - start_ts))
 
-if [ $delta -ge 2 ] || [ $delta -le 4 ]; then
+if [ $delta -ge 2 ] && [ $delta -le 4 ]; then
 	echo pass
 fi
