@@ -27,8 +27,8 @@
 #include <stdarg.h>
 
 #include "config.h"
-#include "curses.h"
 #include "str.h"
+#include "ui-curses.h"
 #include "xmalloc.h"
 
 
