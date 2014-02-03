@@ -32,12 +32,12 @@
 #include <inttypes.h>
 
 #include "array.h"
-#include "mdp.h"
-#include "curses.h"
-#include "pager.h"
 #include "config.h"
-#include "results.h"
 #include "keywords.h"
+#include "mdp.h"
+#include "pager.h"
+#include "results.h"
+#include "ui-curses.h"
 
 
 #define RESULTS_MAX_LEN 128

@@ -2,7 +2,6 @@ OBJECTS= \
 	cleanup.o \
 	cmd.o \
 	config.o \
-	curses.o \
 	debug.o \
 	editor.o \
 	gpg.o \
@@ -15,6 +14,7 @@ OBJECTS= \
 	results.o \
 	str.o \
 	strdelim.o \
+	ui-curses.o \
 	utils.o \
 	xmalloc.o
 

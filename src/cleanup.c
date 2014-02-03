@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -22,11 +22,11 @@
 #include <err.h>
 #include <curses.h>
 
-#include "debug.h"
-#include "curses.h"
-#include "lock.h"
 #include "cleanup.h"
+#include "debug.h"
 #include "editor.h"
+#include "lock.h"
+#include "ui-curses.h"
 
 
 void

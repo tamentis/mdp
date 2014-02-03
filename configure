@@ -121,6 +121,10 @@ Linux|Unix|POSIX)
 	MANDEST="share/man"
 	;;
 
+NetBSD)
+	CURSESLIB="-lcurses"
+	;;
+
 *BSD)
 	;;
 
