@@ -18,7 +18,7 @@ EOF
 # have to do for now. TODO: write something to detect the implementation of
 # iconv.
 case `uname` in
-OpenBSD|Darwin|*)
+OpenBSD|Darwin)
 	# Older GNU iconv.
 	alias utf_to_ascii="iconv -f utf-8 -t ascii --unicode-subst='?'"
 	;;
