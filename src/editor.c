@@ -46,9 +46,11 @@ char *editor_tmp_path = NULL;
  * file.
  */
 void
-editor_init(const char *home)
+editor_init(const char *config_dir)
 {
 	char *s;
+
+	editor_tmp_path = join_path(config_dir, "tmp_edit.XXXXXXXX");
 
 	s = getenv("EDITOR");
 	if (s == NULL) {
@@ -56,8 +58,6 @@ editor_init(const char *home)
 	}
 
 	cfg_editor = strdup(s);
-
-	editor_tmp_path = join_path(home, ".mdp/tmp_edit.XXXXXXXX");
 }
 
 
