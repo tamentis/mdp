@@ -10,6 +10,7 @@
 	* Define a comment character for the password file (#).
 	* Renamed query-mode to the prompt command.
 	* Fix a bug where mdp would not detect a bad directory permission.
+	* Fix crash when the user does not have an EDITOR env var.
 
 0.6.0 Bertrand Janin <b@janin.com> (2014-01-10)
 
