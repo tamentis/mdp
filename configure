@@ -13,12 +13,6 @@ MDP_VERSION="0.7.0"
 alias echo=/bin/echo
 
 
-# Sad default, you can try CC=clang ./configure too
-if [ -z "$CC" ]; then
-	export CC=gcc
-fi
-
-
 # generate_makefile() - Generate the main Makefile
 # $1 - source makefile, appended at the end
 generate_makefile() {
@@ -165,13 +159,23 @@ rm -f fake_makefile*
 
 
 # Check if we have a working cc
+if [ -z "$CC" ]; then
+	if cc -v 1>/dev/null 2>/dev/null; then
+		export CC=cc
+	elif gcc -v 1>/dev/null 2>/dev/null; then
+		export CC=gcc
+	else
+		stuff_not_found "No C compiler found (try to install clang or gcc)"
+	fi
+fi
+
 echo -n "cc... "
 cat <<EOF > fake_cc.c
 #include <stdio.h>
 main() { printf("woot\n"); }
 EOF
 if ! ${CC} fake_cc.c -o /dev/null 1>/dev/null 2>/dev/null; then
-	stuff_not_found "No C compiler found (try to install gcc or clang)"
+	stuff_not_found "Detected compiler (${CC}) is not working"
 fi
 echo ${CC}
 rm -f fake_cc*
