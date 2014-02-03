@@ -6,7 +6,10 @@ set -e
 . ./_bootstrap.sh
 
 if [ -n "$1" ]; then
-	run_test $1
+	while [ -n "$1" ]; do
+		run_test $1
+		shift
+	done
 else
 	for each in test_*.sh; do
 		run_test ${each}
