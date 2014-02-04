@@ -18,7 +18,7 @@
 .Os
 .Sh NAME
 .Nm mdp
-.Nd minimalist password safe
+.Nd password safe
 .\" SYNOPSIS
 .Sh SYNOPSIS
 .Nm mdp
@@ -31,15 +31,9 @@
 .\" DESCRIPTION
 .Sh DESCRIPTION
 .Nm
-wraps GnuPG, your favorite editor, a password generator and a custom temporary
-full-screen pager to let you manage your password library.
-.Pp
-Naturally edit your password file (create, sort, delete) with your editor, rely
-on GnuPG to do the right thing for crypto and let
-.Nm
-do the rest. In order to avoid passwords to linger on your screen, results
-from your queries are displayed through a custom pager that gets cleared after
-a customizable timeout (default 10 seconds).
+is a wrapper around GnuPG and a text editor, it includes a full-screen
+pager with timeout (avoids passwords from lingering on screen) and a
+password generator with profiles.
 .Pp
 The following options are global and apply to all the subsequent commands:
 .Bl -tag -width Ds
@@ -48,8 +42,8 @@ Use an alternate configuration file.
 .It Fl V
 Print version.
 .It Fl h
-Print general usage. If you wish to get the usage for a specic command, you can
-place this flag after the command name. For example 'mdp edit -h'.
+Print general usage. For command-specific usage, this flag should
+be placed after the command name, for example 'mdp edit -h'.
 .El
 .\" COMMANDS
 .Sh COMMANDS
@@ -65,9 +59,9 @@ place this flag after the command name. For example 'mdp edit -h'.
 .Ar keywords ...
 .Ek
 .Bd -ragged -offset indent
-Add passwords to the end of your password file. This command is essentially a
-blend of 'generate' and 'edit' with the added advantage that it avoids
-copy-paste. All the arguments to this command will be used as prefix in your
+Add passwords to the end of the password file. This command is an alias
+for 'generate' and 'edit' with the added advantage of not requiring any
+copy-paste. All the arguments to this command will be used as prefix in the
 password file (with the exception of the options starting with '-').
 .Pp
 The options for the 'add' command are the same as the 'edit' and the 'generate'
@@ -82,17 +76,16 @@ command.
 .Op Fl k Ar keyid
 .Ek
 .Bd -ragged -offset indent
-Edit your password file (decrypt and re-encrypt after the fact). This command
-creates a temporary file in mdp's configuration folder and starts your editor
-on it, the file is fed to GnuPG when your editor quits and if the file has
-changed in any way.
+Edit the password file (decrypt and re-encrypt after the fact).
+This command creates a temporary file in the same folder as the
+password file and starts the editor, if the file is changed, the
+file is fed to GnuPG when the editor exits.
 .Pp
 The only option for the 'edit' command is:
 .Bl -tag -width Ds
 .It Fl k Ar key_id
 The argument is a GnuPG key id (8 alpha-numeric characters), it could be used
-to specify your key id in case you did not define it in your configuration
-file.
+to specify a key id in case it wasn't defined in the configuration file.
 .El
 .Ed
 .\" mdp generate
@@ -106,22 +99,25 @@ file.
 .Op Fl l Ar length
 .Ek
 .Bd -ragged -offset indent
-Generate password(s) according to your configuration or command-line arguments.
-Without profile specified, this will use the top-level definitions for the character
-set, password length and count (see CONFIGURATION below). All the flags
-specified on the command-line will override the ones specified in the profile
-or top-level definitions. You can call this command with the 'gen' shortcut.
+Generate password(s) according to the configuration or command-line
+arguments.  Without profile specified, mdp uses the top-level
+definitions for the character set, password length and count (see
+CONFIGURATION below). All the flags specified on the command-line
+will override the ones specified in the profile or top-level
+definitions. This command can be shortened as 'gen'.
 .Pp
 The options for the generate command are:
 .Bl -tag -width Ds
 .It Fl p Ar profile
-Choose which profile to use among the ones defined in your configuration file.
+Choose which profile to use among the ones defined in the configuration
+file.
 .It Fl n Ar count
-Number of passwords to generate. This command line parameter will override all
-other values of password_count (global and profile).
-.It Fl l Ar length
-Length of generated passwords (in bytes). This command line parameter will
+Number of passwords to generate. This command line parameter will
 override all other values of password_count (global and profile).
+.It Fl l Ar length
+Length of generated passwords (in characters). This command line
+parameter will override all other values of password_count (global
+and profile).
 .El
 .Ed
 .\" mdp get
@@ -133,20 +129,20 @@ override all other values of password_count (global and profile).
 .Ar keywords ...
 .Ek
 .Bd -ragged -offset indent
-Return all the password entries matching the given keywords or regexs (if using
--E). By default, this command will open a full-screen pager to display the result
-of your search, the time the pager remains on screen is adjustable in the
-configuration file. Note that you can hit '/' on the result screen to start
-another search.
+Return all the password entries matching the given keywords or
+regexes (if using -E). By default, this command will open a full-screen
+pager to display search results, the time the pager remains on
+screen is adjustable in the configuration file. Note that hitting
+'/' on the result screen will start another search.
 .Pp
 The options for the get command are:
 .Bl -tag -width Ds
 .It Fl E
 Use regexes instead of plain text matches (e.g. ^.mail).
 .It Fl r
-Displays the result without pager, plain terminal dump to stdout. This option
-should be used sparingly since the password will linger on screen and in your
-terminal buffer/history.
+Displays the result without pager, plain terminal dump to stdout.
+This option should be used sparingly since the password will linger
+on screen and in terminal history/buffer.
 .El
 .Ed
 .\" mdp prompt
@@ -157,19 +153,21 @@ terminal buffer/history.
 .Op Fl hE
 .Ek
 .Bd -ragged -offset indent -compact
-Enter a full-screen pager/search prompt system. This command is useful to avoid
-passing the search keywords in the command line (and allowing all users in the
-system to see what passwords you are requesting). Secondly, since this uses the
-default pager, you can run multiple search using the '/' key. Any other key will
-exit the pager, it will also exit after a configurable timer. The search
-keywords will be interpreted as regexes if you pass the -E option (see mdp get).
+Starts a full-screen pager with search prompt. This command is
+useful to avoid passing the search keywords in the command line
+(and allowing all users in the system to see what passwords are
+requested). Since it uses the default pager, multiple searches can
+be conducted using the '/' key. Any other key will exit the pager,
+it will also exit after a configurable timer. The search keywords
+will be interpreted as regexes if the -E option is used (see mdp
+get).
 .Ed
 .\" QUICK WALKTHROUGH
 .Sh QUICK WALKTHROUGH
 .Bl -tag -width Ds
-.It 1. Create your GPG key if you don't already have one.
-.It 2. Setup your EDITOR variable if it's not already done.
-.It 3. Create a .mdp/config file from the example (at least gpg_key_id).
+.It 1. Create a GPG key if needed.
+.It 2. Create a .mdp/config file from the example (with at least gpg_key_id).
+.It 3. Either define EDITOR env variable or add editor to the config file.
 .It 4. Pick a password from randomly generated ones, for example:
 .Bd -literal -offset indent
 mdp gen
@@ -178,7 +176,7 @@ mdp gen
 .Bd -literal -offset indent
 twitter sponge@bob.com yHVHPnqXyx6qUuki
 .Ed
-.It 6. Now when you need your Twitter password, you can just type:
+.It 6. This is how the Twitter password is requested:
 .Bd -literal -offset indent
 mdp get twitter
 .Ed
@@ -197,28 +195,27 @@ Define how many characters to randomize per password. Default: 16 or as defined
 in the profile.
 .Pp
 .It Ic set character_set Ar characters
-Define all the characters to use in your passwords. Default: all alphanumeric
+Define all the characters to use in passwords. Default: all alphanumeric
 (upper and lower case) or as define in the profile. The following aliases are
 supported as shortcuts: $LOWERCASE, $UPPERCASE, $ALPHA, $DIGITS, $ALPHANUMERIC,
 $SYMBOLS, $PRINTABLE.
 .Pp
 .It Ic set editor Ar path
-Path to your favorite editor. You typically don't need to set this variable
-since
+Command to start the text editor. It's considered better practice
+to define an $EDITOR environment variable. If
 .Nm
-will use your default editor (as defined by $EDITOR). If
-.Nm
-detects vim, it will attempt to add the -n parameter to avoid vim from creating
-swap files.
+detects vim, it will attempt to add the -n parameter to avoid vim
+from creating swap files.
 .Pp
 .It Ic set gpg_key_id Ar key_id
 GnuPG key id (default: none). If no key is selected,
 .Nm
-will expect you to specify it on the command-line (-k). If no key was specified
-either way,
+will expect a key specified on the command-line (-k). If no key was
+specified either way,
 .Nm
-will abort. That this parameter is ignored during the decryption phase, GnuPG
-picks the key based on the content of the password file.
+will abort. That this parameter is ignored during the decryption
+phase, GnuPG picks the key based on the content of the password
+file.
 .Pp
 .It Xo Ic set gpg_path Ar path
 .Xc
@@ -239,8 +236,8 @@ with permissions other than 0600. The default value for this is
 ~/.mdp/passwords.
 .Pp
 .It Ic set timeout Ar seconds
-This variable define how long the pager will display your passwords. The
-default value is 10 seconds.
+This variable define how long the pager will display search results.
+The default value is 10 seconds.
 .Nm
 will use your default editor (as defined by $EDITOR). 
 .It Ic profile Ar name
@@ -250,31 +247,34 @@ valid options.
 .El
 .\" PASSWORD FILE
 .Sh PASSWORD FILE
-Your password file should be structured to make it convenient for mdp to query
-it. Since mdp queries work similarly to grep, you want to use a line-based
-system with one line per password. The simplest line format is:
+The password file should be structured to allow mdp to query it,
+since it works similarly to grep, one line per password is ideal.
+For example:
 .Bd -literal -offset indent
 nameOfServiceA   password1
 anotherService   password2
 .Ed
 .Pp
-You can separate your name/notes and your password with spaces, tabs or any
-character except new-line (\\n). This format allows you to find the services by name, e.g.:
+The keywords used for search and the passwords can be separated
+with anything except for new-line (\\n), allowing services to be
+found by names:
 .Bd -literal -offset indent
 mdp serviceA
 .Ed
 .Pp
-You can use any number of namespacing hints if you need more structure, the
-following allow you to fetch all your email passwords at once:
+Any convenient number of namespacing hints can be used to add
+hierarchy, the following allows all 'email' passwords to be returned
+at once:
 .Bd -literal -offset indent
 email     serviceA       password1
 email     serviceB       password2
 irc       serviceC       password3
 .Ed
 .Pp
-You can use '#' in the beginning of a line to avoid mdp from displaying a
-password. This is particularly useful to add meta data to your password file or
-keep track of previous password without adding noise to the output. For example:
+Using '#' in the beginning of a line will avoid mdp from displaying
+this line during searches.  This is particularly useful to add meta
+data to the password file or keep track of previous password without
+adding noise to the output. For example:
 .Bd -literal -offset indent
 # email services
 serviceA     password1
@@ -285,16 +285,16 @@ serviceC     password3
 .Ed
 .Pp
 Empty lines are naturally ignored.
-.Sh FAQ
+.Sh SECURITY
 .Bl -tag -width Ds
 .It Why not 'shred' the temporary file?
-If you are afraid of getting your disk stolen, encrypt it. Shred has limited
+If the disk can be stollen, it should be encrypted. Shred has limited
 use on most journaled file-systems.
-.It What if I don't trust 'root'?
-You're screwed, you can't trust this machine with your valuable information.
+.It What if 'root' cannot be trusted?
+The machine cannot be trusted if you cannot trust its administrator.
 .It What if my server is virtualized?
-Same answer as above, if you don't trust your hosting provider or IaaS, good
-luck.
+Same answer as above, if the hosting provider or Iaas cannot be
+trusted, the machine in their facility cannot be trusted.
 .El
 .\" ENVIRONMENT
 .Sh ENVIRONMENT
@@ -309,17 +309,16 @@ configuration does not alter it.
 .It Pa $HOME/.mdp/config
 Main configuration file for
 .Nm .
-You need at least your gpg_key_id in there, without it you will be required to
-specify it every single time.
 .It Pa $HOME/.mdp/passwords
 Encrypted list of passwords.
 .It Pa $HOME/.mdp/passwords.bak
-This file is a copy of your password file, before the last edit. You can revert
-to the last file by simply replacing your password file. Creation of this file
-can be disabled (see "set backup").
+This file is a copy of the password file, before the last edit. The
+current password file can be replaced by the backup to discard the
+last changes. Setting 'set backup false' in the configuration file
+disables the creation of the backup file.
 .It Pa $HOME/.mdp/lock
-This file is created while you edit your password list to avoid two copies
-of mdp to run at the same time for the same user.
+This file is created while the password file is loaded in the editor.
+It avoids two copies of mdp to run at the same time for the same user.
 .El
 .\" SEE ALSO
 .Sh SEE ALSO
