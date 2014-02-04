@@ -80,7 +80,7 @@ cmd_usage_core_with_commands(void)
 	cmd_usage_core();
 	printf("\n");
 	printf("The mdp commands are:\n");
-	// printf("   add        Add a new random password at the end of your file.\n");
+	printf("   add        Add new random passwords at the end of your file.\n");
 	printf("   edit       Edit your passwords.\n");
 	printf("   generate   Generate random passwords.\n");
 	printf("   get        Get passwords by keywords or regexes.\n");
@@ -142,6 +142,11 @@ cmd_parse_core(int argc, char **argv)
 	/* Reset optind for other parsers to work properly. */
 	command_index = optind;
 	optind = 1;
+
+	/* There were global parameters given but no command. */
+	if (command_index >= argc) {
+		command_index = -1;
+	}
 
 	return command_index;
 }

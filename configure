@@ -29,7 +29,7 @@ generate_makefile() {
 	if [ "$DEBUG_MODE" = "Y" ]; then
 		echo "CFLAGS+=-ggdb -O0"
 	else
-		echo "CFLAGS+=-Wall -O2"
+		echo "CFLAGS+=-O2"
 	fi
 
 	if [ -n "$X_OBJECTS" ]; then
@@ -47,17 +47,12 @@ generate_makefile() {
 
 # usage() - Spit out basic help
 usage() {
-	echo "usage: ./configure [-h] [-d] [platform]"
+	echo "usage: ./configure [-hd] [--prefix path] [platform]"
 	echo
-	echo "    -h   this help screen."
-	echo "    -d   configure for debug mode (-ggdb -O0)"
+	echo "    -h              this help screen."
+	echo "    -d              configure for debug mode (-ggdb -O0)"
+	echo "    --prefix path   base path for installation"
 	echo
-	echo "By default, this script will attempt to detect your OS and will guess the most"
-	echo "appropriate configuration. If it gets your system wrong, you can force it,"
-	echo "here is the list of ''supported'' platforms:"
-	echo
-	echo "    bsd     - OpenBSD, FreeBSD, OS X, Darwin, ..."
-	echo "    linux   - Linux"
 	exit
 }
 
@@ -115,31 +110,20 @@ echo $OS
 
 # Platform-specific configuration
 case $OS in
-Linux|Unix|POSIX)
-	X_CFLAGS="-D_GNU_SOURCE"
-	X_OBJECTS="arc4random.o"
-	MANDEST="share/man"
-	;;
+	Linux|Unix|POSIX)
+		X_CFLAGS="-D_GNU_SOURCE"
+		X_OBJECTS="arc4random.o"
+		MANDEST="share/man"
+		;;
 
-NetBSD)
-	CURSESLIB="-lcurses"
-	;;
+	NetBSD)
+		CURSESLIB="-lcurses"
+		;;
 
-*BSD)
-	;;
-
-Darwin)
-	MANDEST="share/man"
-	CURSESLIB="-lncurses"
-	;;
-
-*)
-	echo
-	echo "Sorry but '$OS' is currently unsupported, you can attemp 'bsd' or 'linux' as"
-	echo "target and cross your fingers. In order to do that you just need to give either"
-	echo "one as parameter to ./configure. You can get the official list of supported "
-	echo "platform with ./configure -l"
-	exit
+	Darwin)
+		MANDEST="share/man"
+		CURSESLIB="-lncurses"
+		;;
 esac
 
 
@@ -267,5 +251,4 @@ find . -name "Makefile.src" | while read input; do
 done
 
 echo
-echo "Configured for '$OS', run 'make' (or 'gmake') to compile."
-
+echo "Run 'make' (or 'gmake') to compile and 'sudo make install' to install."

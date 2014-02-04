@@ -99,9 +99,8 @@ init_curses()
 	/* curses screen init */
 	screen = initscr();
 	noecho();
-	// cbreak();
+	cbreak();
 	curs_set(0);
-	// nodelay(screen, TRUE);
 
 	timeout(cfg_timeout * 1000);
 }
