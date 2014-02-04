@@ -99,6 +99,7 @@ spawn_editor(char *path)
 {
 	char *cmd;
 	char *editor;
+	int ret;
 
 	if (editor_is_vim(cfg_editor)) {
 		editor = join(' ', cfg_editor, "-n");
@@ -110,8 +111,11 @@ spawn_editor(char *path)
 
 	debug("spawn_editor: %s", cmd);
 
-	if (system(cmd) != 0) {
+	ret = system(cmd);
+	if (ret == -1) {
 		err(EXIT_FAILURE, "unable to spawn editor: %s", cmd);
+	} else if (ret > 0) {
+		err(EXIT_FAILURE, "editor returned with an error: %s", cmd);
 	}
 
 	xfree(editor);
