@@ -1,18 +1,13 @@
 NAME
-     mdp - minimalist password safe
+     mdp - password safe
 
 SYNOPSIS
      mdp [-Vh] [-c config] command [arguments ...]
 
 DESCRIPTION
-     mdp wraps GnuPG, your favorite editor, a password generator and a custom
-     temporary full-screen pager to let you manage your password library.
-
-     Naturally edit your password file (create, sort, delete) with your
-     editor, rely on GnuPG to do the right thing for crypto and let mdp do the
-     rest. In order to avoid passwords to linger on your screen, results from
-     your queries are displayed through a custom pager that gets cleared after
-     a customizable timeout (default 10 seconds).
+     mdp is a wrapper around GnuPG and a text editor, it includes a full-
+     screen pager with timeout (avoids passwords from lingering on screen) and
+     a password generator with profiles.
 
      The following options are global and apply to all the subsequent
      commands:
@@ -22,49 +17,48 @@ DESCRIPTION
 
      -V      Print version.
 
-     -h      Print general usage. If you wish to get the usage for a specic
-             command, you can place this flag after the command name. For
-             example 'mdp edit -h'.
+     -h      Print general usage. For command-specific usage, this flag should
+             be placed after the command name, for example 'mdp edit -h'.
 
 COMMANDS
      mdp add [-h] [-k keyid] [-p profile] [-n count] [-l length] keywords ...
 
-           Add passwords to the end of your password file. This command is
-           essentially a blend of 'generate' and 'edit' with the added advan-
-           tage that it avoids copy-paste. All the arguments to this command
-           will be used as prefix in your password file (with the exception of
-           the options starting with '-').
+           Add passwords to the end of the password file. This command is an
+           alias for 'generate' and 'edit' with the added advantage of not
+           requiring any copy-paste. All the arguments to this command will be
+           used as prefix in the password file (with the exception of the
+           options starting with '-').
 
            The options for the 'add' command are the same as the 'edit' and
            the 'generate' command.
 
      mdp edit [-h] [-k keyid]
 
-           Edit your password file (decrypt and re-encrypt after the fact).
-           This command creates a temporary file in mdp's configuration folder
-           and starts your editor on it, the file is fed to GnuPG when your
-           editor quits and if the file has changed in any way.
+           Edit the password file (decrypt and re-encrypt after the fact).
+           This command creates a temporary file in the same folder as the
+           password file and starts the editor, if the file is changed, the
+           file is fed to GnuPG when the editor exits.
 
            The only option for the 'edit' command is:
 
            -k key_id
                    The argument is a GnuPG key id (8 alpha-numeric
-                   characters), it could be used to specify your key id in
-                   case you did not define it in your configuration file.
+                   characters), it could be used to specify a key id in case
+                   it wasn't defined in the configuration file.
 
      mdp generate [-h] [-p profile] [-n count] [-l length]
 
-           Generate password(s) according to your configuration or command-
-           line arguments.  Without profile specified, this will use the top-
-           level definitions for the character set, password length and count
-           (see CONFIGURATION below). All the flags specified on the command-
-           line will override the ones specified in the profile or top-level
-           definitions. You can call this command with the 'gen' shortcut.
+           Generate password(s) according to the configuration or command-line
+           arguments.  Without profile specified, mdp uses the top-level
+           definitions for the character set, password length and count (see
+           CONFIGURATION below). All the flags specified on the command-line
+           will override the ones specified in the profile or top-level
+           definitions. This command can be shortened as 'gen'.
 
            The options for the generate command are:
 
            -p profile
-                   Choose which profile to use among the ones defined in your
+                   Choose which profile to use among the ones defined in the
                    configuration file.
 
            -n count
@@ -73,42 +67,43 @@ COMMANDS
                    (global and profile).
 
            -l length
-                   Length of generated passwords (in bytes). This command line
-                   parameter will override all other values of password_count
-                   (global and profile).
+                   Length of generated passwords (in characters). This command
+                   line parameter will override all other values of
+                   password_count (global and profile).
 
      mdp get [-hEr] keywords ...
 
            Return all the password entries matching the given keywords or
-           regexs (if using -E). By default, this command will open a full-
-           screen pager to display the result of your search, the time the
-           pager remains on screen is adjustable in the configuration file.
-           Note that you can hit '/' on the result screen to start another
-           search.
+           regexes (if using -E). By default, this command will open a full-
+           screen pager to display search results, the time the pager remains
+           on screen is adjustable in the configuration file. Note that
+           hitting
 
            The options for the get command are:
 
            -E      Use regexes instead of plain text matches (e.g. ^.mail).
 
            -r      Displays the result without pager, plain terminal dump to
-                   stdout. This option should be used sparingly since the
-                   password will linger on screen and in your terminal
-                   buffer/history.
+                   stdout.  This option should be used sparingly since the
+                   password will linger on screen and in terminal
+                   history/buffer.
 
-     mdp prompt [-h]
-           Enter a full-screen pager/search prompt system. This command is
+     mdp prompt [-hE]
+           Starts a full-screen pager with search prompt. This command is
            useful to avoid passing the search keywords in the command line
-           (and allowing all users in the system to see what passwords you are
-           requesting). Secondly, since this uses the default pager, you can
-           run multiple search using the '/' key. Any other key will exit the
-           pager, it will also exit after a configurable timer.
+           (and allowing all users in the system to see what passwords are
+           requested). Since it uses the default pager, multiple searches can
+           be conducted using the '/' key. Any other key will exit the pager,
+           it will also exit after a configurable timer. The search keywords
+           will be interpreted as regexes if the -E option is used (see mdp
+           get).
 
 QUICK WALKTHROUGH
-     1. Create your GPG key if you don't already have one.
+     1. Create a GPG key if needed.
 
-     2. Setup your EDITOR variable if it's not already done.
+     2. Create a .mdp/config file from the example (with at least gpg_key_id).
 
-     3. Create a .mdp/config file from the example (at least gpg_key_id).
+     3. Either define EDITOR env variable or add editor to the config file.
 
      4. Pick a password from randomly generated ones, for example:
 
@@ -118,7 +113,7 @@ QUICK WALKTHROUGH
 
                    twitter sponge@bob.com yHVHPnqXyx6qUuki
 
-     6. Now when you need your Twitter password, you can just type:
+     6. This is how the Twitter password is requested:
 
                    mdp get twitter
 
@@ -135,20 +130,20 @@ CONFIGURATION
              or as defined in the profile.
 
      set character_set characters
-             Define all the characters to use in your passwords. Default: all
+             Define all the characters to use in passwords. Default: all
              alphanumeric (upper and lower case) or as define in the profile.
              The following aliases are supported as shortcuts: $LOWERCASE,
              $UPPERCASE, $ALPHA, $DIGITS, $ALPHANUMERIC, $SYMBOLS, $PRINTABLE.
 
      set editor path
-             Path to your favorite editor. You typically don't need to set
-             this variable since mdp will use your default editor (as defined
-             by $EDITOR). If mdp detects vim, it will attempt to add the -n
-             parameter to avoid vim from creating swap files.
+             Command to start the text editor. It's considered better practice
+             to define an $EDITOR environment variable. If mdp detects vim, it
+             will attempt to add the -n parameter to avoid vim from creating
+             swap files.
 
      set gpg_key_id key_id
              GnuPG key id (default: none). If no key is selected, mdp will
-             expect you to specify it on the command-line (-k). If no key was
+             expect a key specified on the command-line (-k). If no key was
              specified either way, mdp will abort. That this parameter is
              ignored during the decryption phase, GnuPG picks the key based on
              the content of the password file.
@@ -172,8 +167,8 @@ CONFIGURATION
              for this is ~/.mdp/passwords.
 
      set timeout seconds
-             This variable define how long the pager will display your
-             passwords. The default value is 10 seconds.  mdp will use your
+             This variable define how long the pager will display search
+             results.  The default value is 10 seconds.  mdp will use your
              default editor (as defined by $EDITOR).
 
      profile name
@@ -182,31 +177,29 @@ CONFIGURATION
              character_set are valid options.
 
 PASSWORD FILE
-     Your password file should be structured to make it convenient for mdp to
-     query it. Since mdp queries work similarly to grep, you want to use a
-     line-based system with one line per password. The simplest line format
-     is:
+     The password file should be structured to allow mdp to query it, since it
+     works similarly to grep, one line per password is ideal.  For example:
 
            nameOfServiceA   password1
            anotherService   password2
 
-     You can separate your name/notes and your password with spaces, tabs or
-     any character except new-line (\n). This format allows you to find the
-     services by name, e.g.:
+     The keywords used for search and the passwords can be separated with
+     anything except for new-line (\n), allowing services to be found by
+     names:
 
            mdp serviceA
 
-     You can use any number of namespacing hints if you need more structure,
-     the following allow you to fetch all your email passwords at once:
+     Any convenient number of namespacing hints can be used to add hierarchy,
+     the following allows all 'email' passwords to be returned at once:
 
            email     serviceA       password1
            email     serviceB       password2
            irc       serviceC       password3
 
-     You can use '#' in the beginning of a line to avoid mdp from displaying a
-     password. This is particularly useful to add meta data to your password
-     file or keep track of previous password without adding noise to the
-     output. For example:
+     Using '#' in the beginning of a line will avoid mdp from displaying this
+     line during searches.  This is particularly useful to add meta data to
+     the password file or keep track of previous password without adding noise
+     to the output. For example:
 
            # email services
            serviceA     password1
@@ -217,42 +210,40 @@ PASSWORD FILE
 
      Empty lines are naturally ignored.
 
-FAQ
+SECURITY
      Why not 'shred' the temporary file?
-             If you are afraid of getting your disk stolen, encrypt it. Shred
-             has limited use on most journaled file-systems.
+             If the disk can be stollen, it should be encrypted. Shred has
+             limited use on most journaled file-systems.
 
-     What if I don't trust 'root'?
-             You're screwed, you can't trust this machine with your valuable
-             information.
+     What if 'root' cannot be trusted?
+             The machine cannot be trusted if you cannot trust its
+             administrator.
 
      What if my server is virtualized?
-             Same answer as above, if you don't trust your hosting provider or
-             IaaS, good luck.
+             Same answer as above, if the hosting provider or Iaas cannot be
+             trusted, the machine in their facility cannot be trusted.
 
 ENVIRONMENT
      EDITOR           The content of this variable will be used as default
                       editor if the configuration does not alter it.
 
 FILES
-     $HOME/.mdp/config                 Main configuration file for mdp.  You
-                                       need at least your gpg_key_id in there,
-                                       without it you will be required to
-                                       specify it every single time.
+     $HOME/.mdp/config                 Main configuration file for mdp.
 
      $HOME/.mdp/passwords              Encrypted list of passwords.
 
-     $HOME/.mdp/passwords.bak          This file is a copy of your password
-                                       file, before the last edit. You can
-                                       revert to the last file by simply
-                                       replacing your password file. Creation
-                                       of this file can be disabled (see "set
-                                       backup").
+     $HOME/.mdp/passwords.bak          This file is a copy of the password
+                                       file, before the last edit. The current
+                                       password file can be replaced by the
+                                       backup to discard the last changes.
+                                       Setting 'set backup false' in the
+                                       configuration file disables the
+                                       creation of the backup file.
 
-     $HOME/.mdp/lock                   This file is created while you edit
-                                       your password list to avoid two copies
-                                       of mdp to run at the same time for the
-                                       same user.
+     $HOME/.mdp/lock                   This file is created while the password
+                                       file is loaded in the editor.  It
+                                       avoids two copies of mdp to run at the
+                                       same time for the same user.
 
 SEE ALSO
      gpg(1), sh(1)
