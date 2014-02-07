@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <err.h>
 #include <locale.h>
+#include <signal.h>
 
 #include "cleanup.h"
 #include "cmd.h"

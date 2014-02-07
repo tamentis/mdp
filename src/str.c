@@ -18,6 +18,7 @@
 #include <err.h>
 #include <stdlib.h>
 #include <string.h>
+#include <wctype.h>
 
 #include "str.h"
 #include "strlcat.h"
