@@ -88,6 +88,7 @@ generate_password_from_set(wchar_t *password_string, int length,
 		}
 	}
 
+	xfree(random_weight);
 	*str_pointer = '\0';
 
 	return 0;
