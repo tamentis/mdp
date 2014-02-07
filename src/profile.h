@@ -17,6 +17,7 @@
 #ifndef _PROFILE_H_
 #define _PROFILE_H_
 
+/* Default charsets */
 #define CHARSET_LOWERCASE	L"abcdefghijklmnopqrstuvwxyz"
 #define CHARSET_UPPERCASE	L"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define CHARSET_ALPHA		CHARSET_LOWERCASE CHARSET_UPPERCASE
@@ -28,6 +29,7 @@
 #define DEFAULT_CHARACTER_COUNT 16
 #define DEFAULT_PASSWORD_COUNT 4
 
+
 struct profile {
 	char *name;
 	unsigned int password_count;
@@ -35,9 +37,12 @@ struct profile {
 	wchar_t *character_set;
 };
 
+
 ARRAY_DECL(profile_list, struct profile *);
 
+
 extern struct profile_list profiles;
+
 
 struct profile	*profile_new(const char *);
 struct profile	*profile_get_from_name(const char *);

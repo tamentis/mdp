@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -20,6 +20,7 @@
 extern unsigned int	 window_width;
 extern unsigned int	 window_height;
 extern WINDOW		*screen;
+
 
 int		 waddwcs(WINDOW *, const wchar_t *);
 void		 shutdown_curses(void);

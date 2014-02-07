@@ -17,6 +17,6 @@
 #ifndef _STRDELIM_H_
 #define _STRDELIM_H_
 
-char		*strdelim(char **);
+char	*strdelim(char **);
 
 #endif /* _STRDELIM_H_ */

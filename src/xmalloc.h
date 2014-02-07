@@ -17,15 +17,15 @@
 #ifndef _XMALLOC_H_
 #define _XMALLOC_H_
 
-char 		*xstrdup(const char *);
-void 		*xcalloc(size_t, size_t);
-void 		*xmalloc(size_t);
-void 		*xrealloc(void *, size_t, size_t);
-void		 xfree(void *);
-int		 xasprintf(char **, const char *, ...);
-int		 xvasprintf(char **, const char *, va_list);
-int		 xsnprintf(char *, size_t, const char *, ...);
-int		 xvsnprintf(char *, size_t, const char *, va_list);
-char		*xprintf(const char *, ...);
+char	*xstrdup(const char *);
+void	*xcalloc(size_t, size_t);
+void	*xmalloc(size_t);
+void	*xrealloc(void *, size_t, size_t);
+void	 xfree(void *);
+int 	 xasprintf(char **, const char *, ...);
+int 	 xvasprintf(char **, const char *, va_list);
+int 	 xsnprintf(char *, size_t, const char *, ...);
+int 	 xvsnprintf(char *, size_t, const char *, va_list);
+char	*xprintf(const char *, ...);
 
 #endif /* _XMALLOC_H_ */
