@@ -15,16 +15,12 @@
  */
 
 #include <sys/ioctl.h>
-#include <sys/param.h>
 
 #include <termios.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <wchar.h>
 #include <err.h>
-#include <signal.h>
 #include <curses.h>
-#include <stdarg.h>
 
 #include "config.h"
 #include "str.h"

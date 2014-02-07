@@ -18,17 +18,13 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <err.h>
-#include <stdarg.h>
 #include <stdbool.h>
 #include <string.h>
-#include <inttypes.h>
 
-#include "array.h"
 #include "config.h"
 #include "debug.h"
 #include "editor.h"
 #include "gpg.h"
-#include "profile.h"
 #include "results.h"
 #include "str.h"
 #include "utils.h"

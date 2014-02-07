@@ -24,7 +24,6 @@
 #include <stdarg.h>
 #include <err.h>
 
-#include "array.h"
 #include "cmd.h"
 #include "debug.h"
 #include "keywords.h"

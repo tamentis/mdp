@@ -17,19 +17,10 @@
  * All the profile related variables and functions.
  */
 
-#include <sys/types.h>
-#include <sys/param.h>
-
-#include <stdarg.h>
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <inttypes.h>
-#include <stdbool.h>
 #include <err.h>
-#include <wchar.h>
 
-#include "array.h"
 #include "cmd.h"
 #include "config.h"
 #include "profile.h"

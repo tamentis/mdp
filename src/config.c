@@ -14,29 +14,18 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <sys/ioctl.h>
-#include <sys/param.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/wait.h>
 
-#include <stdarg.h>
-#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <limits.h>
 #include <errno.h>
 #include <err.h>
-#include <locale.h>
-#include <inttypes.h>
-#include <curses.h>
 #include <wchar.h>
+#include <stdbool.h>
 
-#include "array.h"
 #include "cmd.h"
 #include "config.h"
-#include "gpg.h"
 #include "lock.h"
 #include "mdp.h"
 #include "profile.h"
@@ -407,6 +396,10 @@ config_check_password_file(const char *path)
 }
 
 
+/*
+ * Look at all the global config and cmd that are expected to have a value post
+ * initialization and give them a sane default.
+ */
 void
 config_set_defaults(const char *config_dir)
 {

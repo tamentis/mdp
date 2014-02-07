@@ -17,6 +17,11 @@
 #ifndef _PROFILE_H_
 #define _PROFILE_H_
 
+#include <wchar.h>
+
+#include "array.h"
+
+
 /* Default charsets */
 #define CHARSET_LOWERCASE	L"abcdefghijklmnopqrstuvwxyz"
 #define CHARSET_UPPERCASE	L"ABCDEFGHIJKLMNOPQRSTUVWXYZ"

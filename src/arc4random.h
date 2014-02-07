@@ -19,6 +19,8 @@
 #ifndef _ARC4RANDOM_H_
 #define _ARC4RANDOM_H_
 
+#include <sys/types.h>
+
 void		 arc4random_stir(void);
 void		 arc4random_addrandom(u_char *, int);
 u_int32_t	 arc4random(void);

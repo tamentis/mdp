@@ -17,6 +17,14 @@
 #ifndef _RESULTS_H_
 #define _RESULTS_H_
 
+#include <wchar.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+#include "array.h"
+
+
 #define KEYWORD_LENGTH 50
 
 

@@ -14,23 +14,22 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <limits.h>
-
 #include <err.h>
-#include <errno.h>
-#include <wchar.h>
 #include <string.h>
-#include <stdarg.h>
 #include <stdint.h>
+#include <stdlib.h>
 
-#include "xmalloc.h"
 #include "array.h"
 #include "keywords.h"
+#include "xmalloc.h"
 
 
 struct kwlist keywords = ARRAY_INITIALIZER;
 
 
+/*
+ * Returns the count of keywords in the global array.
+ */
 unsigned int
 keywords_count()
 {
@@ -38,6 +37,9 @@ keywords_count()
 }
 
 
+/*
+ * Remove all the keywords from the global array.
+ */
 void
 keywords_clear()
 {
@@ -49,6 +51,9 @@ keywords_clear()
 }
 
 
+/*
+ * Extract keywords from a NULL-terminated list of strings.
+ */
 void
 keywords_load_from_argv(char **av)
 {
@@ -63,6 +68,9 @@ keywords_load_from_argv(char **av)
 }
 
 
+/*
+ * Extract keywords from a space-separated strings.
+ */
 void
 keywords_load_from_char(char *kw)
 {

@@ -17,6 +17,9 @@
 #ifndef _XMALLOC_H_
 #define _XMALLOC_H_
 
+#include <stdarg.h>
+
+
 char	*xstrdup(const char *);
 void	*xcalloc(size_t, size_t);
 void	*xmalloc(size_t);

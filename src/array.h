@@ -17,6 +17,9 @@
 #ifndef _ARRAY_H_
 #define _ARRAY_H_
 
+#include <limits.h>
+#include <stdarg.h>
+
 #define ARRAY_INITIALIZER { NULL, 0, 0 }
 
 #define ARRAY_DECL(n, c)						\

@@ -17,6 +17,8 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
+#include <stdbool.h>
+
 extern bool		 cfg_backup;
 unsigned int		 cfg_character_count;
 wchar_t			*cfg_character_set;

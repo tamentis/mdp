@@ -19,9 +19,6 @@
 
 #include <stdio.h>
 #include <err.h>
-#include <errno.h>
-#include <libgen.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>

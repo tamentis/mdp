@@ -17,27 +17,19 @@
  * This file contains all the tools to read and write gpg files.
  */
 
-#include <sys/param.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/wait.h>
 
-#include <signal.h>
 #include <stdio.h>
-#include <string.h>
 #include <unistd.h>
-#include <stdarg.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <wchar.h>
 #include <errno.h>
 #include <err.h>
 
 #include "config.h"
 #include "debug.h"
-#include "utils.h"
-#include "str.h"
 #include "gpg.h"
+#include "str.h"
+#include "utils.h"
 #include "xmalloc.h"
 
 

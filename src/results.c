@@ -17,21 +17,11 @@
  * This file contains all the tools to handle the result set.
  */
 
-#include <sys/types.h>
-#include <sys/param.h>
-
-#include <wchar.h>
 #include <stdlib.h>
-#include <stdarg.h>
 #include <err.h>
 #include <string.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdint.h>
 #include <regex.h>
-#include <stdbool.h>
 
-#include "array.h"
 #include "cmd.h"
 #include "gpg.h"
 #include "keywords.h"

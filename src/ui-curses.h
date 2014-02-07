@@ -17,6 +17,9 @@
 #ifndef _MDP_CURSES_H_
 #define _MDP_CURSES_H_
 
+#include <curses.h>
+#include <wchar.h>
+
 extern unsigned int	 window_width;
 extern unsigned int	 window_height;
 extern WINDOW		*screen;

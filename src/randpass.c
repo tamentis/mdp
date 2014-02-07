@@ -20,15 +20,6 @@
  *     Adel I. Mirzazhanov. All rights reserved
  */
 
-#include <sys/types.h>
-
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <pwd.h>
-#include <unistd.h>
 #include <wchar.h>
 
 #include "arc4random.h"
