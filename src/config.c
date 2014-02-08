@@ -117,6 +117,10 @@ set_variable(char *name, char *value, int linenum)
 			conf_err("invalid value for character_set");
 		}
 		cfg_character_set = config_resolve_character_set(value);
+		if (cfg_character_set == NULL) {
+			err(EXIT_FAILURE, "unable to load global "
+					"character_set (wrong locale?)");
+		}
 
 	/* set editor <string> */
 	} else if (strcmp(name, "editor") == 0) {
@@ -222,6 +226,11 @@ set_profile_variable(struct profile *profile, char *name, char *value,
 			conf_err("invalid value for character_set");
 		}
 		profile->character_set = config_resolve_character_set(value);
+		if (profile->character_set == NULL) {
+			err(EXIT_FAILURE, "unable to load global "
+					"character_set for profile '%s' "
+					"(wrong locale?)", profile->name);
+		}
 
 	/* set password_count <unsigned integer> */
 	} else if (strcmp(name, "password_count") == 0) {

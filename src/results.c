@@ -56,8 +56,12 @@ result_new(const wchar_t *value)
 	new->visible = true;
 	new->wcs_value = wcsdup(value);
 	new->mbs_value = wcs_duplicate_as_mbs(value);
+	if (new->mbs_value == NULL) {
+		return NULL;
+	}
 	new->wcs_len = wcslen(value);
 	new->mbs_len = strlen(new->mbs_value);
+
 
 	return new;
 }
@@ -207,6 +211,7 @@ load_results_fp(FILE *fp)
 	unsigned int line_count = 0;
 	static wchar_t wline[MAX_LINE_SIZE];
 	static char line[MAX_LINE_SIZE];
+	struct result *result;
 
 	/* Global variables used to check if the result set changed. */
 	result_sum = 0;
@@ -231,7 +236,12 @@ load_results_fp(FILE *fp)
 		mbstowcs(wline, line, sizeof(line));
 		wcs_strip_trailing_whitespaces(wline);
 
-		ARRAY_ADD(&results, result_new(wline));
+		result = result_new(wline);
+		if (result == NULL) {
+			errx(EXIT_FAILURE, "unable to read line %d with the "
+					"current locale.", line_count);
+		}
+		ARRAY_ADD(&results, result);
 	}
 
 	return ARRAY_LENGTH(&results);

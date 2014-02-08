@@ -70,6 +70,9 @@ waddwcs(WINDOW *win, const wchar_t *str)
 	char *mbs;
 
 	mbs = wcs_duplicate_as_mbs(str);
+	if (mbs == NULL) {
+		err(EXIT_FAILURE, "waddwcs:wcs_duplicate_as_mbs");
+	}
 	ret = waddstr(win, mbs);
 	xfree(mbs);
 
