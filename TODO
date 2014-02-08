@@ -2,13 +2,15 @@ BUGS/IMMEDIATE
  - document the ways 'mdp add' can be used:
     - generate one at a time.
     - create a bunch of passwords and always use edit.
+ - document how to switch to a new GPG key.
+ - document locale issues and how to recover from them.
+
 
 SHORT TERM DEV
- nothing
-
-MEDIUM TERM DEV
  - Use the same technique as rm -P (BSD) instead of just unlink.
 
+
+MEDIUM TERM DEV
  - Document the security measures:
     - GnuPG for encryption
     - full screen pager with a timeout
@@ -36,6 +38,7 @@ MEDIUM TERM DEV
  - Allow to enter syllable sets instead of character sets, e.g.:
 
      set syllable_set = ac-set-po-tru-ka-ret-1-2-3-4-5-6-7-8-9-0
+
 
 LONG TERM DEV (MAYBE)
  - Rewrite the process name to avoid other users to know what keywords you are
