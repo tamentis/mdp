@@ -1,4 +1,4 @@
-0.7.0 Bertrand Janin <b@janin.com> (..........)
+0.7.0 Bertrand Janin <b@janin.com> (2014-02-07)
 
 	* Switch to git-style command line with a command (e.g. mdp edit).
 	* New 'add' command to avoid copy-pastes on creation.

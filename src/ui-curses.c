@@ -21,6 +21,7 @@
 #include <unistd.h>
 #include <err.h>
 #include <curses.h>
+#include <signal.h>
 
 #include "config.h"
 #include "str.h"
