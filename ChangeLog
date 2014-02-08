@@ -1,4 +1,4 @@
-0.7.1 Bertrand Janin <b@janin.com> (2014-02-07)
+0.7.1 Bertrand Janin <b@janin.com> (2014-02-08)
 
 	* Make charset convertion errors a little easier to spot.
 	* Warn if the current locale is not supported by the system.
