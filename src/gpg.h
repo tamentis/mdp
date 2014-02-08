@@ -17,6 +17,8 @@
 #ifndef _GPG_H_
 #define _GPG_H_
 
+#include <stdio.h>
+
 FILE 		*gpg_open(void);
 int		 gpg_close(FILE *);
 void		 gpg_encrypt(const char *);

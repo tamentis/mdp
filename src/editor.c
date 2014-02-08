@@ -18,17 +18,13 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <err.h>
-#include <stdarg.h>
 #include <stdbool.h>
 #include <string.h>
-#include <inttypes.h>
 
-#include "array.h"
 #include "config.h"
 #include "debug.h"
 #include "editor.h"
 #include "gpg.h"
-#include "profile.h"
 #include "results.h"
 #include "str.h"
 #include "utils.h"
@@ -99,6 +95,7 @@ spawn_editor(char *path)
 {
 	char *cmd;
 	char *editor;
+	int ret;
 
 	if (editor_is_vim(cfg_editor)) {
 		editor = join(' ', cfg_editor, "-n");
@@ -110,8 +107,11 @@ spawn_editor(char *path)
 
 	debug("spawn_editor: %s", cmd);
 
-	if (system(cmd) != 0) {
+	ret = system(cmd);
+	if (ret == -1) {
 		err(EXIT_FAILURE, "unable to spawn editor: %s", cmd);
+	} else if (ret > 0) {
+		err(EXIT_FAILURE, "editor returned with an error: %s", cmd);
 	}
 
 	xfree(editor);

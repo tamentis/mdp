@@ -17,7 +17,16 @@
 #ifndef _RESULTS_H_
 #define _RESULTS_H_
 
+#include <wchar.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+#include "array.h"
+
+
 #define KEYWORD_LENGTH 50
+
 
 struct result {
 	bool visible;
@@ -27,11 +36,13 @@ struct result {
 	size_t mbs_len;
 };
 
+ARRAY_DECL(wlist, struct result *);
+
+
 extern struct wlist results;
 extern uint32_t result_sum;
 extern uint32_t result_size;
 
-ARRAY_DECL(wlist, struct result *);
 
 struct result	*result_new(const wchar_t *);
 void		 result_kill(struct result *);

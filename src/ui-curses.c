@@ -15,16 +15,13 @@
  */
 
 #include <sys/ioctl.h>
-#include <sys/param.h>
 
 #include <termios.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <wchar.h>
 #include <err.h>
-#include <signal.h>
 #include <curses.h>
-#include <stdarg.h>
+#include <signal.h>
 
 #include "config.h"
 #include "str.h"
@@ -74,6 +71,9 @@ waddwcs(WINDOW *win, const wchar_t *str)
 	char *mbs;
 
 	mbs = wcs_duplicate_as_mbs(str);
+	if (mbs == NULL) {
+		err(EXIT_FAILURE, "waddwcs:wcs_duplicate_as_mbs");
+	}
 	ret = waddstr(win, mbs);
 	xfree(mbs);
 

@@ -18,7 +18,7 @@
 #define _WCSLCPY_H_
 
 #ifdef HAS_NO_WCSLCPY
-size_t		 wcslcpy(wchar_t *, const wchar_t *, size_t);
+size_t	 wcslcpy(wchar_t *, const wchar_t *, size_t);
 #endif
 
 #endif /* _WCSLCPY_H_ */

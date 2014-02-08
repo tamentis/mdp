@@ -17,19 +17,10 @@
  * All the profile related variables and functions.
  */
 
-#include <sys/types.h>
-#include <sys/param.h>
-
-#include <stdarg.h>
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <inttypes.h>
-#include <stdbool.h>
 #include <err.h>
-#include <wchar.h>
 
-#include "array.h"
 #include "cmd.h"
 #include "config.h"
 #include "profile.h"
@@ -110,6 +101,7 @@ void
 profile_passwords_to_results(struct profile *profile, wchar_t *prefix)
 {
 	unsigned int password_count = profile_get_password_count(profile);
+	struct result *result;
 	wchar_t *line;
 
 	for (unsigned int i = 0; i < password_count; i++) {
@@ -123,7 +115,13 @@ profile_passwords_to_results(struct profile *profile, wchar_t *prefix)
 		}
 		xfree(password);
 
-		ARRAY_ADD(&results, result_new(line));
+		result = result_new(line);
+		if (result == NULL) {
+			errx(EXIT_FAILURE, "unable to use generated password "
+					"(wrong locale?)");
+		}
+
+		ARRAY_ADD(&results, result);
 		xfree(line);
 	}
 }

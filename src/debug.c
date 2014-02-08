@@ -14,8 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <sys/types.h>
-
 #include <unistd.h>
 #include <time.h>
 #include <stdio.h>
@@ -24,8 +22,8 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
-#include "xmalloc.h"
 #include "debug.h"
+#include "xmalloc.h"
 
 
 bool		 debug_enabled = false;

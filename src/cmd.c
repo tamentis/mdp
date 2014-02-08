@@ -24,7 +24,6 @@
 #include <stdarg.h>
 #include <err.h>
 
-#include "array.h"
 #include "cmd.h"
 #include "debug.h"
 #include "keywords.h"
@@ -197,6 +196,10 @@ cmd_parse_add(int argc, char **argv)
 	if (argc > 0) {
 		char *s = join_list(' ', argc, argv);
 		cmd_add_prefix = mbs_duplicate_as_wcs(s);
+		if (cmd_add_prefix == NULL) {
+			err(EXIT_FAILURE, "unable to read the prefix (wrong "
+					"locale?)");
+		}
 		xfree(s);
 	}
 }

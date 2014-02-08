@@ -14,27 +14,18 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <limits.h>
 #include <stdlib.h>
-#include <stdarg.h>
 #include <err.h>
-#include <signal.h>
-#include <inttypes.h>
-#include <stdbool.h>
 #include <locale.h>
+#include <signal.h>
 
-#include "array.h"
 #include "cleanup.h"
 #include "cmd.h"
 #include "config.h"
 #include "debug.h"
 #include "editor.h"
 #include "gpg.h"
-#include "keywords.h"
 #include "lock.h"
-#include "mdp.h"
 #include "pager.h"
 #include "profile.h"
 #include "results.h"
@@ -192,7 +183,11 @@ main(int argc, char **argv)
 {
 	int command_index;
 
-	setlocale(LC_ALL, "");
+	if (setlocale(LC_ALL, "") == NULL) {
+		fprintf(stderr, "WARNING: setting the locale failed, make "
+				"sure %s is available on your system.\n",
+				getenv("LC_ALL"));
+	}
 
 	/*
 	 * Anything before the command is considered core argument (not

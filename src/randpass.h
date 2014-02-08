@@ -23,8 +23,10 @@
 #ifndef _MDP_RANDPASS_H
 #define _MDP_RANDPASS_H
 
-#define MAX_PASSWORD_LENGTH	255
+#include <wchar.h>
 
-int		 generate_password_from_set(wchar_t *, int, const wchar_t *);
+#define MAX_PASSWORD_LENGTH	256
+
+int	 generate_password_from_set(wchar_t *, int, const wchar_t *);
 
 #endif /* _MDP_RANDPASS_H_ */

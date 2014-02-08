@@ -15,12 +15,10 @@
  */
 
 #include <wchar.h>
-#include <wctype.h>
 #include <err.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <stdarg.h>
 #include <string.h>
+#include <wctype.h>
 
 #include "str.h"
 #include "strlcat.h"
@@ -181,7 +179,7 @@ wcs_duplicate_as_mbs(const wchar_t *str)
 	 */
 	bytelen = wcstombs(NULL, str, 0);
 	if (bytelen == (size_t)-1) {
-		err(EXIT_FAILURE, "wcs_duplicate_as_mbs:wcstombs(NULL)");
+		return NULL;
 	}
 
 	/*
@@ -194,7 +192,8 @@ wcs_duplicate_as_mbs(const wchar_t *str)
 
 	bytelen = wcstombs(output, str, bytelen + 1);
 	if (bytelen == (size_t)-1) {
-		err(EXIT_FAILURE, "wcs_duplicate_as_mbs:wcstombs(output)");
+		xfree(output);
+		return NULL;
 	}
 
 	return output;
@@ -221,14 +220,15 @@ mbs_duplicate_as_wcs(const char *str)
 	 */
 	bytelen = mbstowcs(NULL, str, 0);
 	if (bytelen == (size_t)-1) {
-		err(EXIT_FAILURE, "mbs_duplicate_as_wcs:mbstowcs(NULL)");
+		return NULL;
 	}
 
 	output = xcalloc(bytelen + 1, sizeof(wchar_t));
 
 	bytelen = mbstowcs(output, str, bytelen + 1);
 	if (bytelen == (size_t)-1) {
-		err(EXIT_FAILURE, "mbs_duplicate_as_wcs:mbstowcs(output)");
+		xfree(output);
+		return NULL;
 	}
 
 	return output;

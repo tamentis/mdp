@@ -17,6 +17,9 @@
 #ifndef _CMD_H_
 #define _CMD_H_
 
+#include <stdbool.h>
+#include <wchar.h>
+
 enum command {
 	COMMAND_VERSION,
 	COMMAND_USAGE,

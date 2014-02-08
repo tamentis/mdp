@@ -17,6 +17,8 @@
 #ifndef _KEYWORDS_H_
 #define _KEYWORDS_H_
 
+#include "array.h"
+
 extern struct kwlist keywords;
 
 ARRAY_DECL(kwlist, char *);

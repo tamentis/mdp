@@ -14,13 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <sys/types.h>
-
-#include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <err.h>
-#include <curses.h>
 
 #include "cleanup.h"
 #include "debug.h"
@@ -29,6 +25,9 @@
 #include "ui-curses.h"
 
 
+/*
+ * General cleanup function, called when the program terminates.
+ */
 void
 cleanup(void)
 {
@@ -43,6 +42,9 @@ cleanup(void)
 }
 
 
+/*
+ * Cleanup callback given to atexit().
+ */
 void
 atexit_cleanup(void)
 {
@@ -51,6 +53,9 @@ atexit_cleanup(void)
 }
 
 
+/*
+ * Cleanup callback assigned to SIGINT.
+ */
 void
 sig_cleanup(int dummy)
 {

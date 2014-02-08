@@ -17,6 +17,8 @@
 #ifndef _STR_H_
 #define _STR_H_
 
+#include <stdbool.h>
+
 char 		*join_list(char, int, char **);
 char 		*join(char, const char *, const char *);
 wchar_t		*wcsjoin(wchar_t, const wchar_t *, const wchar_t *);

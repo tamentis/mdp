@@ -72,4 +72,3 @@ strdelim(char **s)
 
 	return (old);
 }
-

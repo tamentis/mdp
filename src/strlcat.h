@@ -18,7 +18,7 @@
 #define _STRLCAT_H_
 
 #ifdef HAS_NO_STRLCAT
-size_t		 strlcat(char *, const char *, size_t);
+size_t	 strlcat(char *, const char *, size_t);
 #endif /* HAS_NO_STRLCAT */
 
 #endif /* _STRLCAT_H_ */

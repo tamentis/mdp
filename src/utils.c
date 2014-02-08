@@ -26,8 +26,6 @@
 #include <errno.h>
 #include <err.h>
 #include <libgen.h>
-#include <stdbool.h>
-#include <stdarg.h>
 #include <signal.h>
 #include <string.h>
 
@@ -103,19 +101,19 @@ join_path(const char *base, const char *suffix)
 /*
  * Check if a file exists.
  */
-int
+bool
 file_exists(const char *filepath)
 {
 	struct stat sb;
 
 	if (stat(filepath, &sb) != 0) {
 		if (errno == ENOENT) {
-			return 0;
+			return false;
 		}
 		err(EXIT_FAILURE, "file_exists stat()");
 	}
 
-	return 1;
+	return true;
 }
 
 

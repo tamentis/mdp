@@ -18,23 +18,9 @@
  * passwords do not linger on screen.
  */
 
-#include <sys/ioctl.h>
-#include <sys/param.h>
-
-#include <termios.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <wchar.h>
-#include <err.h>
-#include <signal.h>
-#include <string.h>
 #include <curses.h>
-#include <inttypes.h>
 
-#include "array.h"
-#include "config.h"
 #include "keywords.h"
-#include "mdp.h"
 #include "pager.h"
 #include "results.h"
 #include "ui-curses.h"

@@ -14,29 +14,20 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <sys/ioctl.h>
-#include <sys/param.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
 
-#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <limits.h>
 #include <errno.h>
 #include <err.h>
-#include <locale.h>
-#include <inttypes.h>
-#include <curses.h>
 #include <wchar.h>
+#include <stdbool.h>
 
-#include "array.h"
 #include "cmd.h"
 #include "config.h"
-#include "gpg.h"
 #include "lock.h"
 #include "mdp.h"
 #include "profile.h"
@@ -126,6 +117,10 @@ set_variable(char *name, char *value, int linenum)
 			conf_err("invalid value for character_set");
 		}
 		cfg_character_set = config_resolve_character_set(value);
+		if (cfg_character_set == NULL) {
+			err(EXIT_FAILURE, "unable to load global "
+					"character_set (wrong locale?)");
+		}
 
 	/* set editor <string> */
 	} else if (strcmp(name, "editor") == 0) {
@@ -231,6 +226,11 @@ set_profile_variable(struct profile *profile, char *name, char *value,
 			conf_err("invalid value for character_set");
 		}
 		profile->character_set = config_resolve_character_set(value);
+		if (profile->character_set == NULL) {
+			err(EXIT_FAILURE, "unable to load global "
+					"character_set for profile '%s' "
+					"(wrong locale?)", profile->name);
+		}
 
 	/* set password_count <unsigned integer> */
 	} else if (strcmp(name, "password_count") == 0) {
@@ -407,6 +407,10 @@ config_check_password_file(const char *path)
 }
 
 
+/*
+ * Look at all the global config and cmd that are expected to have a value post
+ * initialization and give them a sane default.
+ */
 void
 config_set_defaults(const char *config_dir)
 {
