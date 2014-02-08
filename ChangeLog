@@ -1,3 +1,7 @@
+0.7.1 Bertrand Janin <b@janin.com> (2014-02-07)
+
+	* Make charset convertion errors a little easier to spot.
+
 0.7.0 Bertrand Janin <b@janin.com> (2014-02-07)
 
 	* Switch to git-style command line with a command (e.g. mdp edit).

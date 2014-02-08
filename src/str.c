@@ -214,15 +214,12 @@ mbs_duplicate_as_wcs(const char *str)
 	size_t bytelen;
 	wchar_t *output;
 
-	fprintf(stderr, ">> %s\n", str);
-
 	/*
 	 * Find out how much space we need to store the wide-char string
 	 * (excluding the NUL-byte).
 	 */
 	bytelen = mbstowcs(NULL, str, 0);
 	if (bytelen == (size_t)-1) {
-		fprintf(stderr, "WAT!\n");
 		return NULL;
 	}
 
@@ -230,12 +227,9 @@ mbs_duplicate_as_wcs(const char *str)
 
 	bytelen = mbstowcs(output, str, bytelen + 1);
 	if (bytelen == (size_t)-1) {
-		fprintf(stderr, "NOPE!\n");
 		xfree(output);
 		return NULL;
 	}
-
-	fprintf(stderr, "YEP! %ls\n", output);
 
 	return output;
 }
