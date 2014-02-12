@@ -40,7 +40,7 @@
 bool		 cfg_backup = true;
 unsigned int	 cfg_character_count = DEFAULT_CHARACTER_COUNT;
 wchar_t		*cfg_character_set = NULL;
-char		*cfg_editor;
+char		*cfg_editor = NULL;
 char		*cfg_gpg_path = NULL;
 char		*cfg_gpg_key_id = NULL;
 unsigned int	 cfg_gpg_timeout = 20;
@@ -427,6 +427,12 @@ config_set_defaults(const char *config_dir)
 
 	if (cfg_password_file == NULL) {
 		cfg_password_file = join_path(config_dir, "passwords");
+	}
+
+	if (cfg_editor == NULL) {
+		fprintf(stderr, "WARNING: neither $EDITOR or 'set editor' was "
+				"defined, defaulting to /usr/bin/vi.\n");
+		cfg_editor = strdup("/usr/bin/vi");
 	}
 
 	lock_path = join_path(config_dir, "lock");

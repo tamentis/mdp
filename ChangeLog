@@ -1,3 +1,8 @@
+0.7.3 Bertrand Janin <b@janin.com> (2014-02-11)
+
+	* Fix crash on 'mdp edit' if neither $EDITOR or 'set editor' is
+	  defined.
+
 0.7.2 Bertrand Janin <b@janin.com> (2014-02-09)
 
 	* Fix double-free() crash when using 'mdp add' without prefix (found
