@@ -109,20 +109,19 @@ profile_passwords_to_results(struct profile *profile, wchar_t *prefix)
 		password = profile_generate_password(profile);
 
 		if (prefix == NULL) {
-			line = password;
+			result = result_new(password);
 		} else {
 			line = wcsjoin(L'\t', prefix, password);
+			result = result_new(line);
+			xfree(line);
 		}
-		xfree(password);
 
-		result = result_new(line);
 		if (result == NULL) {
 			errx(EXIT_FAILURE, "unable to use generated password "
 					"(wrong locale?)");
 		}
 
 		ARRAY_ADD(&results, result);
-		xfree(line);
 	}
 }
 
