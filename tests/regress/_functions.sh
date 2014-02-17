@@ -33,7 +33,7 @@ assert_generic() {
 		echo "--test.expected-----------"
 		cat test.expected
 		echo "--$1-------------"
-		cat test.stdout
+		cat $1
 		echo "---------------------"
 		exit 1
 	fi
