@@ -25,5 +25,6 @@ char		*join_path(const char *, const char *);
 bool		 file_exists(const char *);
 void		 cancel_pid_timeout(void);
 void		 set_pid_timeout(pid_t, int);
+bool		 rm_overwrite(char *);
 
 #endif /* _UTILS_H_ */

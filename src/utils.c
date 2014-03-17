@@ -193,18 +193,30 @@ set_pid_timeout(pid_t pid, int timeout)
 }
 
 
-int
+/*
+ * Make one pass at overwriting the given file descriptor.
+ *
+ * 	fd: opened, writable file descriptor
+ * 	len: how many byte to overwrite (file size)
+ * 	buf: in memory buffer used to write to the fd
+ * 	bsize: size of the above buffer.
+ *
+ * Returns true on success, false in case of error.
+ */
+static bool
 pass(int fd, off_t len, char *buf, size_t bsize)
 {
 	size_t wlen;
 
 	for (; len > 0; len -= wlen) {
-		wlen = len < bsize ? len : bsize;
+		wlen = (size_t)len < bsize ? (size_t)len : bsize;
 		arc4random_buf(buf, wlen);
-		if (write(fd, buf, wlen) != wlen)
-			return (0);
+		if (write(fd, buf, wlen) != (ssize_t)wlen) {
+			return false;
+		}
 	}
-	return (1);
+
+	return true;
 }
 
 
@@ -218,33 +230,40 @@ pass(int fd, off_t len, char *buf, size_t bsize)
  * Also, this assumes a fixed-block file system (like FFS, or a V7 or a
  * System V file system).  In a logging file system, you'll have to have
  * kernel support.
- * Returns 1 for success.
+ * Returns true for success.
  */
-int
-rm_overwrite(char *file, struct stat *sbp)
+bool
+rm_overwrite(char *file)
 {
-	struct stat sb, sb2;
+	struct stat *sbp, sb, sb2;
 	size_t bsize;
-	int fd;
+	int fd = -1;
 	char *buf = NULL;
 
-	fd = -1;
-	if (sbp == NULL) {
-		if (lstat(file, &sb))
-			goto err;
-		sbp = &sb;
+	if (lstat(file, &sb)) {
+		goto err;
 	}
-	if (!S_ISREG(sbp->st_mode))
-		return (1);
+	sbp = &sb;
+
+	/* You can't invoke this on non regular files. */
+	if (!S_ISREG(sbp->st_mode)) {
+		return false;
+	}
+
 	if (sbp->st_nlink > 1) {
-		warnx("%s (inode %u): not overwritten due to multiple links",
+		warnx("%s (inode %llu): not overwritten due to multiple links",
 		    file, sbp->st_ino);
-		return (0);
+		return false;
 	}
-	if ((fd = open(file, O_WRONLY|O_NONBLOCK|O_NOFOLLOW, 0)) == -1)
+
+	if ((fd = open(file, O_WRONLY|O_NONBLOCK|O_NOFOLLOW, 0)) == -1) {
 		goto err;
-	if (fstat(fd, &sb2))
+	}
+
+	if (fstat(fd, &sb2)) {
 		goto err;
+	}
+
 	if (sb2.st_dev != sbp->st_dev || sb2.st_ino != sbp->st_ino ||
 	    !S_ISREG(sb2.st_mode)) {
 		errno = EPERM;
@@ -261,26 +280,30 @@ rm_overwrite(char *file, struct stat *sbp)
 #else
 	{
 		struct statfs fsb;
-		if (fstatfs(fd, &fsb) == -1)
+		if (fstatfs(fd, &fsb) == -1) {
 			goto err;
-		bsize = MAX(fsb.f_iosize, 1024U);
+		}
+		bsize = MAX(fsb.f_iosize, 1024);
 	}
 #endif
 
-	if ((buf = malloc(bsize)) == NULL)
+	if ((buf = malloc(bsize)) == NULL) {
 		err(1, "%s: malloc", file);
+	}
 
-	if (!pass(fd, sbp->st_size, buf, bsize))
+	if (!pass(fd, sbp->st_size, buf, bsize)) {
 		goto err;
-	if (fsync(fd))
+	}
+	if (fsync(fd)) {
 		goto err;
+	}
 	close(fd);
 	free(buf);
-	return (1);
+	return true;
 
 err:
 	warn("%s", file);
 	close(fd);
 	free(buf);
-	return (0);
+	return false;
 }
