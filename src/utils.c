@@ -12,6 +12,9 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *
+ * The rm_overwrite() and pass() functions are originally imported from
+ * OpenBSD's /bin/rm.
  */
 
 #include <sys/types.h>
@@ -196,12 +199,7 @@ set_pid_timeout(pid_t pid, int timeout)
 /*
  * Make one pass at overwriting the given file descriptor.
  *
- * 	fd: opened, writable file descriptor
- * 	len: how many byte to overwrite (file size)
- * 	buf: in memory buffer used to write to the fd
- * 	bsize: size of the above buffer.
- *
- * Returns true on success, false in case of error.
+ * Returns true on success.
  */
 static bool
 pass(int fd, off_t len, char *buf, size_t bsize)
@@ -221,21 +219,19 @@ pass(int fd, off_t len, char *buf, size_t bsize)
 
 
 /*
- * rm_overwrite --
- *	Overwrite the file with varying bit patterns.
+ * Overwrite the file with varying bit patterns.
  *
- * XXX
- * This is a cheap way to *really* delete files.  Note that only regular
- * files are deleted, directories (and therefore names) will remain.
- * Also, this assumes a fixed-block file system (like FFS, or a V7 or a
- * System V file system).  In a logging file system, you'll have to have
- * kernel support.
+ * This is a cheap way to *really* delete files.  Note that only regular files
+ * are deleted, directories (and therefore names) will remain.  Also, this
+ * assumes a fixed-block file system (like FFS, or a V7 or a System V file
+ * system).  In a logging file system, you'll have to have kernel support.
+ *
  * Returns true for success.
  */
 bool
 rm_overwrite(char *file)
 {
-	struct stat *sbp, sb, sb2;
+	struct stat sb, sb2;
 	size_t bsize;
 	int fd = -1;
 	char *buf = NULL;
@@ -243,16 +239,18 @@ rm_overwrite(char *file)
 	if (lstat(file, &sb)) {
 		goto err;
 	}
-	sbp = &sb;
 
-	/* You can't invoke this on non regular files. */
-	if (!S_ISREG(sbp->st_mode)) {
+	/*
+	 * You can't invoke this on non regular files.  This differs from the
+	 * original implementation which returned true on irregular files.
+	 */
+	if (!S_ISREG(sb.st_mode)) {
 		return false;
 	}
 
-	if (sbp->st_nlink > 1) {
+	if (sb.st_nlink > 1) {
 		warnx("%s (inode %llu): not overwritten due to multiple links",
-		    file, sbp->st_ino);
+		    file, sb.st_ino);
 		return false;
 	}
 
@@ -264,16 +262,21 @@ rm_overwrite(char *file)
 		goto err;
 	}
 
-	if (sb2.st_dev != sbp->st_dev || sb2.st_ino != sbp->st_ino ||
+	/*
+	 * XXX: Not entirely sure why this was done in the original
+	 * implementation.  When would the output from lstat be different from
+	 * the output of fstat?
+	 */
+	if (sb2.st_dev != sb.st_dev || sb2.st_ino != sb.st_ino ||
 	    !S_ISREG(sb2.st_mode)) {
 		errno = EPERM;
 		goto err;
 	}
 
 	/*
-	 * This practical structure member allows us to find the most optimal
-	 * IO buffer size on BSDs and OS X. Linux however does not have this
-	 * member.
+	 * This practical statfs.f_iosize structure member allows us to find
+	 * the most optimal IO buffer size on BSDs and OS X. Linux however does
+	 * not have this member.
 	 */
 #ifdef HAS_NO_F_IOSIZE
 	bsize = 1024U;
@@ -291,7 +294,7 @@ rm_overwrite(char *file)
 		err(1, "%s: malloc", file);
 	}
 
-	if (!pass(fd, sbp->st_size, buf, bsize)) {
+	if (!pass(fd, sb.st_size, buf, bsize)) {
 		goto err;
 	}
 	if (fsync(fd)) {
