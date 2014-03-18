@@ -23,6 +23,23 @@
 #include "editor.h"
 #include "lock.h"
 #include "ui-curses.h"
+#include "utils.h"
+
+
+void
+cleanup_tmp_path(void)
+{
+	/*
+	 * Ignore the return of rm_overwrite, even if it fails, we need to
+	 * at least delete the file, additionally rm_overwrite emits a warn()
+	 * message with the actual error.
+	 */
+	rm_overwrite(editor_tmp_path);
+
+	if (editor_tmp_path != NULL && unlink(editor_tmp_path) != 0) {
+		err(EXIT_FAILURE, "unable to remove '%s'", editor_tmp_path);
+	}
+}
 
 
 /*
@@ -31,9 +48,7 @@
 void
 cleanup(void)
 {
-	if (editor_tmp_path != NULL && unlink(editor_tmp_path) != 0) {
-		err(EXIT_FAILURE, "unable to remove '%s'", editor_tmp_path);
-	}
+	cleanup_tmp_path();
 
 	lock_unset();
 

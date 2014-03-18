@@ -17,6 +17,7 @@
 #ifndef _CLEANUP_H_
 #define _CLEANUP_H_
 
+void cleanup_tmp_path(void);
 void cleanup(void);
 void atexit_cleanup(void);
 void sig_cleanup(int);

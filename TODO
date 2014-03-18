@@ -1,10 +1,11 @@
 FOR 0.8
+ - test the wiping of the tmp file by mounting .mdp to a small partition that could be analyzed.
+ - tmp file should be deleted regardless of previous errors.
  - document the ways 'mdp add' can be used:
     - generate one at a time.
     - create a bunch of passwords and always use edit.
  - document how to switch to a new GPG key.
  - document locale issues and how to recover from them.
- - Use the same technique as rm -P (BSD) instead of just unlink.
  - Add the pronounceable algorithm from APG (or read FIPS-181).
  - Add a min/max to profiles and command-line (-m and -x).
  - Choose temp file location (e.g. RAM disk).

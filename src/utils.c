@@ -305,7 +305,7 @@ rm_overwrite(char *file)
 	return true;
 
 err:
-	warn("%s", file);
+	warn("unable to overwrite %s", file);
 	close(fd);
 	free(buf);
 	return false;
