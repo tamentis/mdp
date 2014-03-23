@@ -1,5 +1,8 @@
 FOR 0.8
- - test the wiping of the tmp file by mounting .mdp to a small partition that could be analyzed.
+ - wipe the allocated structures after use (memset) and make sure optimization
+   does not remove these memsets.
+ - test the wiping of the tmp file by mounting .mdp to a small partition that
+   could be analyzed.
  - tmp file should be deleted regardless of previous errors.
  - document the ways 'mdp add' can be used:
     - generate one at a time.
