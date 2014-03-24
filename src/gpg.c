@@ -124,6 +124,13 @@ gpg_open()
 	fp = fdopen(pout[0], "r");
 
 	/*
+	 * Disable buffering, we do not files of a size large enough to gain a
+	 * little bit of performance at the cost of leaving your password all
+	 * in random buffers.
+	 */
+	setvbuf(fp, NULL, _IONBF, 0);
+
+	/*
 	 * Since we spawned a new process, we keep track of it and shut it down
 	 * by force if it takes too long.
 	 */

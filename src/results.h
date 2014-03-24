@@ -45,12 +45,13 @@ extern uint32_t result_size;
 
 
 struct result	*result_new(const wchar_t *);
-void		 result_kill(struct result *);
+void		 result_free(struct result *);
 unsigned int	 results_visible_length(void);
 unsigned int	 get_max_length(void);
 void		 filter_results(void);
 int		 load_results_gpg(void);
 int		 load_results_fp(FILE *);
 void		 print_results(void);
+void		 clear_results(void);
 
 #endif /* _RESULTS_H_ */

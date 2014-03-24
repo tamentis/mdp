@@ -62,8 +62,29 @@ result_new(const wchar_t *value)
 	new->wcs_len = wcslen(value);
 	new->mbs_len = strlen(new->mbs_value);
 
-
 	return new;
+}
+
+
+/*
+ * De-allocate the structure, zero'ing its content (memset_s).
+ */
+void
+result_free(struct result *result)
+{
+	if (result->wcs_value != NULL) {
+		bzero(result->wcs_value, result->wcs_len);
+		xfree(result->wcs_value);
+		result->wcs_len = 0;
+	}
+
+	if (result->mbs_value != NULL) {
+		bzero(result->mbs_value, result->mbs_len);
+		xfree(result->mbs_value);
+		result->mbs_len = 0;
+	}
+
+	xfree(result);
 }
 
 
@@ -244,6 +265,9 @@ load_results_fp(FILE *fp)
 		ARRAY_ADD(&results, result);
 	}
 
+	bzero(wline, sizeof(wchar_t) * MAX_LINE_SIZE);
+	bzero(line, MAX_LINE_SIZE);
+
 	return ARRAY_LENGTH(&results);
 }
 
@@ -291,4 +315,21 @@ print_results(void)
 			printf("%ls\n", result->wcs_value);
 		}
 	}
+}
+
+
+/*
+ * Free all the results.
+ */
+void
+clear_results(void)
+{
+	struct result *result;
+
+	for (unsigned int i = 0; i < ARRAY_LENGTH(&results); i++) {
+		result = ARRAY_ITEM(&results, i);
+		result_free(result);
+	}
+
+	ARRAY_FREE(&results);
 }

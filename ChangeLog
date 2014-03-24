@@ -1,6 +1,7 @@
 0.8.0 Bertrand Janin <b@janin.com> (..........)
 
-	* Add overwrite of the temporary plain-text file (shred-style).
+	* Add overwrite of the temporary plain text file (shred-style).
+	* Override internal structures to avoid plain text to linger in RAM.
 
 0.7.3 Bertrand Janin <b@janin.com> (2014-02-11)
 

@@ -22,6 +22,7 @@
 #include "debug.h"
 #include "editor.h"
 #include "lock.h"
+#include "results.h"
 #include "ui-curses.h"
 #include "utils.h"
 
@@ -48,6 +49,10 @@ cleanup_tmp_path(void)
 void
 cleanup(void)
 {
+	/* Delete all the results stored in memory. */
+	clear_results();
+
+	/* Make sure the temporary file is gone. */
 	cleanup_tmp_path();
 
 	lock_unset();
