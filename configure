@@ -1,12 +1,12 @@
 #!/bin/sh
 #
 # Configure script for 'mdp'
-# Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
+# Copyright (c) 2012-2015 Bertrand Janin <b@janin.com>
 #
 #
 
 PROG="mdp"
-MDP_VERSION="0.7.3"
+MDP_VERSION="0.7.4"
 
 
 # Some shells have shitty echos
