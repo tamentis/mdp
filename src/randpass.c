@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -44,7 +44,7 @@ generate_password_from_set(wchar_t *password_string, int length,
 	setlen = wcslen(set);
 
 	if (length > MAX_PASSWORD_LENGTH || length < 1) {
-		return -1;
+		return (-1);
 	}
 
 	random_weight = xcalloc(setlen, sizeof(int));
@@ -82,5 +82,5 @@ generate_password_from_set(wchar_t *password_string, int length,
 	xfree(random_weight);
 	*str_pointer = '\0';
 
-	return 0;
+	return (0);
 }

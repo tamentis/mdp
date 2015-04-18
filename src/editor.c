@@ -76,14 +76,14 @@ editor_is_vim(const char *command)
 
 	/* There aren't enough characters for 'vim' to fit. */
 	if (s - command < 3) {
-		return false;
+		return (false);
 	}
 
 	if (strncmp(s - 3, "vim", 3) == 0) {
-		return true;
+		return (true);
 	}
 
-	return false;
+	return (false);
 }
 
 
@@ -143,9 +143,9 @@ has_changed(char *path)
 	fclose(fp);
 
 	if (previous_sum != result_sum || previous_size != result_size)
-		return 1;
+		return (1);
 
-	return 0;
+	return (0);
 }
 
 

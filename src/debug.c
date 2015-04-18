@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -44,7 +44,7 @@ debug(const char *fmt, ...)
 	pid_t pid;
 
 	if (!debug_enabled)
-		return 0;
+		return (0);
 
 	pid = getpid();
 
@@ -63,5 +63,5 @@ debug(const char *fmt, ...)
 
 	xfree(pfmt);
 
-	return i;
+	return (i);
 }

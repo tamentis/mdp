@@ -52,7 +52,7 @@ profile_new(const char *name)
 		new->character_set = wcsdup(CHARSET_ALPHANUMERIC);
 	}
 
-	return new;
+	return (new);
 }
 
 
@@ -72,11 +72,11 @@ profile_get_from_name(const char *name)
 		profile = ARRAY_ITEM(&profiles, i);
 
 		if (strcmp(profile->name, name) == 0) {
-			return profile;
+			return (profile);
 		}
 	}
 
-	return NULL;
+	return (NULL);
 }
 
 
@@ -87,9 +87,9 @@ static unsigned int
 profile_get_password_count(struct profile *profile)
 {
 	if (cmd_password_count > 0) {
-		return cmd_password_count;
+		return (cmd_password_count);
 	} else {
-		return profile->password_count;
+		return (profile->password_count);
 	}
 }
 
@@ -170,7 +170,7 @@ profile_generate_password(struct profile *profile)
 		errx(EXIT_FAILURE, "failed to generate password");
 	}
 
-	return s;
+	return (s);
 }
 
 

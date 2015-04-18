@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -226,5 +226,5 @@ main(int argc, char **argv)
 	}
 
 	debug("normal shutdown");
-	return EXIT_SUCCESS;
+	return (EXIT_SUCCESS);
 }

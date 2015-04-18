@@ -57,7 +57,7 @@ xdirname(const char *path)
 
 	xfree(path_copy);
 
-	return s;
+	return (s);
 }
 
 
@@ -104,12 +104,12 @@ file_exists(const char *filepath)
 
 	if (stat(filepath, &sb) != 0) {
 		if (errno == ENOENT) {
-			return false;
+			return (false);
 		}
 		err(EXIT_FAILURE, "file_exists stat()");
 	}
 
-	return true;
+	return (true);
 }
 
 

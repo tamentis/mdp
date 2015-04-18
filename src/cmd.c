@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -55,10 +55,10 @@ command_match(const char *s, const char *name, size_t min)
 		if (len < min) {
 			errx(EXIT_FAILURE, "ambiguous command '%s'", s);
 		}
-		return true;
+		return (true);
 	}
 
-	return false;
+	return (false);
 }
 
 
@@ -147,7 +147,7 @@ cmd_parse_core(int argc, char **argv)
 		command_index = -1;
 	}
 
-	return command_index;
+	return (command_index);
 }
 
 

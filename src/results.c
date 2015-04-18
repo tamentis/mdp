@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -57,13 +57,13 @@ result_new(const wchar_t *value)
 	new->wcs_value = wcsdup(value);
 	new->mbs_value = wcs_duplicate_as_mbs(value);
 	if (new->mbs_value == NULL) {
-		return NULL;
+		return (NULL);
 	}
 	new->wcs_len = wcslen(value);
 	new->mbs_len = strlen(new->mbs_value);
 
 
-	return new;
+	return (new);
 }
 
 
@@ -82,7 +82,7 @@ results_visible_length()
 			len++;
 	}
 
-	return len;
+	return (len);
 }
 
 
@@ -104,7 +104,7 @@ line_matches_plain(const wchar_t *line)
 		}
 	}
 
-	return matches;
+	return (matches);
 }
 
 
@@ -136,7 +136,7 @@ line_matches_regex(const wchar_t *line)
 		regfree(&preg);
 	}
 
-	return matches;
+	return (matches);
 }
 
 
@@ -149,7 +149,7 @@ static bool
 line_matches(const wchar_t *line)
 {
 	if (line[0] == L'#') {
-		return false;
+		return (false);
 	}
 
 	if (cmd_regex) {
@@ -176,7 +176,7 @@ get_max_length()
 			maxlen = result->wcs_len;
 	}
 
-	return maxlen;
+	return (maxlen);
 }
 
 
@@ -264,7 +264,7 @@ load_results_gpg()
 
 	/* Password file does not exist yet. */
 	if (fp == NULL)
-		return 0;
+		return (0);
 
 	length = load_results_fp(fp);
 
@@ -273,7 +273,7 @@ load_results_gpg()
 		errx(EXIT_FAILURE, "GnuPG returned with an error");
 	}
 
-	return length;
+	return (length);
 }
 
 
