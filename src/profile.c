@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -59,9 +59,9 @@ profile_new(const char *name)
 /*
  * Return a profile from the global profile list.
  *
- * If the name is not found in the registry, this funtion returns NULL. Calling
- * this function with the default profile name as parameter will never return
- * NULL as a default profile is generated.
+ * If the name is not found in the registry, this function returns NULL.
+ * Calling this function with the default profile name as parameter will never
+ * return NULL as a default profile is generated.
  */
 struct profile *
 profile_get_from_name(const char *name)

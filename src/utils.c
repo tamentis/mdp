@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -39,7 +39,7 @@ pid_t watcher_pid = 0;
  *
  * Since some dirname implementation happen to alter the provided path, we
  * create a copy of the source path. We also create a copy of the result since
- * depending on the implementation that coult be located in internal storage.
+ * depending on the implementation that could be located in internal storage.
  */
 char *
 xdirname(const char *path)
