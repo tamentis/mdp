@@ -231,6 +231,23 @@ fi
 rm -f fake_wcslcpy*
 
 
+# Check if we have explicit_bzero
+echo -n "explicit_bzero... "
+cat <<EOF > fake_explicit_bzero.c
+#include <string.h>
+#include <stdlib.h>
+main() { char *buf; buf = malloc(128); explicit_bzero(buf, 128); }
+EOF
+if ! ${CC} fake_explicit_bzero.c -o /dev/null 1>/dev/null 2>/dev/null; then
+	echo "not found (we'll use ours)"
+	X_OBJECTS="$X_OBJECTS explicit_bzero.o"
+	CFLAGS="$CFLAGS -DHAS_NO_EXPLICIT_BZERO"
+else
+	echo yes
+fi
+rm -f fake_explicit_bzero*
+
+
 # Check for curses
 echo -n "curses... "
 cat <<EOF > fake_curses.c

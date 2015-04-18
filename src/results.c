@@ -24,6 +24,7 @@
 
 #include "cmd.h"
 #include "crc.h"
+#include "explicit_bzero.h"
 #include "gpg.h"
 #include "keywords.h"
 #include "mdp.h"
@@ -71,13 +72,13 @@ void
 result_free(struct result *result)
 {
 	if (result->wcs_value != NULL) {
-		bzero(result->wcs_value, result->wcs_len);
+		explicit_bzero(result->wcs_value, result->wcs_len);
 		xfree(result->wcs_value);
 		result->wcs_len = 0;
 	}
 
 	if (result->mbs_value != NULL) {
-		bzero(result->mbs_value, result->mbs_len);
+		explicit_bzero(result->mbs_value, result->mbs_len);
 		xfree(result->mbs_value);
 		result->mbs_len = 0;
 	}
@@ -259,8 +260,8 @@ load_results_fp(FILE *fp)
 	}
 
 
-	bzero(wline, sizeof(wchar_t) * MAX_LINE_SIZE);
-	bzero(line, MAX_LINE_SIZE);
+	explicit_bzero(wline, sizeof(wchar_t) * MAX_LINE_SIZE);
+	explicit_bzero(line, MAX_LINE_SIZE);
 
 	CKSUM_Final(&crcctx);
 	result_crc32 = crcctx.crc;
