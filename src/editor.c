@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -32,6 +32,8 @@
 
 
 char *editor_tmp_path = NULL;
+
+extern uint32_t result_crc32;
 
 
 /*
@@ -67,7 +69,7 @@ editor_is_vim(const char *command)
 
 	/*
 	 * The command is either before a space (in case there are other
-	 * paramters) or at the end of the string.
+	 * parameters) or at the end of the string.
 	 */
 	s = strpbrk(command, " \0\t");
 	if (s == NULL) {
@@ -76,14 +78,14 @@ editor_is_vim(const char *command)
 
 	/* There aren't enough characters for 'vim' to fit. */
 	if (s - command < 3) {
-		return false;
+		return (false);
 	}
 
 	if (strncmp(s - 3, "vim", 3) == 0) {
-		return true;
+		return (true);
 	}
 
-	return false;
+	return (false);
 }
 
 
@@ -129,23 +131,22 @@ static int
 has_changed(char *path)
 {
 	FILE *fp;
-	uint32_t previous_sum, previous_size;
+	uint32_t previous_crc32;
 
 	/*
 	 * Keep track of the previous sum/size so we can check if anything
 	 * changed.
 	 */
-	previous_sum = result_sum;
-	previous_size = result_size;
+	previous_crc32 = result_crc32;
 
 	fp = fopen(path, "r");
 	load_results_fp(fp);
 	fclose(fp);
 
-	if (previous_sum != result_sum || previous_size != result_size)
-		return 1;
+	if (previous_crc32 != result_crc32)
+		return (1);
 
-	return 0;
+	return (0);
 }
 
 

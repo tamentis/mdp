@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -84,7 +84,7 @@ config_resolve_character_set(const char *value)
 		character_set = mbs_duplicate_as_wcs(value);
 	}
 
-	return character_set;
+	return (character_set);
 }
 
 
@@ -263,21 +263,21 @@ process_config_line(char *line, int linenum)
 
 	/* Get the keyword (each line is supposed to begin with a keyword). */
 	if ((keyword = strdelim(&line)) == NULL)
-		return 0;
+		return (0);
 
 	/* Ignore leading whitespace. */
 	if (*keyword == '\0')
 		keyword = strdelim(&line);
 
 	if (keyword == NULL || !*keyword || *keyword == '\n' || *keyword == '#')
-		return 0;
+		return (0);
 
 	/* set varname value */
 	if (strcmp(keyword, "set") == 0) {
 		if ((name = strdelim(&line)) == NULL) {
 			errx(EXIT_FAILURE, "%s: set without variable name on "
 					"line %d.", cmd_config_path, linenum);
-			return -1;
+			return (-1);
 		}
 		value = strdelim(&line);
 		if (current_profile == NULL) {
@@ -293,7 +293,7 @@ process_config_line(char *line, int linenum)
 			errx(EXIT_FAILURE, "%s: profile without variable name "
 					"on line %d.", cmd_config_path,
 					linenum);
-			return -1;
+			return (-1);
 		}
 
 		/* Every set after that moment is to configure this profile. */
@@ -304,10 +304,10 @@ process_config_line(char *line, int linenum)
 	} else {
 		errx(EXIT_FAILURE, "%s: unknown command on line %d.",
 				cmd_config_path, linenum);
-		return -1;
+		return (-1);
 	}
 
-	return 0;
+	return (0);
 }
 
 /*

@@ -41,7 +41,7 @@ strdelim(char **s)
 	int wspace = 0;
 
 	if (*s == NULL)
-		return NULL;
+		return (NULL);
 
 	old = *s;
 

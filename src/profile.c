@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -52,16 +52,16 @@ profile_new(const char *name)
 		new->character_set = wcsdup(CHARSET_ALPHANUMERIC);
 	}
 
-	return new;
+	return (new);
 }
 
 
 /*
  * Return a profile from the global profile list.
  *
- * If the name is not found in the registry, this funtion returns NULL. Calling
- * this function with the default profile name as parameter will never return
- * NULL as a default profile is generated.
+ * If the name is not found in the registry, this function returns NULL.
+ * Calling this function with the default profile name as parameter will never
+ * return NULL as a default profile is generated.
  */
 struct profile *
 profile_get_from_name(const char *name)
@@ -72,11 +72,11 @@ profile_get_from_name(const char *name)
 		profile = ARRAY_ITEM(&profiles, i);
 
 		if (strcmp(profile->name, name) == 0) {
-			return profile;
+			return (profile);
 		}
 	}
 
-	return NULL;
+	return (NULL);
 }
 
 
@@ -87,9 +87,9 @@ static unsigned int
 profile_get_password_count(struct profile *profile)
 {
 	if (cmd_password_count > 0) {
-		return cmd_password_count;
+		return (cmd_password_count);
 	} else {
-		return profile->password_count;
+		return (profile->password_count);
 	}
 }
 
@@ -170,7 +170,7 @@ profile_generate_password(struct profile *profile)
 		errx(EXIT_FAILURE, "failed to generate password");
 	}
 
-	return s;
+	return (s);
 }
 
 

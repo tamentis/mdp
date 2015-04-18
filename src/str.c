@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -62,7 +62,7 @@ join_list(char sep, int count, char **tokens)
 		strlcat(o, c, len);
 	}
 
-	return o;
+	return (o);
 }
 
 
@@ -76,7 +76,7 @@ join(char sep, const char *base, const char *suffix)
 
 	xasprintf(&s, "%s%c%s", base, sep, suffix);
 
-	return s;
+	return (s);
 }
 
 
@@ -98,7 +98,7 @@ wcsjoin(wchar_t sep, const wchar_t *base, const wchar_t *suffix)
 		err(EXIT_FAILURE, "wsprintf failed");
 	}
 
-	return s;
+	return (s);
 }
 
 
@@ -155,7 +155,7 @@ wcscasestr(const wchar_t *s, const wchar_t *find)
 		s--;
 	}
 
-	return s;
+	return (s);
 }
 
 
@@ -179,7 +179,7 @@ wcs_duplicate_as_mbs(const wchar_t *str)
 	 */
 	bytelen = wcstombs(NULL, str, 0);
 	if (bytelen == (size_t)-1) {
-		return NULL;
+		return (NULL);
 	}
 
 	/*
@@ -193,10 +193,10 @@ wcs_duplicate_as_mbs(const wchar_t *str)
 	bytelen = wcstombs(output, str, bytelen + 1);
 	if (bytelen == (size_t)-1) {
 		xfree(output);
-		return NULL;
+		return (NULL);
 	}
 
-	return output;
+	return (output);
 }
 
 
@@ -220,7 +220,7 @@ mbs_duplicate_as_wcs(const char *str)
 	 */
 	bytelen = mbstowcs(NULL, str, 0);
 	if (bytelen == (size_t)-1) {
-		return NULL;
+		return (NULL);
 	}
 
 	output = xcalloc(bytelen + 1, sizeof(wchar_t));
@@ -228,10 +228,10 @@ mbs_duplicate_as_wcs(const char *str)
 	bytelen = mbstowcs(output, str, bytelen + 1);
 	if (bytelen == (size_t)-1) {
 		xfree(output);
-		return NULL;
+		return (NULL);
 	}
 
-	return output;
+	return (output);
 }
 
 
@@ -245,8 +245,8 @@ bool
 streq(const char *a, const char *b)
 {
 	if (strcmp(a, b) == 0) {
-		return true;
+		return (true);
 	}
 
-	return false;
+	return (false);
 }

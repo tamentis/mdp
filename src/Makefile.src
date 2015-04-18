@@ -2,6 +2,7 @@ OBJECTS= \
 	cleanup.o \
 	cmd.o \
 	config.o \
+	crc.o \
 	debug.o \
 	editor.o \
 	gpg.o \

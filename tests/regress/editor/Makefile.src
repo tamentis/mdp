@@ -2,8 +2,9 @@ PROG=stub
 SRC=../../../src
 OBJECTS= \
 	stub.o \
-	${SRC}/config.o \
 	${SRC}/cmd.o \
+	${SRC}/config.o \
+	${SRC}/crc.o \
 	${SRC}/debug.o \
 	${SRC}/editor.o \
 	${SRC}/gpg.o \

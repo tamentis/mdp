@@ -1,5 +1,7 @@
+/*	$OpenBSD: crc.h,v 1.2 2014/03/20 22:03:56 tedu Exp $	*/
+
 /*
- * Copyright (c) 2012-2015 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2004 Todd C. Miller <Todd.Miller@courtesan.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,42 +16,16 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _RESULTS_H_
-#define _RESULTS_H_
+#define	CKSUM_DIGEST_LENGTH		4
+#define	CKSUM_DIGEST_STRING_LENGTH	(10 + 1 + 19)
 
-#include <wchar.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdbool.h>
+typedef struct CKSUMContext {
+	u_int32_t crc;
+	off_t len;
+} CKSUM_CTX;
 
-#include "array.h"
-
-
-#define KEYWORD_LENGTH 50
-
-
-struct result {
-	bool visible;
-	wchar_t *wcs_value;
-	char *mbs_value;
-	size_t wcs_len;
-	size_t mbs_len;
-};
-
-ARRAY_DECL(wlist, struct result *);
-
-
-extern struct wlist results;
-
-
-struct result	*result_new(const wchar_t *);
-void		 result_free(struct result *);
-unsigned int	 results_visible_length(void);
-unsigned int	 get_max_length(void);
-void		 filter_results(void);
-int		 load_results_gpg(void);
-int		 load_results_fp(FILE *);
-void		 print_results(void);
-void		 clear_results(void);
-
-#endif /* _RESULTS_H_ */
+void	 CKSUM_Init(CKSUM_CTX *);
+void	 CKSUM_Update(CKSUM_CTX *, const u_int8_t *, size_t);
+void	 CKSUM_Final(CKSUM_CTX *);
+char    *CKSUM_End(CKSUM_CTX *, char *);
+char    *CKSUM_Data(const u_int8_t *, size_t, char *);

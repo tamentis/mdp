@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -23,6 +23,7 @@
 #include <regex.h>
 
 #include "cmd.h"
+#include "crc.h"
 #include "gpg.h"
 #include "keywords.h"
 #include "mdp.h"
@@ -33,11 +34,8 @@
 
 struct wlist results = ARRAY_INITIALIZER;
 
-/*
- * This holds a sum and size of all the characters in the result set. This is
- * used with the edit command as a quick way to check of the file changed.
- */
-uint32_t result_size = 0, result_sum = 0;
+/* This crc32 is used to check if a file has changed after edit. */
+uint32_t result_crc32 = 0;
 
 
 /*
@@ -57,12 +55,12 @@ result_new(const wchar_t *value)
 	new->wcs_value = wcsdup(value);
 	new->mbs_value = wcs_duplicate_as_mbs(value);
 	if (new->mbs_value == NULL) {
-		return NULL;
+		return (NULL);
 	}
 	new->wcs_len = wcslen(value);
 	new->mbs_len = strlen(new->mbs_value);
 
-	return new;
+	return (new);
 }
 
 
@@ -103,7 +101,7 @@ results_visible_length()
 			len++;
 	}
 
-	return len;
+	return (len);
 }
 
 
@@ -125,7 +123,7 @@ line_matches_plain(const wchar_t *line)
 		}
 	}
 
-	return matches;
+	return (matches);
 }
 
 
@@ -157,7 +155,7 @@ line_matches_regex(const wchar_t *line)
 		regfree(&preg);
 	}
 
-	return matches;
+	return (matches);
 }
 
 
@@ -170,7 +168,7 @@ static bool
 line_matches(const wchar_t *line)
 {
 	if (line[0] == L'#') {
-		return false;
+		return (false);
 	}
 
 	if (cmd_regex) {
@@ -197,7 +195,7 @@ get_max_length()
 			maxlen = result->wcs_len;
 	}
 
-	return maxlen;
+	return (maxlen);
 }
 
 
@@ -233,10 +231,9 @@ load_results_fp(FILE *fp)
 	static wchar_t wline[MAX_LINE_SIZE];
 	static char line[MAX_LINE_SIZE];
 	struct result *result;
+	CKSUM_CTX crcctx;
 
-	/* Global variables used to check if the result set changed. */
-	result_sum = 0;
-	result_size = 0;
+	CKSUM_Init(&crcctx);
 
 	while (fp != NULL && fgets(line, sizeof(line), fp)) {
 		line_count++;
@@ -248,11 +245,7 @@ load_results_fp(FILE *fp)
 					"line.\n", line_count, sizeof(line));
 		}
 
-		result_size += strlen(line);
-
-		for (unsigned int i = 0; i < strlen(line); i++) {
-			result_sum += line[i];
-		}
+		CKSUM_Update(&crcctx, (unsigned char *)line, strlen(line));
 
 		mbstowcs(wline, line, sizeof(line));
 		wcs_strip_trailing_whitespaces(wline);
@@ -265,10 +258,14 @@ load_results_fp(FILE *fp)
 		ARRAY_ADD(&results, result);
 	}
 
+
 	bzero(wline, sizeof(wchar_t) * MAX_LINE_SIZE);
 	bzero(line, MAX_LINE_SIZE);
 
-	return ARRAY_LENGTH(&results);
+	CKSUM_Final(&crcctx);
+	result_crc32 = crcctx.crc;
+
+	return (ARRAY_LENGTH(&results));
 }
 
 
@@ -288,7 +285,7 @@ load_results_gpg()
 
 	/* Password file does not exist yet. */
 	if (fp == NULL)
-		return 0;
+		return (0);
 
 	length = load_results_fp(fp);
 
@@ -297,7 +294,7 @@ load_results_gpg()
 		errx(EXIT_FAILURE, "GnuPG returned with an error");
 	}
 
-	return length;
+	return (length);
 }
 
 

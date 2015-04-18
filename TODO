@@ -48,11 +48,13 @@ MEDIUM TERM DEV
 
 LONG TERM DEV (MAYBE)
  - Rewrite the process name to avoid other users to know what keywords you are
-   searching for. PostgreSQL has some robust code to do that.
+   searching for. PostgreSQL has some robust code to do that.  This is in no way 
+   perfect, just added layers.
 
  - Add introns/exons style encoding to the password file to fill it with
    garbage transparently and keep the file size fixed. This would avoid a
-   potential attacker from guessing if passwords were added or removed.
+   potential attacker from guessing if passwords were added or removed. These could
+   be special comments ( e.g. #mdp:filler# 123123123123123123 )
 
  - the first time you run mdp, a default configuration file is created with as
    many defaults as possible:

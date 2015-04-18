@@ -3,6 +3,11 @@
 	* Add overwrite of the temporary plain text file (shred-style).
 	* Override internal structures to avoid plain text to linger in RAM.
 
+0.7.4 Bertrand Janin <b@janin.com> (2015-04-18)
+
+	* Fix the misdetection of file changes, using CRC32 instead of
+	  (size + sum) comparison (fixes issue #5, found by @fluxspir).
+
 0.7.3 Bertrand Janin <b@janin.com> (2014-02-11)
 
 	* Fix crash on 'mdp edit' if neither $EDITOR or 'set editor' is

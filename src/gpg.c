@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -79,7 +79,7 @@ gpg_open()
 
 	if (!file_exists(cfg_password_file)) {
 		debug("gpg_open password file does not exist (yet)");
-		return NULL;
+		return (NULL);
 	}
 
 	debug("gpg_open %s %s", cfg_gpg_path, cfg_password_file);
@@ -136,7 +136,7 @@ gpg_open()
 	 */
 	set_pid_timeout(gpg_pid, cfg_gpg_timeout);
 
-	return fp;
+	return (fp);
 }
 
 
@@ -172,7 +172,7 @@ gpg_close(FILE *fp)
 
 	cancel_pid_timeout();
 
-	return retcode;
+	return (retcode);
 }
 
 
