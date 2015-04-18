@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2012-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -40,8 +40,6 @@ ARRAY_DECL(wlist, struct result *);
 
 
 extern struct wlist results;
-extern uint32_t result_sum;
-extern uint32_t result_size;
 
 
 struct result	*result_new(const wchar_t *);

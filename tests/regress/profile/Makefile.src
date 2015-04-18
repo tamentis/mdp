@@ -4,6 +4,7 @@ OBJECTS= \
 	stub.o \
 	${SRC}/cmd.o \
 	${SRC}/config.o \
+	${SRC}/crc.o \
 	${SRC}/debug.o \
 	${SRC}/gpg.o \
 	${SRC}/keywords.o \

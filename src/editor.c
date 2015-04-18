@@ -33,6 +33,8 @@
 
 char *editor_tmp_path = NULL;
 
+extern uint32_t result_crc32;
+
 
 /*
  * Return a copy of the $EDITOR environment variable or NULL if not found.
@@ -129,20 +131,19 @@ static int
 has_changed(char *path)
 {
 	FILE *fp;
-	uint32_t previous_sum, previous_size;
+	uint32_t previous_crc32;
 
 	/*
 	 * Keep track of the previous sum/size so we can check if anything
 	 * changed.
 	 */
-	previous_sum = result_sum;
-	previous_size = result_size;
+	previous_crc32 = result_crc32;
 
 	fp = fopen(path, "r");
 	load_results_fp(fp);
 	fclose(fp);
 
-	if (previous_sum != result_sum || previous_size != result_size)
+	if (previous_crc32 != result_crc32)
 		return (1);
 
 	return (0);

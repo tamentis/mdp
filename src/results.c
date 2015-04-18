@@ -23,6 +23,7 @@
 #include <regex.h>
 
 #include "cmd.h"
+#include "crc.h"
 #include "gpg.h"
 #include "keywords.h"
 #include "mdp.h"
@@ -33,11 +34,8 @@
 
 struct wlist results = ARRAY_INITIALIZER;
 
-/*
- * This holds a sum and size of all the characters in the result set. This is
- * used with the edit command as a quick way to check of the file changed.
- */
-uint32_t result_size = 0, result_sum = 0;
+/* This crc32 is used to check if a file has changed after edit. */
+uint32_t result_crc32 = 0;
 
 
 /*
@@ -212,10 +210,9 @@ load_results_fp(FILE *fp)
 	static wchar_t wline[MAX_LINE_SIZE];
 	static char line[MAX_LINE_SIZE];
 	struct result *result;
+	CKSUM_CTX crcctx;
 
-	/* Global variables used to check if the result set changed. */
-	result_sum = 0;
-	result_size = 0;
+	CKSUM_Init(&crcctx);
 
 	while (fp != NULL && fgets(line, sizeof(line), fp)) {
 		line_count++;
@@ -227,11 +224,7 @@ load_results_fp(FILE *fp)
 					"line.\n", line_count, sizeof(line));
 		}
 
-		result_size += strlen(line);
-
-		for (unsigned int i = 0; i < strlen(line); i++) {
-			result_sum += line[i];
-		}
+		CKSUM_Update(&crcctx, (unsigned char *)line, strlen(line));
 
 		mbstowcs(wline, line, sizeof(line));
 		wcs_strip_trailing_whitespaces(wline);
@@ -243,6 +236,9 @@ load_results_fp(FILE *fp)
 		}
 		ARRAY_ADD(&results, result);
 	}
+
+	CKSUM_Final(&crcctx);
+	result_crc32 = crcctx.crc;
 
 	return ARRAY_LENGTH(&results);
 }
