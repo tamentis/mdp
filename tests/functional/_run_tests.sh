@@ -1,4 +1,9 @@
 #!/bin/sh
+#
+# _run_tests.sh without parameters will run all the tests in the current
+# directory, you may also specify as many test files as needed as command-line
+# parameters.
+#
 
 set -e
 # set -v
