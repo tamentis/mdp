@@ -3,6 +3,8 @@
 	* Add overwrite of the temporary plain text file (shred-style).
 	* Override internal structures to avoid plain text to linger in RAM.
 	* Use explicit_bzero(3) instead of bzero(3).
+	* If any temporary files are found on startup, delete them (e.g. after
+	  a crash).
 
 0.7.4 Bertrand Janin <b@janin.com> (2015-04-18)
 

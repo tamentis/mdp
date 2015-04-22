@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,6 +16,8 @@
 
 #ifndef _EDITOR_H_
 #define _EDITOR_H_
+
+#define TMPFILE_PREFIX "tmp_edit"
 
 extern char	*editor_tmp_path;
 

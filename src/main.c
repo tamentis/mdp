@@ -159,6 +159,8 @@ read_config(void)
 	config_dir = join_path(home, ".mdp");
 	config_ensure_directory(config_dir);
 
+	startup_cleanup(config_dir);
+
 	editor_init(config_dir);
 
 	if (cmd_config_path == NULL) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 Bertrand Janin <b@janin.com>
+ * Copyright (c) 2013-2015 Bertrand Janin <b@janin.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,9 +14,13 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <unistd.h>
-#include <stdlib.h>
+#include <sys/types.h>
+
+#include <dirent.h>
 #include <err.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "cleanup.h"
 #include "debug.h"
@@ -59,6 +63,34 @@ cleanup(void)
 
 	/* Just in case we error'd out somewhere during the pager. */
 	shutdown_curses();
+}
+
+
+/*
+ * startup_cleanup is run from the read_config() function, it ensures all the
+ * temporary files that could have been left behind on a previous crash or
+ * reboot are removed on the next run.
+ */
+void
+startup_cleanup(char *config_dir)
+{
+	DIR *dirp;
+	struct dirent *dp;
+
+	dirp = opendir(config_dir);
+	if (dirp == NULL) {
+		err(EXIT_FAILURE, "opendir() failed on '%s'", config_dir);
+	}
+
+	while ((dp = readdir(dirp)) != NULL) {
+		if (strncmp(dp->d_name, TMPFILE_PREFIX,
+				strlen(TMPFILE_PREFIX)) == 0) {
+			warn("deleting previous tmp file: %s", dp->d_name);
+			rm_overwrite(dp->d_name);
+		}
+	}
+
+	closedir(dirp);
 }
 
 

@@ -48,7 +48,7 @@ editor_init(const char *config_dir)
 {
 	char *s;
 
-	editor_tmp_path = join_path(config_dir, "tmp_edit.XXXXXXXX");
+	editor_tmp_path = join_path(config_dir, TMPFILE_PREFIX ".XXXXXXXX");
 
 	s = getenv("EDITOR");
 	if (s == NULL) {
