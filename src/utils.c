@@ -302,6 +302,9 @@ rm_overwrite(char *file)
 	}
 	close(fd);
 	free(buf);
+
+	unlink(file);
+
 	return true;
 
 err:

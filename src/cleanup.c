@@ -39,11 +39,10 @@ cleanup_tmp_path(void)
 	 * at least delete the file, additionally rm_overwrite emits a warn()
 	 * message with the actual error.
 	 */
-	rm_overwrite(editor_tmp_path);
+	if (!file_exists(editor_tmp_path))
+		return;
 
-	if (editor_tmp_path != NULL && unlink(editor_tmp_path) != 0) {
-		err(EXIT_FAILURE, "unable to remove '%s'", editor_tmp_path);
-	}
+	rm_overwrite(editor_tmp_path);
 }
 
 
@@ -76,6 +75,7 @@ startup_cleanup(char *config_dir)
 {
 	DIR *dirp;
 	struct dirent *dp;
+	char path[PATH_MAX];
 
 	dirp = opendir(config_dir);
 	if (dirp == NULL) {
@@ -85,8 +85,10 @@ startup_cleanup(char *config_dir)
 	while ((dp = readdir(dirp)) != NULL) {
 		if (strncmp(dp->d_name, TMPFILE_PREFIX,
 				strlen(TMPFILE_PREFIX)) == 0) {
-			warn("deleting previous tmp file: %s", dp->d_name);
-			rm_overwrite(dp->d_name);
+			snprintf(path, PATH_MAX, "%s/%s", config_dir,
+				dp->d_name);
+			warnx("deleting previous tmp file: %s", path);
+			rm_overwrite(path);
 		}
 	}
 
