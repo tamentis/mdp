@@ -231,6 +231,23 @@ fi
 rm -f fake_wcslcpy*
 
 
+# Check if we have memset_s
+echo -n "memset_s... "
+cat <<EOF > fake_memset_s.c
+#include <string.h>
+#include <stdlib.h>
+main() { char *buf; buf = malloc(128); memset_s(buf, 128, 0, 128); }
+EOF
+if ! ${CC} fake_memset_s.c -o /dev/null 1>/dev/null 2>/dev/null; then
+	echo "not found"
+	HAS_MEMSET_S=0
+else
+	HAS_MEMSET_S=1
+	echo yes
+fi
+rm -f fake_memset_s*
+
+
 # Check if we have explicit_bzero
 echo -n "explicit_bzero... "
 cat <<EOF > fake_explicit_bzero.c
@@ -239,9 +256,16 @@ cat <<EOF > fake_explicit_bzero.c
 main() { char *buf; buf = malloc(128); explicit_bzero(buf, 128); }
 EOF
 if ! ${CC} fake_explicit_bzero.c -o /dev/null 1>/dev/null 2>/dev/null; then
-	echo "not found (we'll use ours)"
-	X_OBJECTS="$X_OBJECTS explicit_bzero.o"
-	CFLAGS="$CFLAGS -DHAS_NO_EXPLICIT_BZERO"
+	if [ "$HAS_MEMSET_S" = "1" ]; then
+		echo "using memset_s"
+		X_OBJECTS="$X_OBJECTS explicit_bzero.o"
+		CFLAGS="$CFLAGS -DHAS_MEMSET_S"
+	else
+		echo "not found (using insecure bzero)"
+		X_OBJECTS="$X_OBJECTS explicit_bzero.o"
+		CFLAGS="$CFLAGS -DHAS_NO_EXPLICIT_BZERO"
+	fi
+
 else
 	echo yes
 fi

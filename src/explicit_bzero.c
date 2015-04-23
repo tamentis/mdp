@@ -1,16 +1,33 @@
-/* Public domain */
-
 /*
- * This was looted from:
- * https://github.com/mikejsavage/safebfuns
+ * Copyright (c) 2015 Bertrand Janin <b@janin.com>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef HAS_MEMSET_S
+#define __STDC_WANT_LIB_EXT1__ 1
 #include <string.h>
 
-#define __EXPLICIT_BZERO_INTERNAL
 #include "explicit_bzero.h"
 
-NOOPT NOINLINE void
+void
+explicit_bzero(void * const buf, const size_t n)
+{
+	memset_s(buf, n, 0, n);
+}
+#else /* HAS_MEMSET_S */
+#ifdef HAS_NO_EXPLICIT_BZERO
+void
 explicit_bzero(void * const buf, const size_t n)
 {
 	size_t i;
@@ -20,3 +37,5 @@ explicit_bzero(void * const buf, const size_t n)
 		p[i] = 0;
 	}
 }
+#endif /* HAS_NO_EXPLICIT_BZERO */
+#endif /* HAS_MEMSET_S */
