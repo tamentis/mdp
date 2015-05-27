@@ -212,7 +212,7 @@ PASSWORD FILE
 
 SECURITY
      Why not 'shred' the temporary file?
-             If the disk can be stollen, it should be encrypted. Shred has
+             If the disk can be stolen, it should be encrypted. Shred has
              limited use on most journaled file-systems.
 
      What if 'root' cannot be trusted?
