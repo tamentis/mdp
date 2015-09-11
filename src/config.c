@@ -35,10 +35,7 @@
 #include "strdelim.h"
 #include "utils.h"
 #include "xmalloc.h"
-
-#if defined(HAS_NO_WCSDUP)
-# include "wcsdup.h"
-#endif
+#include "wcsdup.h"
 
 
 bool		 cfg_backup = true;

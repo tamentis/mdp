@@ -23,10 +23,7 @@
 #include "str.h"
 #include "strlcat.h"
 #include "xmalloc.h"
-
-#if defined(HAS_NO_WCSNCASECMP)
-# include "wcsncasecmp.h"
-#endif
+#include "wcsncasecmp.h"
 
 
 #define WCS_WHITESPACE	L" \t\r\n"
