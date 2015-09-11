@@ -24,6 +24,10 @@
 #include "strlcat.h"
 #include "xmalloc.h"
 
+#if defined(HAS_NO_WCSNCASECMP)
+# include "wcsncasecmp.h"
+#endif
+
 
 #define WCS_WHITESPACE	L" \t\r\n"
 #define WHITESPACE	 " \t\r\n"

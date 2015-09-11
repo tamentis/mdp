@@ -215,6 +215,56 @@ fi
 rm -f fake_wcslcpy*
 
 
+# Check if we have wcsncasecmp
+echo -n "wcsncasecmp... "
+cat <<EOF > fake_wcsncasecmp.c
+#include <wchar.h>
+main() { int same; same = wcsncasecmp(L"foo", L"bar", sizeof L"foo"); }
+EOF
+if ! ${CC} fake_wcsncasecmp.c -o /dev/null 1>/dev/null 2>/dev/null; then
+	echo "not found (we'll use ours)"
+	X_OBJECTS="$X_OBJECTS wcsncasecmp.o"
+	CFLAGS="$CFLAGS -DHAS_NO_WCSNCASECMP"
+#endif
+
+else
+	echo yes
+fi
+rm -f fake_wcsncasecmp*
+
+
+# Check if we have wcsdup
+echo -n "wcsdup... "
+cat <<EOF > fake_wcsdup.c
+#include <wchar.h>
+main() { wchar_t *str; str = wcsdup(L"woot"); }
+EOF
+if ! ${CC} fake_wcsdup.c -o /dev/null 1>/dev/null 2>/dev/null; then
+	echo "not found (we'll use ours)"
+	X_OBJECTS="$X_OBJECTS wcsdup.o"
+	CFLAGS="$CFLAGS -DHAS_NO_WCSDUP"
+else
+	echo yes
+fi
+rm -f fake_wcsdup*
+
+
+# Check if we have arc4random_uniform
+echo -n "arc4random_uniform... "
+cat <<EOF > fake_arc4random_uniform.c
+#include <stdlib.h>
+main() { u_int32_t weight = arc4random_uniform(20000); }
+EOF
+if ! ${CC} fake_arc4random_uniform.c -o /dev/null 1>/dev/null 2>/dev/null; then
+	echo "not found (we'll use ours)"
+	X_OBJECTS="$X_OBJECTS arc4random.o"
+	CFLAGS="$CFLAGS -DHAS_NO_ARC4RANDOM_UNIFORM"
+else
+	echo yes
+fi
+rm -f fake_arc4random_uniform*
+
+
 # Check for curses
 echo -n "curses... "
 cat <<EOF > fake_curses.c

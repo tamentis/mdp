@@ -29,6 +29,10 @@
 #include "str.h"
 #include "xmalloc.h"
 
+#if defined(HAS_NO_WCSDUP)
+# include "wcsdup.h"
+#endif
+
 
 struct profile_list profiles = ARRAY_INITIALIZER;
 

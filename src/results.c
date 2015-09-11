@@ -31,6 +31,10 @@
 #include "str.h"
 #include "xmalloc.h"
 
+#if defined(HAS_NO_WCSDUP)
+# include "wcsdup.h"
+#endif
+
 
 struct wlist results = ARRAY_INITIALIZER;
 

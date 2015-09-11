@@ -36,6 +36,10 @@
 #include "utils.h"
 #include "xmalloc.h"
 
+#if defined(HAS_NO_WCSDUP)
+# include "wcsdup.h"
+#endif
+
 
 bool		 cfg_backup = true;
 unsigned int	 cfg_character_count = DEFAULT_CHARACTER_COUNT;

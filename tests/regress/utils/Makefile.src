@@ -24,6 +24,12 @@ strlcat.o:
 wcslcpy.o:
 	cp ${SRC}/wcslcpy.o .
 
+wcsdup.o:
+	cp ${SRC}/wcsdup.o .
+
+wcsncasecmp.o:
+	cp ${SRC}/wcsncasecmp.o .
+
 ${PROG}: ${OBJECTS}
 	${CC} ${LDFLAGS} -o ${PROG} ${OBJECTS} ${CURSESLIB} 
 
