@@ -41,6 +41,7 @@ shutdown_curses()
 {
 	if (screen != NULL) {
 		clear();
+		refresh();
 		endwin();
 	}
 }
