@@ -1,3 +1,10 @@
+0.7.5 Bertrand Janin <b@janin.com> unreleased
+
+	* Fixed compilation on older OS X (and probably a few other
+	  platforms) by Stefan Stapelberg (rent-a-guru.de)
+	* Fixed lock and ncurses cleanup on time-out, by Stefan Stapelberg
+	  (rent-a-guru.de)
+
 0.7.4 Bertrand Janin <b@janin.com> (2015-04-18)
 
 	* Fix the misdetection of file changes, using CRC32 instead of
