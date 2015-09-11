@@ -31,11 +31,11 @@
 void
 cleanup(void)
 {
+	lock_unset();
+
 	if (editor_tmp_path != NULL && unlink(editor_tmp_path) != 0) {
 		err(EXIT_FAILURE, "unable to remove '%s'", editor_tmp_path);
 	}
-
-	lock_unset();
 
 	/* Just in case we error'd out somewhere during the pager. */
 	shutdown_curses();
