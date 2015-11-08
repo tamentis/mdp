@@ -232,8 +232,8 @@ in the profile.
 .Pp
 .It Ic set password_file Ar filepath
 Sets the location of the password file. mdp will refuse to use a password file
-with permissions other than 0600. The default value for this is
-~/.mdp/passwords.
+with permissions other than 0600 in a repertory with permissions other than 0700.
+The default value for this is ~/.mdp/passwords.
 .Pp
 .It Ic set timeout Ar seconds
 This variable define how long the pager will display search results.
