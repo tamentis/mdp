@@ -1,5 +1,5 @@
 .\"
-.\" Copyright (c) 2012-2014 Bertrand Janin <b@janin.com>
+.\" Copyright (c) 2012-2015 Bertrand Janin <b@janin.com>
 .\" 
 .\" Permission to use, copy, modify, and distribute this software for any
 .\" purpose with or without fee is hereby granted, provided that the above
@@ -232,8 +232,8 @@ in the profile.
 .Pp
 .It Ic set password_file Ar filepath
 Sets the location of the password file. mdp will refuse to use a password file
-with permissions other than 0600 in a repertory with permissions other than 0700.
-The default value for this is ~/.mdp/passwords.
+with permissions other than 0600 or in a folder with permissions other than
+0700.  The default value for password_file is ~/.mdp/passwords.
 .Pp
 .It Ic set timeout Ar seconds
 This variable define how long the pager will display search results.
