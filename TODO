@@ -25,6 +25,9 @@ MEDIUM TERM DEV
 
      set syllable_set = ac-set-po-tru-ka-ret-1-2-3-4-5-6-7-8-9-0
 
+ - Add a cleanup_command to be executed after a configurable timeout (e.g.
+   cleanup_timeout).
+
 LONG TERM DEV (MAYBE)
  - Rewrite the process name to avoid other users to know what keywords you are
    searching for. PostgreSQL has some robust code to do that.  This is in no way 
