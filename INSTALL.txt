@@ -18,9 +18,15 @@ REQUIREMENTS
 
 
 INSTALLATION
-    ./configure
-    make
-    sudo make install
+    On most Unices:
+
+        ./configure
+        make
+        sudo make install
+
+    But also, on macOS using Homebrew:
+
+        brew install tamentis/core/mdp
 
 
 UPGRADING
