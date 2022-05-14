@@ -6,6 +6,7 @@ tests/regress/*/diff
 tests/regress/*/expected
 tests/regress/*/output
 tests/regress/*/stub
+tests/regress/*/fake_lock
 tags
 cscope.out
 test.stdout
