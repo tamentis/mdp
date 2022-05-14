@@ -20,8 +20,8 @@
 #include <stdbool.h>
 
 extern bool		 cfg_backup;
-unsigned int		 cfg_character_count;
-wchar_t			*cfg_character_set;
+extern unsigned int	 cfg_character_count;
+extern wchar_t		*cfg_character_set;
 extern char		*cfg_config_path;
 extern char		*cfg_editor;
 extern char		*cfg_gpg_path;
